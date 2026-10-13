@@ -2,16 +2,18 @@
   "arthrex:1354303857": {
     "category": "Manufacturing",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "CNC machine operator in manufacturing.",
-      "relevance": "none"
+      "reason": "Operates CNC machines on a manufacturing floor; not software work.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1354303857",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -25,16 +27,18 @@
   "arthrex:1354352757": {
     "category": "Manufacturing",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Clean room assembly production work.",
-      "relevance": "none"
+      "reason": "Clean room assembly of medical devices; manufacturing production work.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1354352757",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -48,16 +52,18 @@
   "arthrex:1355401357": {
     "category": "Human Resources",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "lead",
       "model": "claude-sonnet-5-5",
-      "reason": "Human resources recruiting management role.",
-      "relevance": "none"
+      "reason": "Human resources recruiting management; not software or an acceptable adjacent role.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1355401357",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -71,16 +77,18 @@
   "arthrex:1356232157": {
     "category": "Manufacturing",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "PLC controls technician in manufacturing; explicitly excluded.",
-      "relevance": "none"
+      "reason": "PLC technician in manufacturing; explicitly excluded role.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1356232157",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -94,16 +102,18 @@
   "arthrex:1356771857": {
     "category": "Manufacturing",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "entry",
       "model": "claude-sonnet-5-5",
-      "reason": "Manufacturing suture assembly operator.",
-      "relevance": "none"
+      "reason": "Suture assembly production operator; manufacturing work.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1356771857",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -117,16 +127,18 @@
   "arthrex:1356772157": {
     "category": "Manufacturing",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "entry",
       "model": "claude-sonnet-5-5",
-      "reason": "Manufacturing suture assembly operator.",
-      "relevance": "none"
+      "reason": "Suture assembly production operator; manufacturing work.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1356772157",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -140,16 +152,18 @@
   "arthrex:1358704157": {
     "category": "Manufacturing",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "lead",
       "model": "claude-sonnet-5-5",
-      "reason": "Calibration and metrology supervision in manufacturing; excluded manufacturing quality work.",
-      "relevance": "none"
+      "reason": "Supervises calibration and metrology in manufacturing; not software.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1358704157",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -163,16 +177,18 @@
   "arthrex:1360878757": {
     "category": "Manufacturing",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "CNC machine operator in manufacturing.",
-      "relevance": "none"
+      "reason": "Operates CNC machines in manufacturing; not software work.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1360878757",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -186,16 +202,18 @@
   "arthrex:1365926157": {
     "category": "Information Technology",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "senior",
       "model": "claude-sonnet-5-5",
-      "reason": "Business systems analyst for PLM software in IT; closer to data/IT analyst work.",
-      "relevance": "adjacent"
+      "reason": "Business systems analyst for PLM software; IT-related but analyst role, not development or listed adjacent.",
+      "relevance": "maybe",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1365926157",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -209,16 +227,18 @@
   "arthrex:1367667657": {
     "category": "Manufacturing",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "CNC machine operator in manufacturing.",
-      "relevance": "none"
+      "reason": "Operates CNC drill cell machines; manufacturing work.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1367667657",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -232,16 +252,18 @@
   "arthrex:1371224257": {
     "category": "Regulatory Affairs & Quality Assurance",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Manufacturing quality assurance engineering technician; excluded manufacturing quality.",
-      "relevance": "none"
+      "reason": "Manufacturing quality assurance engineering technician; excluded manufacturing quality, not software QA.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1371224257",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -255,16 +277,18 @@
   "arthrex:1371348857": {
     "category": "Engineering",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "senior",
       "model": "claude-sonnet-5-5",
-      "reason": "Electrical manufacturing engineer; excluded electrical engineering.",
-      "relevance": "none"
+      "reason": "Electrical manufacturing engineering; excluded electrical engineering role.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1371348857",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -278,16 +302,18 @@
   "arthrex:1372720257": {
     "category": "Engineering",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Quality assurance engineer in medical device manufacturing; excluded manufacturing quality.",
-      "relevance": "none"
+      "reason": "Quality assurance engineer at a medical device manufacturer; manufacturing quality, not software QA.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1372720257",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -301,16 +327,18 @@
   "arthrex:1372852357": {
     "category": "Engineering",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Quality assurance engineer in medical device manufacturing; excluded manufacturing quality.",
-      "relevance": "none"
+      "reason": "Quality assurance engineer at a medical device manufacturer; manufacturing quality, not software QA.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1372852357",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -324,16 +352,18 @@
   "arthrex:1373948257": {
     "category": "Manufacturing",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Molding technician in manufacturing.",
-      "relevance": "none"
+      "reason": "Injection molding technician in manufacturing; not software.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1373948257",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -347,16 +377,18 @@
   "arthrex:1374093557": {
     "category": "Facilities & Culinary",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Facilities plumbing maintenance technician.",
-      "relevance": "none"
+      "reason": "Plumbing facilities technician; building maintenance work.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1374093557",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -370,16 +402,18 @@
   "arthrex:1374211757": {
     "category": "Students",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "intern",
       "model": "claude-sonnet-5-5",
-      "reason": "Manufacturing engineering internship in injection molding; mechanical/manufacturing engineering, not software.",
-      "relevance": "none"
+      "reason": "Manufacturing engineering internship in injection molding; excluded mechanical/manufacturing engineering.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1374211757",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -393,16 +427,18 @@
   "arthrex:1374608157": {
     "category": "Manufacturing",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Manufacturing line operator assembling sutures.",
-      "relevance": "none"
+      "reason": "Suture assembly production operator; manufacturing work.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "arthrex",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "arthrex:1374608157",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Pendleton, SC, US, 29670",
     "missed_runs": 0,
     "posted_date": null,
@@ -416,16 +452,18 @@
   "michelin:it-site-support-analyst": {
     "category": "IS&Digital",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "IT support analyst at a site; directly acceptable IT support role.",
-      "relevance": "adjacent"
+      "reason": "On-site IT support for a manufacturing site; matches acceptable IT support role.",
+      "relevance": "adjacent",
+      "rules": "ea74f08bd741"
     },
     "company_id": "michelin",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "michelin:it-site-support-analyst",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "ANDERSON, SC, United States of America",
     "missed_runs": 0,
     "posted_date": "2026-10-05",
@@ -439,16 +477,18 @@
   "michelin:quality-process-engineer8": {
     "category": "Quality & Risk Management",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Manufacturing quality process engineer at a tire plant; excluded.",
-      "relevance": "none"
+      "reason": "Quality process engineering at a tire plant; manufacturing quality, excluded.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "michelin",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "michelin:quality-process-engineer8",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "ANDERSON, SC, United States of America",
     "missed_runs": 0,
     "posted_date": "2026-06-22",
@@ -462,16 +502,18 @@
   "michelin:summer-2027-internship-engineering-and-slash-or-sciences-it-slash-is-anderson-sc": {
     "category": "Personnel",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "intern",
       "model": "claude-sonnet-5-5",
-      "reason": "Summer internship covering engineering, sciences and IT/IS; general internship program with IT option.",
-      "relevance": "adjacent"
+      "reason": "Summer internship covering engineering, sciences and IT/IS; general internship that may include IT work.",
+      "relevance": "adjacent",
+      "rules": "ea74f08bd741"
     },
     "company_id": "michelin",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "michelin:summer-2027-internship-engineering-and-slash-or-sciences-it-slash-is-anderson-sc",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "ANDERSON, SC, United States of America",
     "missed_runs": 0,
     "posted_date": "2026-09-01",
@@ -485,16 +527,18 @@
   "michelin:summer-2027-internship-quality-anderson-sc": {
     "category": "Personnel",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "intern",
       "model": "claude-sonnet-5-5",
-      "reason": "Quality internship in a tire manufacturer; manufacturing quality, excluded.",
-      "relevance": "none"
+      "reason": "Summer internship in quality at a tire manufacturer; manufacturing quality focus, though it is an internship.",
+      "relevance": "maybe",
+      "rules": "ea74f08bd741"
     },
     "company_id": "michelin",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "michelin:summer-2027-internship-quality-anderson-sc",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "ANDERSON, SC, United States of America",
     "missed_runs": 0,
     "posted_date": "2026-09-01",
@@ -508,16 +552,18 @@
   "scansource:12aed8a9-8afd-4ea1-a79e-8b40d4dc12b5": {
     "category": "Resourcive",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "unknown",
       "model": "claude-sonnet-5-5",
-      "reason": "Client-facing cybersecurity advisory consulting.",
-      "relevance": "none"
+      "reason": "Client-facing cybersecurity advisory consulting; not development or a listed adjacent role.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:12aed8a9-8afd-4ea1-a79e-8b40d4dc12b5",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-02",
@@ -531,16 +577,18 @@
   "scansource:1b801dff-4afd-4b4d-bca2-c57f1d5e4886": {
     "category": "Intelisys",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "unknown",
       "model": "claude-sonnet-5-5",
-      "reason": "Partner escalation resolution and coordination; matches partner/customer escalation support.",
-      "relevance": "adjacent"
+      "reason": "Handles partner and supplier escalations, coordinating resolution; matches partner escalation support.",
+      "relevance": "adjacent",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:1b801dff-4afd-4b4d-bca2-c57f1d5e4886",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-10-12",
@@ -554,16 +602,18 @@
   "scansource:276d6802-a2c7-4488-8e8a-a487a90455b1": {
     "category": "Administration",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "intern",
       "model": "claude-sonnet-5-5",
-      "reason": "General summer internship program for students; acceptable general internship.",
-      "relevance": "adjacent"
+      "reason": "General summer internship program at a tech distributor; acceptable general internship.",
+      "relevance": "adjacent",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:276d6802-a2c7-4488-8e8a-a487a90455b1",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-14",
@@ -577,16 +627,18 @@
   "scansource:2f9129cc-b111-4475-9314-6da8b001614a": {
     "category": "Merchandising",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "unknown",
       "model": "claude-sonnet-5-5",
-      "reason": "Supplier relationship and merchandising management.",
-      "relevance": "none"
+      "reason": "Supplier relationship and revenue management; business role, not software.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:2f9129cc-b111-4475-9314-6da8b001614a",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-08-25",
@@ -600,16 +652,18 @@
   "scansource:3d61610a-112a-435a-ba9a-8496ad046fbe": {
     "category": "Advantix",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "lead",
       "model": "claude-sonnet-5-5",
-      "reason": "Channel sales/partner management role promoting solutions, not support or development.",
-      "relevance": "none"
+      "reason": "Channel sales and partner training management; sales role.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:3d61610a-112a-435a-ba9a-8496ad046fbe",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-10-12",
@@ -623,16 +677,18 @@
   "scansource:411d5fc7-5674-4fe6-8bfc-7ba1a84d86cf": {
     "category": "Merchandising",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Supply chain purchase order support.",
-      "relevance": "none"
+      "reason": "Processes purchase orders for supply chain; not software.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:411d5fc7-5674-4fe6-8bfc-7ba1a84d86cf",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-17",
@@ -646,16 +702,18 @@
   "scansource:41a558ac-bd5b-48f1-9a2a-bd8e371dd6e2": {
     "category": "Advantix",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "unknown",
       "model": "claude-sonnet-5-5",
-      "reason": "Pre-sales solutions architecture blending technology and sales; not hands-on development.",
-      "relevance": "none"
+      "reason": "Pre-sales solutions architect blending technology and sales; not hands-on development.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:41a558ac-bd5b-48f1-9a2a-bd8e371dd6e2",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-10-12",
@@ -669,16 +727,18 @@
   "scansource:43d90a84-0038-45e0-b8bc-c99be928dcf5": {
     "category": "Tech Support",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "entry",
       "model": "claude-sonnet-5-5",
-      "reason": "Technical design assistance and customer education for communications products; tech support category.",
-      "relevance": "adjacent"
+      "reason": "Technical design engineer supporting customers on communications technologies; technical support-like, not software development.",
+      "relevance": "maybe",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:43d90a84-0038-45e0-b8bc-c99be928dcf5",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-14",
@@ -692,16 +752,18 @@
   "scansource:47124b9d-f003-45a8-a956-2e47bb6c5cd7": {
     "category": "Intelisys",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Intermediate software developer coding features and fixing bugs in PHP and modern frameworks.",
-      "relevance": "core"
+      "reason": "Intermediate UI software developer coding PHP and modern front-end for a platform.",
+      "relevance": "core",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:47124b9d-f003-45a8-a956-2e47bb6c5cd7",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-05-11",
@@ -715,16 +777,18 @@
   "scansource:5204e439-b683-4755-8612-4842808e3e32": {
     "category": "Intelisys",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "lead",
       "model": "claude-sonnet-5-5",
-      "reason": "Regional sales channel management.",
-      "relevance": "none"
+      "reason": "Regional sales channel management for partners; sales role.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:5204e439-b683-4755-8612-4842808e3e32",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-09",
@@ -738,16 +802,18 @@
   "scansource:5d690c1c-368c-4a61-8b3a-6a3567d192b8": {
     "category": "Merchandising",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Supplier relationship and merchandising management.",
-      "relevance": "none"
+      "reason": "Supplier relationship and revenue management for Ubiquiti; business role.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:5d690c1c-368c-4a61-8b3a-6a3567d192b8",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-23",
@@ -761,16 +827,18 @@
   "scansource:6232d619-8273-483f-82d0-594c7c09e40d": {
     "category": "Tech Support",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "unknown",
       "model": "claude-sonnet-5-5",
-      "reason": "Technical support analyst answering customer product questions via phone and email; IT support.",
-      "relevance": "adjacent"
+      "reason": "Technical support analyst giving pre- and post-sales support on Cisco products; IT support.",
+      "relevance": "adjacent",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:6232d619-8273-483f-82d0-594c7c09e40d",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-01",
@@ -784,16 +852,18 @@
   "scansource:71805aa6-1037-434c-8827-3c9a65b60385": {
     "category": "Merchandising",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "unknown",
       "model": "claude-sonnet-5-5",
-      "reason": "Purchase order processing in supply chain.",
-      "relevance": "none"
+      "reason": "Processes drop shipment purchase orders; supply chain work.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:71805aa6-1037-434c-8827-3c9a65b60385",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-18",
@@ -807,16 +877,18 @@
   "scansource:754d4deb-eb64-4191-82b9-a99c71200a07": {
     "category": "Tech Services",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "lead",
       "model": "claude-sonnet-5-5",
-      "reason": "Manages design engineers for communications solutions; technical team management, not software.",
-      "relevance": "none"
+      "reason": "Manages team of design engineers for communications solutions; management, not software development.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:754d4deb-eb64-4191-82b9-a99c71200a07",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-01",
@@ -830,16 +902,18 @@
   "scansource:77e4e672-7501-4c4e-8e7b-1eb92a785971": {
     "category": "Resourcive",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "senior",
       "model": "claude-sonnet-5-5",
-      "reason": "Client-facing consulting leading consultant team and account relationships.",
-      "relevance": "none"
+      "reason": "Senior consultant owning client relationships and leading consultants; consulting, not development.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:77e4e672-7501-4c4e-8e7b-1eb92a785971",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-16",
@@ -853,16 +927,18 @@
   "scansource:7f812fd8-4c72-4169-a5c4-59a0c55bf78e": {
     "category": "Finance & Accounting",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "senior",
       "model": "claude-sonnet-5-5",
-      "reason": "Corporate tax compliance role.",
-      "relevance": "none"
+      "reason": "Corporate tax compliance and provisions; finance role.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:7f812fd8-4c72-4169-a5c4-59a0c55bf78e",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-10",
@@ -876,16 +952,18 @@
   "scansource:8fd30011-9e2c-4a36-973e-20ee1e183e2f": {
     "category": "Tech Support",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "entry",
       "model": "claude-sonnet-5-5",
-      "reason": "Technical pre-sales design support for POS products; tech support category but a hardware design assistance role.",
-      "relevance": "adjacent"
+      "reason": "Technical design engineer supporting customers on POS and barcoding technology; support-like, not software development.",
+      "relevance": "maybe",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:8fd30011-9e2c-4a36-973e-20ee1e183e2f",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-10-08",
@@ -899,16 +977,18 @@
   "scansource:9bc0bbd8-a6c1-4b86-a6ac-ce989fba5c39": {
     "category": "Advantix",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "lead",
       "model": "claude-sonnet-5-5",
-      "reason": "Sales and marketing operations and revenue technology leadership; not development.",
-      "relevance": "none"
+      "reason": "Director of sales and marketing operations and revenue technology; management, not development.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:9bc0bbd8-a6c1-4b86-a6ac-ce989fba5c39",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-09",
@@ -922,16 +1002,18 @@
   "scansource:9cb3edcf-58a3-4bbb-bcfe-3a125409cc97": {
     "category": "Sales",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "entry",
       "model": "claude-sonnet-5-5",
-      "reason": "Order and quote entry partner support representative; sales operations.",
-      "relevance": "none"
+      "reason": "Partner support representative handling orders and quotes; sales support, not technical escalation.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:9cb3edcf-58a3-4bbb-bcfe-3a125409cc97",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-10-05",
@@ -945,16 +1027,18 @@
   "scansource:a07995d0-0b9a-4cad-aa49-14758f6275d4": {
     "category": "Merchandising",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Supplier relationship and merchandising management.",
-      "relevance": "none"
+      "reason": "Supplier relationship and revenue management for payments; business role.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:a07995d0-0b9a-4cad-aa49-14758f6275d4",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC; Roseville, CA",
     "missed_runs": 0,
     "posted_date": "2026-10-01",
@@ -968,16 +1052,18 @@
   "scansource:a198f291-76dc-454f-a036-f68d7c11799f": {
     "category": "Finance & Accounting",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "entry",
       "model": "claude-sonnet-5-5",
-      "reason": "Accounts receivable finance analyst.",
-      "relevance": "none"
+      "reason": "Accounts receivable reconciliation and dispute resolution; finance work.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:a198f291-76dc-454f-a036-f68d7c11799f",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-11",
@@ -991,16 +1077,18 @@
   "scansource:a6ce6cfb-d179-4872-9c42-7430e9f5e9c6": {
     "category": "Sales",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "unknown",
       "model": "claude-sonnet-5-5",
-      "reason": "Sales account management role handling quotes.",
-      "relevance": "none"
+      "reason": "Sales account management handling quotes and customer deals.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:a6ce6cfb-d179-4872-9c42-7430e9f5e9c6",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-10-08",
@@ -1014,16 +1102,18 @@
   "scansource:bb7a3a3c-9c77-490b-9fc1-e8af6bab6c86": {
     "category": "Merchandising",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "unknown",
       "model": "claude-sonnet-5-5",
-      "reason": "Purchase order processing in supply chain.",
-      "relevance": "none"
+      "reason": "Processes drop shipment purchase orders; supply chain work.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:bb7a3a3c-9c77-490b-9fc1-e8af6bab6c86",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-17",
@@ -1037,16 +1127,18 @@
   "scansource:bf2a28f5-2ebf-45c6-8146-1262e06d219f": {
     "category": "Intelisys",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "unknown",
       "model": "claude-sonnet-5-5",
-      "reason": "Sales specialist for Microsoft Copilot solutions.",
-      "relevance": "none"
+      "reason": "Sales-support specialist for Microsoft Copilot adoption; sales enablement, not development.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:bf2a28f5-2ebf-45c6-8146-1262e06d219f",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-11",
@@ -1060,16 +1152,18 @@
   "scansource:c129e526-bc57-423f-a773-998c380c42b4": {
     "category": "IT",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "lead",
       "model": "claude-sonnet-5-5",
-      "reason": "Manages a front-end software development team; developer-field leadership role.",
-      "relevance": "core"
+      "reason": "Manages front-end development team and technical direction; software field but a management role.",
+      "relevance": "adjacent",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:c129e526-bc57-423f-a773-998c380c42b4",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-09",
@@ -1083,16 +1177,18 @@
   "scansource:c17120a8-65e0-4a8f-8f92-1baf6bda46b3": {
     "category": "IT",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "IT business analyst configuring and testing SAP solutions; analyst-type IT role.",
-      "relevance": "adjacent"
+      "reason": "SAP business analyst configuring and testing solutions; IT analyst, not development.",
+      "relevance": "maybe",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:c17120a8-65e0-4a8f-8f92-1baf6bda46b3",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-22",
@@ -1106,16 +1202,18 @@
   "scansource:c4b65185-66a0-499e-9584-10b833184018": {
     "category": "Intelisys",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "senior",
       "model": "claude-sonnet-5-5",
-      "reason": "Senior UI software developer implementing user interfaces and modernizing code.",
-      "relevance": "core"
+      "reason": "Senior UI software developer shipping user interfaces and modernizing legacy code.",
+      "relevance": "core",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:c4b65185-66a0-499e-9584-10b833184018",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-05-11",
@@ -1129,16 +1227,18 @@
   "scansource:c9162597-23cd-4652-9062-6b56896283a8": {
     "category": "Merchandising",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:29:54.734946+00:00",
       "level": "senior",
       "model": "claude-sonnet-5-5",
-      "reason": "Inventory and purchasing management for supplier lines.",
-      "relevance": "none"
+      "reason": "Manages inventory levels for supplier lines; purchasing work.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:c9162597-23cd-4652-9062-6b56896283a8",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-17",
@@ -1152,16 +1252,18 @@
   "scansource:da52dcdf-9104-4b1b-9dbe-d0e18ecb0ac2": {
     "category": "IT",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:30:01.991155+00:00",
       "level": "senior",
       "model": "claude-sonnet-5-5",
-      "reason": "Front-end software developer building React user interfaces.",
-      "relevance": "core"
+      "reason": "Front-end developer building React user interfaces and features; matches front-end developer title.",
+      "relevance": "core",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:da52dcdf-9104-4b1b-9dbe-d0e18ecb0ac2",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-10",
@@ -1175,16 +1277,18 @@
   "scansource:db69a9fc-9f31-4038-b905-6d33f4d0f18f": {
     "category": "Intelisys",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:30:01.991155+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Customer experience practice sales enablement for partners.",
-      "relevance": "none"
+      "reason": "Customer experience practice specialist enabling partners to sell CX solutions; sales enablement, not software development.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:db69a9fc-9f31-4038-b905-6d33f4d0f18f",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-04-17",
@@ -1198,16 +1302,18 @@
   "scansource:e04532c3-6124-4a03-9004-8bcc550a8b3d": {
     "category": "Intelisys",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:30:01.991155+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Inside sales and partner relationship coordination.",
-      "relevance": "none"
+      "reason": "Inside sales role managing partner relationships; not software or support work.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:e04532c3-6124-4a03-9004-8bcc550a8b3d",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-10-01",
@@ -1221,16 +1327,18 @@
   "scansource:e1bf6ebb-0342-4ce6-8f26-81334fc06c0c": {
     "category": "Merchandising",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:30:01.991155+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Supplier pricing and deal registration in SAP; merchandising operations.",
-      "relevance": "none"
+      "reason": "Supply chain pricing work creating price exceptions in SAP; business operations, not development.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:e1bf6ebb-0342-4ce6-8f26-81334fc06c0c",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-08-25",
@@ -1244,16 +1352,18 @@
   "scansource:e21016e8-bf28-49b2-8730-8935fdeb29a0": {
     "category": "Sales",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:30:01.991155+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Sales account management role.",
-      "relevance": "none"
+      "reason": "Sales account manager role driving customer sales and quotes; not technical.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:e21016e8-bf28-49b2-8730-8935fdeb29a0",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-10-09",
@@ -1267,16 +1377,18 @@
   "scansource:eeaa8e93-ae50-41b9-8ddd-1cc2b21f9e64": {
     "category": "Supplier Services",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:30:01.991155+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Supplier business development and sales support.",
-      "relevance": "none"
+      "reason": "Supplier business development and sales support; not software work.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:eeaa8e93-ae50-41b9-8ddd-1cc2b21f9e64",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-30",
@@ -1290,16 +1402,18 @@
   "scansource:f0f61817-055c-48ba-af6a-e1d8b7789d08": {
     "category": "Sales",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:30:01.991155+00:00",
+      "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Federal sales account management.",
-      "relevance": "none"
+      "reason": "Federal sales account manager handling quotes and customer inquiries; not technical.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:f0f61817-055c-48ba-af6a-e1d8b7789d08",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-23",
@@ -1313,16 +1427,18 @@
   "scansource:f162abfc-f30a-4cfc-b178-a982e6461e35": {
     "category": "Merchandising",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:30:01.991155+00:00",
       "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Supplier business development specialist; sales-oriented.",
-      "relevance": "none"
+      "reason": "Supplier business development and sales support for a product line; not software.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:f162abfc-f30a-4cfc-b178-a982e6461e35",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-28",
@@ -1336,16 +1452,18 @@
   "scansource:f6a26c96-e3f8-4512-8176-7c0ad97b6f62": {
     "category": "IT",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
+      "classified_at": "2026-10-13T03:30:01.991155+00:00",
       "level": "mid",
       "model": "claude-sonnet-5-5",
-      "reason": "Information security tool administration and engineering support; IT infrastructure role close to IT support.",
-      "relevance": "adjacent"
+      "reason": "Information security engineer administering security tools, patching, and monitoring; IT-related but security rather than support or dev.",
+      "relevance": "maybe",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:f6a26c96-e3f8-4512-8176-7c0ad97b6f62",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-08-19",
@@ -1359,16 +1477,18 @@
   "scansource:fcb6fa92-3af9-4d28-9db1-85731350722b": {
     "category": "Intelisys",
     "classification": {
-      "classified_at": "2026-10-13T01:30:06.432671+00:00",
-      "level": "unknown",
+      "classified_at": "2026-10-13T03:30:01.991155+00:00",
+      "level": "lead",
       "model": "claude-sonnet-5-5",
-      "reason": "Supplier relationship management for sales portfolio.",
-      "relevance": "none"
+      "reason": "Supplier relationship manager driving business results with suppliers; business role, not software.",
+      "relevance": "none",
+      "rules": "ea74f08bd741"
     },
     "company_id": "scansource",
+    "employer": "",
     "first_seen": "2026-10-13T01:29:30.538370+00:00",
     "key": "scansource:fcb6fa92-3af9-4d28-9db1-85731350722b",
-    "last_seen": "2026-10-13T01:51:28.621926+00:00",
+    "last_seen": "2026-10-13T03:29:02.869157+00:00",
     "location": "Greenville, SC",
     "missed_runs": 0,
     "posted_date": "2026-09-02",
