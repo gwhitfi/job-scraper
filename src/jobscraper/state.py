@@ -27,6 +27,7 @@ class Posting:
     summary: str = ""
     employer: str = ""
     area: str = "primary"
+    duplicate_of: str | None = None  # key of the same job on a company's own site
 
     def source_label(self, company_name: str) -> str:
         """e.g. "AFL (via Move Upstate SC)" for job boards, else just the company name."""

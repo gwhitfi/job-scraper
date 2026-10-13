@@ -292,3 +292,11 @@ def test_email_failure_banner(app, tmp_path):
     notify.save_outbox(tmp_path / "state" / "email.json", outbox)
     html = app.index({})
     assert "Alert email failing (1 unsent): SMTPAuthenticationError: 535 bad &lt;creds&gt;" in html
+
+
+def test_duplicate_hidden_and_linked_from_company_card(app):
+    st = app.state()
+    st.postings["mus:9"].duplicate_of = "acme:1"
+    assert "mus:9" not in keys(app, "exact")
+    html = app.index({"view": "exact"})
+    assert "Also listed on" in html and ">Move Upstate SC</a>" in html

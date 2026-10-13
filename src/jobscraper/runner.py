@@ -7,7 +7,7 @@ from datetime import UTC, datetime
 import anthropic
 import httpx
 
-from jobscraper import adapters, classify, employers, locations, tracker
+from jobscraper import adapters, classify, dedupe, employers, locations, tracker
 from jobscraper.config import Config
 from jobscraper.models import Company, RawPosting
 from jobscraper.notify import Digest
@@ -82,7 +82,11 @@ def _classify_pending(state: State, cfg: Config, llm: anthropic.Anthropic | None
     Postings redone because the rules changed aren't returned: they aren't new jobs.
     """
     rules = classify.rules_fingerprint(cfg.profile, cfg.classifier_model)
-    pending = [p for p in state.postings.values() if classify.needs_classification(p, rules)]
+    pending = [
+        p
+        for p in state.postings.values()
+        if not p.duplicate_of and classify.needs_classification(p, rules)
+    ]
     if llm is None:
         # Without the LLM, keep stale LLM results rather than downgrading them to keywords.
         pending = [p for p in pending if not _has_llm_result(p)]
@@ -158,6 +162,7 @@ def run(
         if event:
             result.digest.health.append(event)
 
+    dedupe.mark_duplicates(state, cfg.companies, adapters.BOARD_ADAPTERS)
     upgraded = _classify_pending(state, cfg, llm)
 
     def group(key: str) -> str | None:

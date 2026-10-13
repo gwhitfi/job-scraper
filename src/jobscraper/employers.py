@@ -11,11 +11,16 @@ from jobscraper.state import Posting
 DECISIONS = {"approved", "blocked"}
 
 
+def normalize_name(name: str) -> str:
+    """Lowercase, no punctuation or legal suffixes: "Fluor Corp." and "FLUOR" match."""
+    name = re.sub(r"[^a-z0-9]+", " ", name.lower())
+    name = re.sub(r"\b(inc|llc|corp|corporation|co|ltd|company)\b", "", name)
+    return " ".join(name.split())
+
+
 def employer_key(p: Posting) -> str:
     """Normalized employer name; postings without one are judged on their own."""
-    name = re.sub(r"[^a-z0-9]+", " ", p.employer.lower()).strip()
-    name = re.sub(r"\b(inc|llc|corp|corporation|co|ltd|company)\b", "", name)
-    name = " ".join(name.split())
+    name = normalize_name(p.employer)
     return f"employer:{name}" if name else f"posting:{p.key}"
 
 

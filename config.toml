@@ -132,6 +132,7 @@ added = 2026-10-12
 [[companies]]
 id = "scansource"
 name = "ScanSource"
+aliases = ["Intelisys", "Advantix", "Resourcive", "Channel Exchange"]  # brands it posts under
 about = "Technology distributor (IT, communications, POS hardware)"
 adapter = "ultipro"
 url = "https://recruiting.ultipro.com/SCA1004SCSO/JobBoard/220bcab6-cf46-46e3-8fd5-181b273b0628/"

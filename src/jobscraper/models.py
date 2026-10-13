@@ -29,3 +29,4 @@ class Company:
     locations: tuple[str, ...] = ()
     remote: bool = True  # keep remote jobs even outside `locations`
     about: str = ""  # one line of context for the classifier, e.g. "Medical device maker"
+    aliases: tuple[str, ...] = ()  # other names it posts under on job boards, e.g. brands

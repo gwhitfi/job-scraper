@@ -342,3 +342,20 @@ def test_company_that_really_drops_to_zero_recovers(fake_sites):
     hour += 2
     assert [p.key for p in do_run(cfg("acme"), s, hours=hour).digest.removed] == ["acme:1"]
     assert "acme" in do_run(cfg("acme"), s, hours=hour + 2).fetched  # stays healthy at zero
+
+
+def test_board_duplicates_are_not_classified_or_announced(fake_sites, monkeypatch):
+    monkeypatch.setitem(adapters.ADAPTERS, "fake_board", lambda c, client: fake_sites["board"])
+    monkeypatch.setattr(adapters, "BOARD_ADAPTERS", {"fake_board"})
+    fake_sites["acme"] = [raw("1", "Software Developer I")]
+    fake_sites["board"] = [
+        RawPosting("x", "Software Developer I", "SC", "u", employer="Acme"),
+        RawPosting("y", "Web Developer", "SC", "u", employer="Elsewhere"),
+    ]
+    board = Company(id="board", name="Board", adapter="fake_board", url="u", added=date(2026, 1, 1))
+    c = Config(PROFILE, Notifications("a@b.c"), [company("acme"), board])
+    s = State()
+    result = do_run(c, s)
+    assert s.postings["board:x"].duplicate_of == "acme:1"
+    assert s.postings["board:x"].classification is None  # not sent to the classifier
+    assert sorted(p.key for p in result.digest.new_exact) == ["acme:1", "board:y"]

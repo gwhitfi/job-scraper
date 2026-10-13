@@ -1,7 +1,7 @@
 import json
 import logging
 import threading
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta
 from html import escape
 from http import HTTPStatus
@@ -45,6 +45,8 @@ class Row:
     is_board: bool
     employer: str  # "trusted", "ok", "approved", "unverified", or "blocked"
     employer_key: str
+    # Where else this job is listed, as (board name, url).
+    also_on: list[tuple[str, str]] = field(default_factory=list)
 
 
 class App:
@@ -71,6 +73,12 @@ class App:
         st = self.state()
         marks = userdata.load(self.marks_path)
         decisions = employers.load(self.employers_path)
+        duplicates: dict[str, list[tuple[str, str]]] = {}
+        for p in st.postings.values():
+            if p.duplicate_of and p.status == "active":
+                board = self.companies.get(p.company_id)
+                name = board.name if board else p.company_id
+                duplicates.setdefault(p.duplicate_of, []).append((name, p.url))
         out = []
         for p in st.postings.values():
             company = self.companies.get(p.company_id)
@@ -83,6 +91,7 @@ class App:
                     is_board=employers.is_board(p, self.companies),
                     employer=employers.status(p, self.companies, decisions),
                     employer_key=employers.employer_key(p),
+                    also_on=duplicates.get(p.key, []),
                 )
             )
         return out
@@ -313,6 +322,7 @@ def _card(r: Row, today: date) -> str:
   <p class="company">{escape(r.source)}</p>
   <h2><a href="{escape(p.url)}" target="_blank" rel="noopener">{escape(p.title)}</a></h2>
   <p class="meta">{meta}</p>
+  {_also_on(r)}
   {f'<p class="reason">{reason}</p>' if reason else ""}
   {_employer_panel(r)}
   <div class="actions">
@@ -326,6 +336,16 @@ def _card(r: Row, today: date) -> str:
     <span class="saved" aria-live="polite"></span>
   </details>
 </article>"""
+
+
+def _also_on(r: Row) -> str:
+    if not r.also_on:
+        return ""
+    links = ", ".join(
+        f'<a href="{escape(url)}" target="_blank" rel="noopener">{escape(name)}</a>'
+        for name, url in r.also_on
+    )
+    return f'<p class="also-on">Also listed on {links}</p>'
 
 
 def _verify_links(r: Row) -> str:
@@ -490,6 +510,8 @@ dialog h2 {{ margin: 0 0 12px; font-size: 1.05rem; }}
 dialog label {{ display: block; font-size: .9rem; color: var(--muted); margin-bottom: 12px; }}
 dialog select {{ display: block; width: 100%; margin-top: 4px; font-size: 1rem; padding: 6px 8px;
   border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--text); }}
+.also-on {{ font-size: .82rem; color: var(--muted); margin: 2px 0 0; }}
+.also-on a {{ color: var(--accent); }}
 .employer-panel {{ margin-top: 10px; padding: 8px 10px; border-radius: 8px;
   border: 1px dashed var(--near); font-size: .88rem; }}
 .employer-panel p {{ margin: 0 0 4px; }}

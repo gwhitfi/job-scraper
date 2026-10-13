@@ -234,7 +234,9 @@ def match_group(classification: dict | None, profile: Profile) -> str | None:
 
 
 def posting_group(p: Posting, profile: Profile) -> str | None:
-    """Like match_group, but postings from the extended area only count as exact matches."""
+    """Like match_group, but extended-area jobs only count as exact, and duplicates never do."""
+    if p.duplicate_of:
+        return None  # shown under the company's own listing instead
     group = match_group(p.classification, profile)
     if p.area == "extended" and group != "exact":
         return None
