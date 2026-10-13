@@ -6,7 +6,7 @@
     "failing_since": null,
     "last_count": 55,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "arthrex": {
     "alerted": false,
@@ -15,7 +15,7 @@
     "failing_since": null,
     "last_count": 18,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "bmw": {
     "alerted": false,
@@ -24,7 +24,7 @@
     "failing_since": null,
     "last_count": 4,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "bonsecours": {
     "alerted": false,
@@ -33,7 +33,7 @@
     "failing_since": null,
     "last_count": 0,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "externalsoftware": {
     "alerted": false,
@@ -42,7 +42,7 @@
     "failing_since": null,
     "last_count": 1,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "keymark": {
     "alerted": false,
@@ -51,7 +51,7 @@
     "failing_since": null,
     "last_count": 4,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "kopis": {
     "alerted": false,
@@ -60,7 +60,7 @@
     "failing_since": null,
     "last_count": 1,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "michelin": {
     "alerted": false,
@@ -69,7 +69,7 @@
     "failing_since": null,
     "last_count": 4,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "michelin_greenville": {
     "alerted": false,
@@ -78,7 +78,7 @@
     "failing_since": null,
     "last_count": 25,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "michelin_sandy_springs": {
     "alerted": false,
@@ -87,7 +87,7 @@
     "failing_since": null,
     "last_count": 3,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "michelin_spartanburg": {
     "alerted": false,
@@ -96,7 +96,7 @@
     "failing_since": null,
     "last_count": 3,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "moveupstatesc": {
     "alerted": false,
@@ -105,7 +105,7 @@
     "failing_since": null,
     "last_count": 294,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "orangebees": {
     "alerted": false,
@@ -114,7 +114,7 @@
     "failing_since": null,
     "last_count": 0,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "prisma": {
     "alerted": false,
@@ -123,7 +123,7 @@
     "failing_since": null,
     "last_count": 37,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "robojuice": {
     "alerted": false,
@@ -132,7 +132,7 @@
     "failing_since": null,
     "last_count": 1,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "scansource": {
     "alerted": false,
@@ -141,7 +141,7 @@
     "failing_since": null,
     "last_count": 38,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "simpledu": {
     "alerted": false,
@@ -150,7 +150,7 @@
     "failing_since": null,
     "last_count": 0,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "vertiv": {
     "alerted": false,
@@ -159,7 +159,7 @@
     "failing_since": null,
     "last_count": 286,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   },
   "worthwhile": {
     "alerted": false,
@@ -168,6 +168,6 @@
     "failing_since": null,
     "last_count": 1,
     "last_error": null,
-    "last_success": "2026-10-13T06:36:32.570209+00:00"
+    "last_success": "2026-10-13T09:28:59.257977+00:00"
   }
 }
