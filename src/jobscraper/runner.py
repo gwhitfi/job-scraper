@@ -66,7 +66,7 @@ def fetch_company(
         kept += [replace(p, area="extended") for p in in_wider]
     for p in locations.possible_gaps(outside, primary):
         log.info(
-            "%s: dropped %r in %s (add the city to a region if it's local)",
+            "%s: %r in %s is outside `locations` (add the town to a region if it's local)",
             company.id,
             p.title,
             p.location,

@@ -1,6 +1,7 @@
 import logging
 import os
 import smtplib
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from email.message import EmailMessage
@@ -168,15 +169,18 @@ def alert_subject(d: Digest) -> str:
     return "Job Scraper: " + ", ".join(parts)
 
 
+def _alert_only(d: Digest) -> Digest:
+    """Just what the alert email covers."""
+    return Digest(new_exact=d.new_exact, health=d.health, unverified=d.unverified)
+
+
 def render_alert_text(d: Digest, names: dict[str, str], page_url: str) -> str:
-    alert = Digest(new_exact=d.new_exact, health=d.health, unverified=d.unverified)
-    text = render_text(alert, names)
+    text = render_text(_alert_only(d), names)
     return f"{text}\nAll jobs: {page_url}\n" if page_url else text
 
 
 def render_alert_html(d: Digest, names: dict[str, str], page_url: str) -> str:
-    alert = Digest(new_exact=d.new_exact, health=d.health, unverified=d.unverified)
-    html = render_html(alert, names)
+    html = render_html(_alert_only(d), names)
     if page_url:
         link = f'<p><a href="{escape(page_url)}">Open all jobs</a></p>'
         html = html.replace("</body>", link + "</body>")
@@ -229,7 +233,9 @@ def queue(outbox: dict, alert: dict) -> None:
     outbox["pending"] = (outbox["pending"] + [alert])[-MAX_PENDING:]
 
 
-def flush(outbox: dict, to: str, sender: str, send_fn=None) -> int:
+def flush(
+    outbox: dict, to: str, sender: str, send_fn: Callable[[EmailMessage], None] | None = None
+) -> int:
     """Send pending alerts oldest first; stop at the first failure. Returns how many were sent."""
     send_fn = send_fn or send
     sent = 0

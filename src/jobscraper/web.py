@@ -35,6 +35,7 @@ VIEWS = {
 }
 SOURCES = {"all": "All sources", "companies": "Company sites", "boards": "Job boards"}
 SORTS = {"newest": "Newest", "relevant": "Most relevant", "nearest": "Nearest"}
+EMPLOYER_ACTIONS = {"approve": "approved", "block": "blocked", "clear": None}
 
 
 @dataclass
@@ -44,7 +45,7 @@ class Row:
     marks: dict
     source: str  # display label, e.g. "AFL (via Move Upstate SC)"
     is_board: bool
-    employer: str  # "trusted", "ok", "approved", "unverified", or "blocked"
+    employer_status: str  # "trusted", "ok", "approved", "unverified", or "blocked"
     employer_key: str
     # Where else this job is listed, as (board name, url).
     also_on: list[tuple[str, str]] = field(default_factory=list)
@@ -117,7 +118,7 @@ class App:
                     marks=marks.get(p.key, {}),
                     source=p.source_label(company.name if company else p.company_id),
                     is_board=employers.is_board(p, self.companies),
-                    employer=employers.status(p, self.companies, decisions),
+                    employer_status=employers.status(p, self.companies, decisions),
                     employer_key=employers.employer_key(p),
                     also_on=duplicates.get(p.key, []),
                     miles=distance.miles_from(self.home, p.location),
@@ -127,8 +128,7 @@ class App:
 
     def decide_employer(self, key: str, action: str) -> None:
         """Approve, block, or clear (back to Claude's call) one job-board employer."""
-        decision = {"approve": "approved", "block": "blocked", "clear": None}.get(action, "")
-        if decision == "":
+        if action not in EMPLOYER_ACTIONS:
             raise ValueError(f"Unknown action {action!r}")
         rows = [r for r in self.rows() if r.is_board and r.employer_key == key]
         if not rows:
@@ -136,7 +136,7 @@ class App:
         with self.lock:
             decisions = employers.load(self.employers_path)
             name = rows[0].posting.employer or rows[0].posting.title
-            employers.decide(decisions, key, name, decision)
+            employers.decide(decisions, key, name, EMPLOYER_ACTIONS[action])
             employers.save(self.employers_path, decisions)
 
     def mark(self, key: str, field: str, value) -> dict:
@@ -161,12 +161,12 @@ class App:
         if view == "applied":
             return r.marks.get("applied", False)
         if view == "blocked":
-            return active and r.group is not None and r.employer == "blocked"
+            return active and r.group is not None and r.employer_status == "blocked"
         if hidden or not active or r.group is None:
             return False
         if view == "unverified":
-            return r.employer == "unverified"
-        if r.employer in ("unverified", "blocked"):
+            return r.employer_status == "unverified"
+        if r.employer_status in ("unverified", "blocked"):
             return False
         return view == "relevant" or r.group == view
 
@@ -273,13 +273,18 @@ def _link(view: str, source: str, q: str, sort: str) -> str:
     return "/?" + urlencode(params)
 
 
+def _last_update(app: App) -> datetime | None:
+    times = [h.last_success for h in app.state().health.values() if h.last_success]
+    return max(times, default=None)
+
+
 def _banners(app: App, now: datetime) -> str:
     """Warnings for things that need my attention: stale data, failing sites, failing email."""
     messages = []
     health = app.state().health
-    times = [h.last_success for h in health.values() if h.last_success]
-    if times and now - max(times) > timedelta(hours=STALE_HOURS):
-        hours = int((now - max(times)).total_seconds() // 3600)
+    last = _last_update(app)
+    if last and now - last > timedelta(hours=STALE_HOURS):
+        hours = int((now - last).total_seconds() // 3600)
         messages.append(f"No update in {hours} hours. Is the PC on and the GitHub runner running?")
     failing = [
         f"{app.companies[cid].name if cid in app.companies else cid}"
@@ -308,13 +313,12 @@ def next_run(now: datetime) -> datetime:
 
 
 def _updated(app: App) -> str:
-    times = [h.last_success for h in app.state().health.values() if h.last_success]
     upcoming = next_run(datetime.now(UTC)).astimezone()
     next_text = f"next ~{upcoming:%-I:%M %p}"
-    if not times:
+    last = _last_update(app)
+    if last is None:
         return f"never updated · {next_text}"
-    latest = max(times).astimezone()
-    return f"updated {latest:%b %-d, %-I:%M %p} · {next_text}"
+    return f"updated {last.astimezone():%b %-d, %-I:%M %p} · {next_text}"
 
 
 def _card(r: Row, today: date) -> str:
@@ -400,7 +404,7 @@ def _verify_links(r: Row) -> str:
 
 def _employer_panel(r: Row) -> str:
     """Approve/block controls for job-board employers that need my call."""
-    if r.employer not in ("unverified", "blocked"):
+    if r.employer_status not in ("unverified", "blocked"):
         return ""
     note = escape((r.posting.classification or {}).get("employer_note", ""))
     key = escape(r.employer_key)
@@ -412,7 +416,7 @@ def _employer_panel(r: Row) -> str:
             f'data-action="{action}">{label}</button>'
         )
 
-    if r.employer == "unverified":
+    if r.employer_status == "unverified":
         text = f"Unverified employer{f': {note}' if note else ''}"
         buttons = button("approve", "Approve", primary=True) + button("block", "Block")
     else:

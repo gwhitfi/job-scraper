@@ -128,11 +128,25 @@ def classify_llm(
     usage: Usage | None = None,
 ) -> dict[str, dict]:
     """Classify in batches; postings that can't be classified are left out for a retry."""
+
+    def attempt(batch: list[Posting]) -> dict[str, dict]:
+        """If a batch's content breaks the reply, split it to isolate the bad posting."""
+        try:
+            return classify_batch(batch, profile, companies, client, model, usage)
+        except Exception as e:
+            if _unavailable(e):
+                raise
+            if len(batch) == 1:
+                log.warning("Couldn't classify %s: %s: %s", batch[0].key, type(e).__name__, e)
+                return {}
+            log.warning("Batch of %d failed (%s: %s); splitting", len(batch), type(e).__name__, e)
+            mid = len(batch) // 2
+            return attempt(batch[:mid]) | attempt(batch[mid:])
+
     results: dict[str, dict] = {}
     for start in range(0, len(postings), BATCH_SIZE):
-        batch = postings[start : start + BATCH_SIZE]
         try:
-            results |= _classify_splitting(batch, profile, companies, client, model, usage)
+            results |= attempt(postings[start : start + BATCH_SIZE])
         except Exception as e:
             if not _unavailable(e):
                 raise
@@ -149,30 +163,6 @@ def _unavailable(e: Exception) -> bool:
     return isinstance(e, anthropic.APIStatusError) and (
         e.status_code >= 500 or e.status_code in (401, 403, 429)
     )
-
-
-def _classify_splitting(
-    batch: list[Posting],
-    profile: Profile,
-    companies: dict[str, Company],
-    client: anthropic.Anthropic,
-    model: str,
-    usage: Usage | None,
-) -> dict[str, dict]:
-    """Classify a batch; if its content breaks the reply, split it to isolate the bad posting."""
-    try:
-        return classify_batch(batch, profile, companies, client, model, usage)
-    except Exception as e:
-        if _unavailable(e):
-            raise
-        if len(batch) == 1:
-            log.warning("Couldn't classify %s: %s: %s", batch[0].key, type(e).__name__, e)
-            return {}
-        log.warning("Batch of %d failed (%s: %s); splitting", len(batch), type(e).__name__, e)
-        mid = len(batch) // 2
-        return _classify_splitting(
-            batch[:mid], profile, companies, client, model, usage
-        ) | _classify_splitting(batch[mid:], profile, companies, client, model, usage)
 
 
 def classify_batch(

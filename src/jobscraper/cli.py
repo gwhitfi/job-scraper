@@ -101,17 +101,21 @@ def cmd_run(args: argparse.Namespace) -> None:
     usage.record(
         args.state_dir / "usage.json", result.usage, cfg.classifier_model, datetime.now(UTC)
     )
-    if args.no_email:
-        return
-    outbox_path = args.state_dir / "email.json"
+    if not args.no_email:
+        _send_alerts(cfg, result.digest, names, args.state_dir / "email.json")
+
+
+def _send_alerts(cfg: config.Config, digest: notify.Digest, names: dict, outbox_path: Path) -> None:
+    """Queue this run's alert (if any) and send everything waiting in the outbox."""
     outbox = notify.load_outbox(outbox_path)
-    if notify.needs_alert(result.digest):
-        notify.queue(outbox, notify.compose(result.digest, names, cfg.web.url))
+    if notify.needs_alert(digest):
+        notify.queue(outbox, notify.compose(digest, names, cfg.web.url))
     if outbox["pending"]:
         sender = os.environ.get("SMTP_USER", cfg.notifications.email)
         sent = notify.flush(outbox, cfg.notifications.email, sender)
+        waiting = len(outbox["pending"])
         print(f"\n{sent} email(s) sent to {cfg.notifications.email}", end="")
-        print(f"; {len(outbox['pending'])} waiting to retry" if outbox["pending"] else "")
+        print(f"; {waiting} waiting to retry" if waiting else "")
     notify.save_outbox(outbox_path, outbox)
 
 
