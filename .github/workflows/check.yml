@@ -55,3 +55,13 @@ jobs:
           git diff --cached --quiet && exit 0
           git commit -q -m "Update state $(date -u +%Y-%m-%dT%H:%MZ)"
           git push origin HEAD:state
+
+      # The web page (jobscraper serve) reads this copy; mv keeps each swap atomic.
+      - name: Publish state for the web page
+        run: |
+          dest="$HOME/.local/share/jobscraper/state"
+          mkdir -p "$dest"
+          for f in postings.json health.json; do
+            cp "state/$f" "$dest/$f.tmp"
+            mv "$dest/$f.tmp" "$dest/$f"
+          done

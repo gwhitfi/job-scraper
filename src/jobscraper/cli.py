@@ -1,4 +1,5 @@
 import argparse
+import contextlib
 import logging
 import os
 from datetime import UTC, datetime, timedelta
@@ -7,7 +8,10 @@ from pathlib import Path
 import anthropic
 from dotenv import find_dotenv, load_dotenv
 
-from jobscraper import classify, config, http, locations, notify, runner, state
+from jobscraper import classify, config, http, locations, notify, runner, state, web
+
+# Where the scheduled run publishes state for the web page, and where my marks live.
+DATA_DIR = Path.home() / ".local" / "share" / "jobscraper"
 
 
 def cmd_test(args: argparse.Namespace) -> None:
@@ -56,10 +60,11 @@ def cmd_run(args: argparse.Namespace) -> None:
         print("\n(dry run: state not saved, no email sent)")
         return
     state.save(st, args.state_dir)
-    if result.digest.is_empty() or args.no_email:
+    if not notify.needs_alert(result.digest) or args.no_email:
         return
     sender = os.environ.get("SMTP_USER", cfg.notifications.email)
-    notify.send(notify.build_message(result.digest, names, cfg.notifications.email, sender))
+    msg = notify.build_message(result.digest, names, cfg.notifications.email, sender, cfg.web.url)
+    notify.send(msg)
     print(f"\nEmail sent to {cfg.notifications.email}")
 
 
@@ -106,6 +111,17 @@ def cmd_list(args: argparse.Namespace) -> None:
     print(f"\n{len(postings)} postings")
 
 
+def cmd_serve(args: argparse.Namespace) -> None:
+    cfg = config.load(args.config)
+    host = args.host or cfg.web.host
+    port = args.port or cfg.web.port
+    app = web.App(cfg, args.data_dir / "state", args.data_dir / "marks.json")
+    server = web.make_server(app, host, port)
+    logging.info("Serving on http://%s:%d (data in %s)", host, port, args.data_dir)
+    with contextlib.suppress(KeyboardInterrupt):
+        server.serve_forever()
+
+
 def main() -> None:
     # Real environment variables (e.g. Actions secrets) take precedence over .env.
     load_dotenv(find_dotenv(usecwd=True))
@@ -129,6 +145,12 @@ def main() -> None:
     lst.add_argument("--company")
     lst.add_argument("--all", action="store_true", help="Include postings that aren't relevant")
     lst.set_defaults(func=cmd_list)
+
+    serve = sub.add_parser("serve", help="Serve the web page")
+    serve.add_argument("--data-dir", type=Path, default=DATA_DIR)
+    serve.add_argument("--host", help="Default from [web] in config")
+    serve.add_argument("--port", type=int, help="Default from [web] in config")
+    serve.set_defaults(func=cmd_serve)
 
     test = sub.add_parser("test", help="Run one adapter and print raw postings")
     test.add_argument("company_id")

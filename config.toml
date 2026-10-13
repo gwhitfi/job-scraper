@@ -72,6 +72,11 @@ upstate_sc = [
 [classifier]
 model = "claude-sonnet-5-5"
 
+[web]
+url = ""                               # Tailscale URL for the page; linked from alert emails
+host = "127.0.0.1"                     # tailscale serve proxies to this
+port = 8787
+
 [notifications]
 email = "justinwclemson@gmail.com"
 mode = "on_change"

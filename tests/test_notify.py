@@ -105,3 +105,26 @@ def test_board_postings_grouped_by_employer():
     text = notify.render_text(d, names)
     assert text.count("AFL (via Move Upstate SC)") == 1
     assert "\nMove Upstate SC\n" in text  # card without an employer
+
+
+def test_alert_only_for_new_exact_or_health():
+    assert not notify.needs_alert(notify.Digest(new_near=[posting()], removed=[posting()]))
+    assert notify.needs_alert(notify.Digest(new_exact=[posting()]))
+    failing = HealthEvent("acme", "failing", Health(consecutive_failures=3))
+    assert notify.needs_alert(notify.Digest(health=[failing]))
+
+
+def test_alert_email_has_exact_matches_and_link_only():
+    d = notify.Digest(
+        new_exact=[posting(title="Web Developer")],
+        new_near=[posting(key="acme:2", title="Data Analyst")],
+        still_available=[posting(key="acme:3", title="Old Dev")],
+    )
+    msg = notify.build_message(d, NAMES, "to@x.com", "from@x.com", "https://jobs.example.ts.net")
+    assert msg["Subject"] == "Job Scraper: 1 new exact match"
+    text = msg.get_body(("plain",)).get_content()
+    assert "Web Developer" in text
+    assert "Data Analyst" not in text and "Old Dev" not in text
+    assert "All jobs: https://jobs.example.ts.net" in text
+    html = msg.get_body(("html",)).get_content()
+    assert 'href="https://jobs.example.ts.net"' in html

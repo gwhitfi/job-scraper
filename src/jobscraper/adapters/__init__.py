@@ -15,6 +15,10 @@ ADAPTERS: dict[str, Adapter] = {
 }
 
 
+# Adapters for job boards that list many employers, as opposed to one company's site.
+BOARD_ADAPTERS = {"moveupstatesc"}
+
+
 def get(name: str) -> Adapter:
     try:
         return ADAPTERS[name]

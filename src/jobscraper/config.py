@@ -26,12 +26,20 @@ class Notifications:
 
 
 @dataclass(frozen=True)
+class Web:
+    url: str = ""  # where I open the page; linked from alert emails
+    host: str = "127.0.0.1"
+    port: int = 8787
+
+
+@dataclass(frozen=True)
 class Config:
     profile: Profile
     notifications: Notifications
     companies: list[Company] = field(default_factory=list)
     classifier_model: str = "claude-sonnet-5-5"
     regions: dict[str, tuple[str, ...]] = field(default_factory=dict)
+    web: Web = field(default_factory=Web)
 
     def company(self, company_id: str) -> Company:
         for c in self.companies:
@@ -59,5 +67,6 @@ def load(path: Path = DEFAULT_PATH) -> Config:
         notifications=Notifications(**raw["notifications"]),
         companies=companies,
         regions=regions,
+        web=Web(**raw.get("web", {})),
         **({"classifier_model": raw["classifier"]["model"]} if "classifier" in raw else {}),
     )

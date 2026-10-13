@@ -142,14 +142,48 @@ def render_html(d: Digest, names: dict[str, str]) -> str:
     return "<html><body>" + "".join(out) + "</body></html>"
 
 
-def build_message(d: Digest, names: dict[str, str], to: str, sender: str) -> EmailMessage:
+def needs_alert(d: Digest) -> bool:
+    """The email only covers new exact matches and site health; the web page has the rest."""
+    return bool(d.new_exact or d.health)
+
+
+def alert_subject(d: Digest) -> str:
+    parts = []
+    if d.new_exact:
+        n = len(d.new_exact)
+        parts.append(f"{n} new exact match{'es' if n != 1 else ''}")
+    if any(e.kind == "failing" for e in d.health):
+        parts.append("site check failing")
+    elif d.health:
+        parts.append("site check recovered")
+    return "Job Scraper: " + ", ".join(parts)
+
+
+def render_alert_text(d: Digest, names: dict[str, str], page_url: str) -> str:
+    alert = Digest(new_exact=d.new_exact, health=d.health)
+    text = render_text(alert, names)
+    return f"{text}\nAll jobs: {page_url}\n" if page_url else text
+
+
+def render_alert_html(d: Digest, names: dict[str, str], page_url: str) -> str:
+    alert = Digest(new_exact=d.new_exact, health=d.health)
+    html = render_html(alert, names)
+    if page_url:
+        link = f'<p><a href="{escape(page_url)}">Open all jobs</a></p>'
+        html = html.replace("</body>", link + "</body>")
+    return html
+
+
+def build_message(
+    d: Digest, names: dict[str, str], to: str, sender: str, page_url: str = ""
+) -> EmailMessage:
     msg = EmailMessage()
-    msg["Subject"] = subject(d)
+    msg["Subject"] = alert_subject(d)
     msg["From"] = sender
     msg["To"] = to
     msg["Date"] = datetime.now().astimezone().strftime("%a, %d %b %Y %H:%M:%S %z")
-    msg.set_content(render_text(d, names))
-    msg.add_alternative(render_html(d, names), subtype="html")
+    msg.set_content(render_alert_text(d, names, page_url))
+    msg.add_alternative(render_alert_html(d, names, page_url), subtype="html")
     return msg
 
 

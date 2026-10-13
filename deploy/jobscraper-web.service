@@ -1,0 +1,14 @@
+# systemd user service for the web page. Install with:
+#   cp deploy/jobscraper-web.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload && systemctl --user enable --now jobscraper-web
+[Unit]
+Description=Job Scraper web page
+After=network-online.target
+
+[Service]
+WorkingDirectory=%h/dev/projects/job-scraper
+ExecStart=%h/.local/bin/uv run --frozen jobscraper serve
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
