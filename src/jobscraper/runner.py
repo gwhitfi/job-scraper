@@ -1,17 +1,17 @@
 import logging
 import time
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import UTC, datetime
 
 import anthropic
 import httpx
 
-from jobscraper import adapters, classify, locations, tracker
+from jobscraper import adapters, classify, employers, locations, tracker
 from jobscraper.config import Config
 from jobscraper.models import Company, RawPosting
 from jobscraper.notify import Digest
-from jobscraper.state import State
+from jobscraper.state import Posting, State
 
 log = logging.getLogger(__name__)
 
@@ -46,14 +46,23 @@ def fetch_company(
     client: httpx.Client,
     regions: dict[str, tuple[str, ...]],
     sleep: Callable[[float], None] = time.sleep,
+    extended: tuple[str, ...] = (),
 ) -> tuple[list[RawPosting], list[RawPosting]]:
-    """Fetch and location-filter one company; return (kept, dropped)."""
+    """Fetch and location-filter one company; return (kept, dropped).
+
+    Kept postings outside the company's `locations` but inside `extended` get area="extended".
+    """
     postings = fetch_with_retry(company, client, sleep)
     if not company.locations:
         return postings, []
-    f = locations.build_filter(company.locations, regions, company.remote)
-    kept, dropped = locations.apply(postings, f)
-    for p in locations.possible_gaps(dropped, f):
+    primary = locations.build_filter(company.locations, regions, company.remote)
+    kept, outside = locations.apply(postings, primary)
+    dropped = outside
+    if extended:
+        wider = locations.build_filter(extended, regions, remote=False)
+        in_wider, dropped = locations.apply(outside, wider)
+        kept += [replace(p, area="extended") for p in in_wider]
+    for p in locations.possible_gaps(outside, primary):
         log.info(
             "%s: dropped %r in %s (add the city to a region if it's local)",
             company.id,
@@ -63,7 +72,7 @@ def fetch_company(
     return kept, dropped
 
 
-def _has_llm_result(p) -> bool:
+def _has_llm_result(p: Posting) -> bool:
     return p.classification is not None and p.classification.get("model") != classify.KEYWORD_MODEL
 
 
@@ -79,7 +88,7 @@ def _classify_pending(state: State, cfg: Config, llm: anthropic.Anthropic | None
         pending = [p for p in pending if not _has_llm_result(p)]
     if not pending:
         return []
-    was_relevant = {p.key: classify.is_relevant(p.classification, cfg.profile) for p in pending}
+    was_relevant = {p.key: classify.posting_group(p, cfg.profile) is not None for p in pending}
     companies = {c.id: c for c in cfg.companies}
 
     results: dict[str, dict] = {}
@@ -88,8 +97,8 @@ def _classify_pending(state: State, cfg: Config, llm: anthropic.Anthropic | None
             results = classify.classify_llm(
                 pending, cfg.profile, companies, llm, cfg.classifier_model
             )
-        except (anthropic.APIError, RuntimeError) as e:
-            log.warning("LLM classification failed, using keywords: %s", e)
+        except Exception:
+            log.exception("LLM classification failed, using keywords")
     missing = [p for p in pending if p.key not in results and not _has_llm_result(p)]
     results |= classify.classify_keywords(missing, cfg.profile)
 
@@ -103,7 +112,7 @@ def _classify_pending(state: State, cfg: Config, llm: anthropic.Anthropic | None
         if (
             retried
             and not was_relevant[p.key]
-            and classify.is_relevant(p.classification, cfg.profile)
+            and classify.posting_group(p, cfg.profile) is not None
         ):
             upgraded.append(p.key)
     return upgraded
@@ -116,8 +125,12 @@ def run(
     llm: anthropic.Anthropic | None,
     now: datetime | None = None,
     sleep: Callable[[float], None] = time.sleep,
+    decisions: dict[str, dict] | None = None,
 ) -> RunResult:
+    """`decisions` are my approve/block calls on job-board employers (employers.json)."""
     now = now or datetime.now(UTC)
+    decisions = decisions or {}
+    companies = {c.id: c for c in cfg.companies}
     result = RunResult(digest=Digest())
     new_keys: list[str] = []
     removed_keys: list[str] = []
@@ -126,10 +139,12 @@ def run(
         if i:
             sleep(1.0)
         try:
-            postings, _ = fetch_company(company, http, cfg.regions, sleep)
+            postings, _ = fetch_company(company, http, cfg.regions, sleep, cfg.extended_locations)
             if tracker.is_suspicious_empty(state, company.id, postings):
                 raise ValueError("returned 0 postings after a non-empty run")
-        except (httpx.HTTPError, ValueError) as e:
+        except Exception as e:  # one site breaking (e.g. a redesign) mustn't stop the others
+            if not isinstance(e, httpx.HTTPError | ValueError):
+                log.exception("%s: unexpected error", company.id)
             error = f"{type(e).__name__}: {e}"
             result.failed[company.id] = error
             log.warning("%s failed: %s", company.id, error)
@@ -146,7 +161,10 @@ def run(
     upgraded = _classify_pending(state, cfg, llm)
 
     def group(key: str) -> str | None:
-        return classify.match_group(state.postings[key].classification, cfg.profile)
+        p = state.postings[key]
+        if employers.status(p, companies, decisions) == "blocked":
+            return None
+        return classify.posting_group(p, cfg.profile)
 
     digest = result.digest
     for key in dict.fromkeys(new_keys + upgraded):
@@ -154,6 +172,9 @@ def run(
         if g is not None:
             getattr(digest, f"new_{g}").append(state.postings[key])
     digest.removed = [state.postings[k] for k in removed_keys if group(k) is not None]
+    digest.unverified = {
+        p.key for p in digest.new_exact if employers.status(p, companies, decisions) == "unverified"
+    }
     announced = {p.key for p in digest.new_exact}
     digest.still_available = [
         p

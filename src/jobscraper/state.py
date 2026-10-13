@@ -1,8 +1,8 @@
-import json
-import os
 from dataclasses import asdict, dataclass, field, fields
 from datetime import date, datetime
 from pathlib import Path
+
+from jobscraper import jsonfile
 
 DEFAULT_DIR = Path("state")
 
@@ -26,6 +26,11 @@ class Posting:
     category: str = ""
     summary: str = ""
     employer: str = ""
+    area: str = "primary"
+
+    def source_label(self, company_name: str) -> str:
+        """e.g. "AFL (via Move Upstate SC)" for job boards, else just the company name."""
+        return f"{self.employer} (via {company_name})" if self.employer else company_name
 
 
 @dataclass
@@ -36,6 +41,8 @@ class Health:
     last_count: int | None = None
     failing_since: datetime | None = None
     alerted: bool = False
+    # Consecutive empty results after a non-empty run; accepted as real at EMPTY_RUNS_TO_ACCEPT.
+    empty_streak: int = 0
 
 
 @dataclass
@@ -67,25 +74,9 @@ def _encode(value):
     raise TypeError(f"Can't serialize {type(value).__name__}")
 
 
-def _read(path: Path) -> dict:
-    if not path.exists():
-        return {}
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def _write(path: Path, data: dict) -> None:
-    # Write then rename so a crash mid-write can't leave a truncated file.
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(
-        json.dumps(data, indent=2, sort_keys=True, default=_encode) + "\n", encoding="utf-8"
-    )
-    os.replace(tmp, path)
-
-
 def load(state_dir: Path = DEFAULT_DIR) -> State:
-    postings = _read(state_dir / "postings.json")
-    health = _read(state_dir / "health.json")
+    postings = jsonfile.read(state_dir / "postings.json")
+    health = jsonfile.read(state_dir / "health.json")
     return State(
         postings={k: _decode(Posting, v) for k, v in postings.items()},
         health={k: _decode(Health, v) for k, v in health.items()},
@@ -93,5 +84,7 @@ def load(state_dir: Path = DEFAULT_DIR) -> State:
 
 
 def save(state: State, state_dir: Path = DEFAULT_DIR) -> None:
-    _write(state_dir / "postings.json", {k: asdict(v) for k, v in state.postings.items()})
-    _write(state_dir / "health.json", {k: asdict(v) for k, v in state.health.items()})
+    postings = {k: asdict(v) for k, v in state.postings.items()}
+    health = {k: asdict(v) for k, v in state.health.items()}
+    jsonfile.write(state_dir / "postings.json", postings, default=_encode)
+    jsonfile.write(state_dir / "health.json", health, default=_encode)

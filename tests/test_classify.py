@@ -2,6 +2,7 @@ from datetime import UTC, date, datetime
 from types import SimpleNamespace
 
 import pytest
+from conftest import llm_result
 
 from jobscraper import classify
 from jobscraper.config import Profile
@@ -50,7 +51,7 @@ class FakeMessages:
 
     def parse(self, **kwargs):
         self.calls.append(kwargs)
-        parsed = classify.Results(results=[classify.Result(**r) for r in self.results])
+        parsed = classify.Results(results=[llm_result(**r) for r in self.results])
         return SimpleNamespace(stop_reason=self.stop_reason, parsed_output=parsed)
 
 
@@ -62,9 +63,27 @@ def test_llm_batches_postings_and_keeps_only_known_ids():
     postings = [posting("a:1", "Software Developer I"), posting("a:2", "Forklift Operator")]
     client = fake_client(
         [
-            {"id": "a:1", "relevance": "core", "level": "entry", "reason": "dev role"},
-            {"id": "a:2", "relevance": "none", "level": "unknown", "reason": "warehouse"},
-            {"id": "zz:9", "relevance": "core", "level": "mid", "reason": "hallucinated"},
+            {
+                "id": "a:1",
+                "relevance": "core",
+                "level": "entry",
+                "reason": "dev role",
+                "score": 10,
+            },
+            {
+                "id": "a:2",
+                "relevance": "none",
+                "level": "unknown",
+                "reason": "warehouse",
+                "score": 1,
+            },
+            {
+                "id": "zz:9",
+                "relevance": "core",
+                "level": "mid",
+                "reason": "hallucinated",
+                "score": 9,
+            },
         ]
     )
     out = classify.classify_llm(postings, PROFILE, ACME, client)
@@ -72,6 +91,7 @@ def test_llm_batches_postings_and_keeps_only_known_ids():
     assert set(out) == {"a:1", "a:2"}
     assert out["a:1"]["relevance"] == "core"
     assert out["a:1"]["model"] == classify.DEFAULT_MODEL
+    assert out["a:1"]["score"] == 10
     (call,) = client.messages.calls
     prompt = call["messages"][0]["content"]
     assert "id=a:1 | Software Developer I | Acme" in prompt
@@ -112,7 +132,7 @@ def test_llm_splits_into_batches_and_skips_failed_ones(monkeypatch):
         ]
         if "a:2" in ids:
             raise RuntimeError("down")
-        results = [classify.Result(id=i, relevance="core", level="mid", reason="r") for i in ids]
+        results = [llm_result(i, relevance="core", level="mid", score=9) for i in ids]
         return SimpleNamespace(
             stop_reason="end_turn", parsed_output=classify.Results(results=results)
         )
@@ -184,4 +204,3 @@ def test_match_group(mode, relevance, level, expected):
     profile = Profile(target_role="dev", mode=mode, levels=("intern", "entry", "mid"))
     c = {"relevance": relevance, "level": level}
     assert classify.match_group(c, profile) == expected
-    assert classify.is_relevant(c, profile) is (expected is not None)

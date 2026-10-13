@@ -8,7 +8,7 @@ from pathlib import Path
 import anthropic
 from dotenv import find_dotenv, load_dotenv
 
-from jobscraper import classify, config, http, locations, notify, runner, state, web
+from jobscraper import classify, config, employers, http, locations, notify, runner, state, web
 
 # Where the scheduled run publishes state for the web page, and where my marks live.
 DATA_DIR = Path.home() / ".local" / "share" / "jobscraper"
@@ -18,16 +18,26 @@ def cmd_test(args: argparse.Namespace) -> None:
     cfg = config.load(args.config)
     company = cfg.company(args.company_id)
     with http.client() as c:
-        postings, dropped = runner.fetch_company(company, c, cfg.regions)
-    for p in postings:
-        print(f"{p.source_id}\t{p.title}\t{p.location}\t{p.posted_date or '-'}\t{p.url}")
-    print(f"\n{len(postings)} postings from {company.name}")
-    if dropped:
+        postings, dropped = runner.fetch_company(
+            company, c, cfg.regions, extended=cfg.extended_locations
+        )
+    # "check" marks jobs outside `locations` but in one of its states, which usually means
+    # a local town is missing from a region list.
+    gaps: set[int] = set()
+    if company.locations:
         f = locations.build_filter(company.locations, cfg.regions, company.remote)
-        gaps = {id(p) for p in locations.possible_gaps(dropped, f)}
-        print(f"{len(dropped)} dropped by location filter {list(company.locations)}")
+        outside = [p for p in postings if p.area == "extended"] + dropped
+        gaps = {id(p) for p in locations.possible_gaps(outside, f)}
+    for p in postings:
+        tag = ""
+        if p.area == "extended":
+            tag = " [extended, check]" if id(p) in gaps else " [extended]"
+        print(f"{p.source_id}\t{p.title}\t{p.location}{tag}\t{p.posted_date or '-'}\t{p.url}")
+    extended = sum(p.area == "extended" for p in postings)
+    print(f"\n{len(postings)} postings from {company.name} ({extended} in the extended area)")
+    if dropped:
+        print(f"{len(dropped)} dropped by location filter")
         for p in dropped:
-            # "check" marks in-state jobs, which usually mean a town is missing from a region.
             print(f"  {'check:' if id(p) in gaps else '      '} {p.title} ({p.location})")
 
 
@@ -44,8 +54,9 @@ def _llm_client(enabled: bool) -> anthropic.Anthropic | None:
 def cmd_run(args: argparse.Namespace) -> None:
     cfg = config.load(args.config)
     st = state.load(args.state_dir)
+    decisions = employers.load(args.data_dir / "employers.json")
     with http.client() as c:
-        result = runner.run(cfg, st, c, _llm_client(not args.no_llm))
+        result = runner.run(cfg, st, c, _llm_client(not args.no_llm), decisions=decisions)
 
     names = {c.id: c.name for c in cfg.companies}
     for company_id, count in result.fetched.items():
@@ -60,12 +71,18 @@ def cmd_run(args: argparse.Namespace) -> None:
         print("\n(dry run: state not saved, no email sent)")
         return
     state.save(st, args.state_dir)
-    if not notify.needs_alert(result.digest) or args.no_email:
+    if args.no_email:
         return
-    sender = os.environ.get("SMTP_USER", cfg.notifications.email)
-    msg = notify.build_message(result.digest, names, cfg.notifications.email, sender, cfg.web.url)
-    notify.send(msg)
-    print(f"\nEmail sent to {cfg.notifications.email}")
+    outbox_path = args.state_dir / "email.json"
+    outbox = notify.load_outbox(outbox_path)
+    if notify.needs_alert(result.digest):
+        notify.queue(outbox, notify.compose(result.digest, names, cfg.web.url))
+    if outbox["pending"]:
+        sender = os.environ.get("SMTP_USER", cfg.notifications.email)
+        sent = notify.flush(outbox, cfg.notifications.email, sender)
+        print(f"\n{sent} email(s) sent to {cfg.notifications.email}", end="")
+        print(f"; {len(outbox['pending'])} waiting to retry" if outbox["pending"] else "")
+    notify.save_outbox(outbox_path, outbox)
 
 
 def cmd_status(args: argparse.Namespace) -> None:
@@ -75,7 +92,7 @@ def cmd_status(args: argparse.Namespace) -> None:
     print(f"{'Company':<14}{'Active':>8}{'Relevant':>10}{'New 3d':>8}{'New 7d':>8}  Health")
     for c in cfg.companies:
         active = [p for p in st.postings.values() if p.company_id == c.id and p.status == "active"]
-        relevant = [p for p in active if classify.is_relevant(p.classification, cfg.profile)]
+        relevant = [p for p in active if classify.posting_group(p, cfg.profile) is not None]
         new3 = sum(p.first_seen >= now - timedelta(days=3) for p in relevant)
         new7 = sum(p.first_seen >= now - timedelta(days=7) for p in relevant)
         h = st.health.get(c.id)
@@ -99,7 +116,7 @@ def cmd_list(args: argparse.Namespace) -> None:
             for p in st.postings.values()
             if p.status == "active"
             and (args.company is None or p.company_id == args.company)
-            and (args.all or classify.is_relevant(p.classification, cfg.profile))
+            and (args.all or classify.posting_group(p, cfg.profile) is not None)
         ),
         key=lambda p: (p.company_id, p.title),
     )
@@ -115,7 +132,12 @@ def cmd_serve(args: argparse.Namespace) -> None:
     cfg = config.load(args.config)
     host = args.host or cfg.web.host
     port = args.port or cfg.web.port
-    app = web.App(cfg, args.data_dir / "state", args.data_dir / "marks.json")
+    app = web.App(
+        cfg,
+        args.data_dir / "state",
+        args.data_dir / "marks.json",
+        args.data_dir / "employers.json",
+    )
     server = web.make_server(app, host, port)
     logging.info("Serving on http://%s:%d (data in %s)", host, port, args.data_dir)
     with contextlib.suppress(KeyboardInterrupt):
@@ -136,6 +158,7 @@ def main() -> None:
     run.add_argument("--dry-run", action="store_true", help="Don't save state or send email")
     run.add_argument("--no-email", action="store_true", help="Save state but don't send email")
     run.add_argument("--no-llm", action="store_true", help="Classify with keywords only")
+    run.add_argument("--data-dir", type=Path, default=DATA_DIR, help="Where employers.json lives")
     run.set_defaults(func=cmd_run)
 
     status = sub.add_parser("status", help="Per-company counts and health")

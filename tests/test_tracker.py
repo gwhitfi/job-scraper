@@ -126,3 +126,22 @@ def test_recovery_before_alert_is_silent():
     s = State()
     tracker.record_failure(s, "co", "timeout", T0)
     assert tracker.record_success(s, "co", 3, T0) is None
+
+
+def test_persistent_empty_is_eventually_accepted():
+    s = State()
+    tracker.record_success(s, "co", 4, T0)
+    verdicts = [
+        tracker.is_suspicious_empty(s, "co", []) for _ in range(tracker.EMPTY_RUNS_TO_ACCEPT)
+    ]
+    assert verdicts == [True] * (tracker.EMPTY_RUNS_TO_ACCEPT - 1) + [False]
+
+
+def test_jobs_returning_resets_empty_streak():
+    s = State()
+    tracker.record_success(s, "co", 4, T0)
+    for _ in range(3):
+        tracker.is_suspicious_empty(s, "co", [])
+    assert not tracker.is_suspicious_empty(s, "co", [raw("1")])
+    assert s.health["co"].empty_streak == 0
+    assert tracker.is_suspicious_empty(s, "co", [])  # counting starts over

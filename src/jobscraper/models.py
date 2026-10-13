@@ -14,6 +14,7 @@ class RawPosting:
     category: str = ""  # department/sector as the site labels it
     summary: str = ""  # short description, when the listing has one
     employer: str = ""  # set by job boards that list many employers
+    area: str = "primary"  # "extended": outside the main area; only exact matches are shown
 
 
 @dataclass(frozen=True)

@@ -1,4 +1,5 @@
 from datetime import UTC, date, datetime
+from pathlib import Path
 
 from jobscraper import notify
 from jobscraper.state import Health, Posting
@@ -26,8 +27,8 @@ def posting(**kw) -> Posting:
 
 def test_empty_digest():
     d = notify.Digest()
-    assert d.is_empty()
-    assert notify.Digest(still_available=[posting()]).is_empty()  # reminder alone isn't news
+    assert not notify.needs_alert(d)
+    assert not notify.needs_alert(notify.Digest(still_available=[posting()]))
     assert notify.subject(d) == "Job Scraper: nothing to report"
 
 
@@ -128,3 +129,50 @@ def test_alert_email_has_exact_matches_and_link_only():
     assert "All jobs: https://jobs.example.ts.net" in text
     html = msg.get_body(("html",)).get_content()
     assert 'href="https://jobs.example.ts.net"' in html
+
+
+def test_alert_labels_unverified_employers():
+    p = posting(key="mus:1", company_id="mus", title="Remote Dev", employer="Shady LLC")
+    d = notify.Digest(new_exact=[p], unverified={"mus:1"})
+    msg = notify.build_message(d, {"mus": "Board"}, "to@x.com", "from@x.com")
+    assert "Remote Dev" in msg.get_body(("plain",)).get_content()
+    assert "(unverified employer)" in msg.get_body(("plain",)).get_content()
+    assert "unverified employer" in msg.get_body(("html",)).get_content()
+
+
+def test_outbox_sends_and_clears(tmp_path):
+    path = tmp_path / "email.json"
+    outbox = notify.load_outbox(path)
+    notify.queue(outbox, notify.compose(notify.Digest(new_exact=[posting()]), NAMES))
+    sent = []
+    assert notify.flush(outbox, "to@x.com", "from@x.com", sent.append) == 1
+    assert outbox["pending"] == [] and outbox["last_error"] is None
+    assert sent[0]["Subject"] == "Job Scraper: 1 new exact match"
+    notify.save_outbox(path, outbox)
+    assert notify.load_outbox(path)["last_sent_at"]
+
+
+def test_outbox_keeps_alert_when_sending_fails(tmp_path):
+    outbox = notify.load_outbox(tmp_path / "email.json")
+    notify.queue(outbox, notify.compose(notify.Digest(new_exact=[posting()]), NAMES))
+
+    def fail(msg):
+        raise OSError("535 bad credentials")
+
+    assert notify.flush(outbox, "to@x.com", "from@x.com", fail) == 0
+    assert len(outbox["pending"]) == 1
+    assert "535 bad credentials" in outbox["last_error"]
+
+    # Next run: a new alert queues behind the old one and both go out once mail works.
+    notify.queue(outbox, notify.compose(notify.Digest(new_exact=[posting()]), NAMES))
+    sent = []
+    assert notify.flush(outbox, "to@x.com", "from@x.com", sent.append) == 2
+    assert outbox["last_error"] is None
+
+
+def test_outbox_caps_pending():
+    outbox = notify.load_outbox(Path("/nonexistent/email.json"))
+    for i in range(notify.MAX_PENDING + 5):
+        notify.queue(outbox, {"subject": str(i), "text": "", "html": ""})
+    assert len(outbox["pending"]) == notify.MAX_PENDING
+    assert outbox["pending"][0]["subject"] == "5"

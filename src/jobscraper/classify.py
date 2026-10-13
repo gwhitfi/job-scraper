@@ -9,26 +9,30 @@ from typing import Literal
 import anthropic
 from pydantic import BaseModel
 
-from jobscraper.config import Profile
+from jobscraper.config import DEFAULT_MODEL, Profile
 from jobscraper.models import Company
 from jobscraper.state import Posting
 
 log = logging.getLogger(__name__)
 
-DEFAULT_MODEL = "claude-sonnet-5-5"
 BATCH_SIZE = 50  # keeps each reply well under max_tokens
 KEYWORD_MODEL = "keywords"  # marks fallback results so they get retried with the LLM
 
 Relevance = Literal["core", "adjacent", "maybe", "none"]
 Level = Literal["intern", "entry", "mid", "senior", "lead", "unknown"]
+Score = Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+EmployerCheck = Literal["ok", "verify"]
 
 
 class Result(BaseModel):
     # Fields are generated in this order, so the reason comes before the verdict.
     id: str
     reason: str
+    score: Score
     relevance: Relevance
     level: Level
+    employer_note: str
+    employer_check: EmployerCheck
 
 
 class Results(BaseModel):
@@ -50,6 +54,12 @@ Adjacent roles must be in the same field as the target role. Sharing a word with
 with an acceptable role is not enough: for a software target, a manufacturing "QA \
 Engineer" or "Quality Technician" is "none".
 
+score: how similar the work is to the target role, 1-10, ignoring seniority:
+- 10: the target role or an equivalent title
+- 7-9: mostly the same work (e.g. for software developer: QA automation, DevOps, full-stack)
+- 4-6: related technical work (e.g. data engineer, IT support, BI developer)
+- 1-3: loosely related or unrelated (e.g. product analyst, tech sales, warehouse)
+
 level:
 - "intern": internships, co-ops, summer programs
 - "entry": junior, associate, "I", new grad, trainee
@@ -58,8 +68,16 @@ level:
 - "lead": lead, principal, manager, director, head of
 - "unknown": the title gives no usable signal
 
+employer_check (only matters for postings marked "via" a job board; otherwise answer "ok"):
+- "verify": you don't recognize the employer as a real organization, no employer is named, or \
+the posting shows scam signs (reshipping, "payment processing", upfront fees, chat-app \
+interviews, pay far above the norm for easy remote work, vague duties)
+- "ok": a recognizable real employer with an ordinary posting
+employer_note: at most 12 words on why, or "" when "ok".
+
 For each posting, first write a reason (at most 20 words) saying what kind of work the job \
-is, then give relevance and level. Return one result per posting, using its id."""
+is, then give score, relevance, level, employer_note, and employer_check. Return one result \
+per posting, using its id."""
 
 
 SUMMARY_CHARS = 300
@@ -69,9 +87,9 @@ def company_label(p: Posting, companies: dict[str, Company]) -> str:
     c = companies.get(p.company_id)
     if c is None:
         return p.employer or p.company_id
-    if p.employer:
-        return f"{p.employer} (via {c.name})"
-    return f"{c.name} ({c.about})" if c.about else c.name
+    if p.employer or not c.about:
+        return p.source_label(c.name)
+    return f"{c.name} ({c.about})"
 
 
 def _prompt(postings: list[Posting], profile: Profile, companies: dict[str, Company]) -> str:
@@ -115,6 +133,8 @@ def classify_llm(
             results |= classify_batch(batch, profile, companies, client, model)
         except (anthropic.APIError, RuntimeError) as e:
             log.warning("Classifier batch of %d failed: %s", len(batch), e)
+        except Exception:  # e.g. a reply that fails validation
+            log.exception("Classifier batch of %d failed", len(batch))
     return results
 
 
@@ -144,6 +164,9 @@ def classify_batch(
             "relevance": r.relevance,
             "level": r.level,
             "reason": r.reason,
+            "score": r.score,
+            "employer_check": r.employer_check,
+            "employer_note": r.employer_note,
             "model": model,
             "rules": rules,
             "classified_at": now,
@@ -197,7 +220,7 @@ MATCH_GROUPS = {"core": "exact", "adjacent": "near", "maybe": "maybe"}
 
 
 def match_group(classification: dict | None, profile: Profile) -> str | None:
-    """ "exact", "near", or "maybe" for postings worth showing; None for the rest."""
+    """The group ("exact", "near", "maybe") for postings worth showing; None for the rest."""
     if not classification:
         return None
     group = MATCH_GROUPS.get(classification["relevance"])
@@ -210,5 +233,9 @@ def match_group(classification: dict | None, profile: Profile) -> str | None:
     return group
 
 
-def is_relevant(classification: dict | None, profile: Profile) -> bool:
-    return match_group(classification, profile) is not None
+def posting_group(p: Posting, profile: Profile) -> str | None:
+    """Like match_group, but postings from the extended area only count as exact matches."""
+    group = match_group(p.classification, profile)
+    if p.area == "extended" and group != "exact":
+        return None
+    return group

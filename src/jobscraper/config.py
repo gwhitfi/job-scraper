@@ -6,6 +6,7 @@ from jobscraper import locations
 from jobscraper.models import Company
 
 DEFAULT_PATH = Path("config.toml")
+DEFAULT_MODEL = "claude-sonnet-5-5"
 
 
 @dataclass(frozen=True)
@@ -22,7 +23,6 @@ class Profile:
 @dataclass(frozen=True)
 class Notifications:
     email: str
-    mode: str = "on_change"
 
 
 @dataclass(frozen=True)
@@ -37,9 +37,11 @@ class Config:
     profile: Profile
     notifications: Notifications
     companies: list[Company] = field(default_factory=list)
-    classifier_model: str = "claude-sonnet-5-5"
+    classifier_model: str = DEFAULT_MODEL
     regions: dict[str, tuple[str, ...]] = field(default_factory=dict)
     web: Web = field(default_factory=Web)
+    # Wider area for companies that use `locations`; only exact matches from it are shown.
+    extended_locations: tuple[str, ...] = ()
 
     def company(self, company_id: str) -> Company:
         for c in self.companies:
@@ -60,13 +62,16 @@ def load(path: Path = DEFAULT_PATH) -> Config:
     if len(ids) != len(set(ids)):
         raise ValueError("Duplicate company ids in config")
     regions = {name: tuple(cities) for name, cities in raw.get("regions", {}).items()}
+    extended = tuple(raw.get("locations", {}).get("extended", ()))
+    locations.build_filter(extended, regions)  # fail at load on typos
     for c in companies:
-        locations.build_filter(c.locations, regions)  # fail at load on typos
+        locations.build_filter(c.locations, regions)
     return Config(
         profile=Profile(**_tuples(raw["profile"])),
         notifications=Notifications(**raw["notifications"]),
         companies=companies,
         regions=regions,
         web=Web(**raw.get("web", {})),
+        extended_locations=extended,
         **({"classifier_model": raw["classifier"]["model"]} if "classifier" in raw else {}),
     )

@@ -28,7 +28,7 @@ def posted_date(text: str, today: date) -> date | None:
 
 
 def _split_meta(meta: str) -> tuple[str, str]:
-    """ "AFL - Duncan, SC 29334" -> ("AFL", "Duncan, SC 29334"); some cards have no employer."""
+    """Split "AFL - Duncan, SC 29334" into ("AFL", "Duncan, SC 29334"); employer may be ""."""
     if " - " in meta:
         employer, location = meta.rsplit(" - ", 1)
         return employer.strip(), location.strip()

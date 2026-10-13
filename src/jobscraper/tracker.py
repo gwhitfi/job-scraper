@@ -6,6 +6,7 @@ from jobscraper.state import Health, Posting, State
 
 MISSES_BEFORE_REMOVAL = 2
 FAILURES_BEFORE_ALERT = 3
+EMPTY_RUNS_TO_ACCEPT = 6  # ~12 hours of empty results means the company really has no jobs
 
 
 @dataclass
@@ -48,6 +49,7 @@ def apply_results(
                 category=raw.category,
                 summary=raw.summary,
                 employer=raw.employer,
+                area=raw.area,
                 first_seen=now,
                 last_seen=now,
             )
@@ -66,6 +68,7 @@ def apply_results(
         existing.category = raw.category
         existing.summary = raw.summary
         existing.employer = raw.employer
+        existing.area = raw.area
         existing.last_seen = now
         existing.missed_runs = 0
 
@@ -82,9 +85,17 @@ def apply_results(
 
 
 def is_suspicious_empty(state: State, company_id: str, results: list[RawPosting]) -> bool:
-    """Zero results after a non-empty run is more likely a broken page than every job closing."""
-    health = state.health.get(company_id)
-    return not results and bool(health and health.last_count)
+    """Zero results after a non-empty run is more likely a broken page than every job closing.
+
+    Counts consecutive empty runs and stops treating them as suspicious once they've
+    persisted long enough to be believable.
+    """
+    health = state.health.setdefault(company_id, Health())
+    if results or not health.last_count:
+        health.empty_streak = 0
+        return False
+    health.empty_streak += 1
+    return health.empty_streak < EMPTY_RUNS_TO_ACCEPT
 
 
 def record_success(state: State, company_id: str, count: int, now: datetime) -> HealthEvent | None:
@@ -96,6 +107,7 @@ def record_success(state: State, company_id: str, count: int, now: datetime) -> 
     health.last_count = count
     health.failing_since = None
     health.alerted = False
+    health.empty_streak = 0
     return HealthEvent(company_id, "recovered", health) if recovered else None
 
 

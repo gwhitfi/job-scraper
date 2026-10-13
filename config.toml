@@ -69,17 +69,56 @@ upstate_sc = [
   "Spartanburg County, SC", "Union County, SC",
 ]
 
+# Southwest NC: the mountains west of Hickory plus the Charlotte metro.
+sw_nc = [
+  "Andrews, NC", "Arden, NC", "Asheville, NC", "Belmont, NC", "Black Mountain, NC",
+  "Brevard, NC", "Bryson City, NC", "Canton, NC", "Charlotte, NC", "Columbus, NC",
+  "Concord, NC", "Cornelius, NC", "Cullowhee, NC", "Davidson, NC", "Fletcher, NC",
+  "Flat Rock, NC", "Forest City, NC", "Franklin, NC", "Gastonia, NC", "Harrisburg, NC",
+  "Hayesville, NC", "Hendersonville, NC", "Hickory, NC", "Highlands, NC", "Huntersville, NC",
+  "Indian Trail, NC", "Kannapolis, NC", "Kings Mountain, NC", "Lincolnton, NC", "Marion, NC",
+  "Mars Hill, NC", "Marshall, NC", "Matthews, NC", "Mills River, NC", "Mint Hill, NC",
+  "Monroe, NC", "Mooresville, NC", "Morganton, NC", "Mount Holly, NC", "Murphy, NC",
+  "Pineville, NC", "Robbinsville, NC", "Rutherfordton, NC", "Saluda, NC", "Shelby, NC",
+  "Spindale, NC", "Sylva, NC", "Tryon, NC", "Waxhaw, NC", "Waynesville, NC",
+  "Weaverville, NC",
+  "Buncombe County, NC", "Burke County, NC", "Cabarrus County, NC", "Catawba County, NC",
+  "Cherokee County, NC", "Clay County, NC", "Cleveland County, NC", "Gaston County, NC",
+  "Graham County, NC", "Haywood County, NC", "Henderson County, NC", "Iredell County, NC",
+  "Jackson County, NC", "Lincoln County, NC", "Macon County, NC", "Madison County, NC",
+  "McDowell County, NC", "Mecklenburg County, NC", "Polk County, NC", "Rutherford County, NC",
+  "Swain County, NC", "Transylvania County, NC", "Union County, NC",
+]
+# Northeast GA: border towns up through Athens and Gainesville.
+ne_ga = [
+  "Athens, GA", "Baldwin, GA", "Blairsville, GA", "Bogart, GA", "Braselton, GA",
+  "Canon, GA", "Clarkesville, GA", "Clayton, GA", "Cleveland, GA", "Commerce, GA",
+  "Cornelia, GA", "Dahlonega, GA", "Dawsonville, GA", "Demorest, GA", "Eastanollee, GA",
+  "Elberton, GA", "Flowery Branch, GA", "Gainesville, GA", "Hartwell, GA", "Helen, GA",
+  "Jefferson, GA", "Lavonia, GA", "Oakwood, GA", "Royston, GA", "Toccoa, GA",
+  "Watkinsville, GA",
+  "Banks County, GA", "Clarke County, GA", "Dawson County, GA", "Elbert County, GA",
+  "Franklin County, GA", "Habersham County, GA", "Hall County, GA", "Hart County, GA",
+  "Jackson County, GA", "Lumpkin County, GA", "Madison County, GA", "Oconee County, GA",
+  "Rabun County, GA", "Stephens County, GA", "Towns County, GA", "Union County, GA",
+  "White County, GA",
+]
+
+# Companies with `locations` also keep jobs from these areas, but only exact matches are shown.
+# "SC" means the rest of SC (Upstate jobs already match `locations`).
+[locations]
+extended = ["SC", "sw_nc", "ne_ga"]
+
 [classifier]
 model = "claude-sonnet-5-5"
 
 [web]
-url = ""                               # Tailscale URL for the page; linked from alert emails
+url = "https://justinpc.taila1f69b.ts.net"  # Tailscale URL for the page; linked from alert emails
 host = "127.0.0.1"                     # tailscale serve proxies to this
 port = 8787
 
 [notifications]
 email = "justinwclemson@gmail.com"
-mode = "on_change"
 
 [[companies]]
 id = "arthrex"

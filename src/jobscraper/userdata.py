@@ -1,7 +1,7 @@
-import json
-import os
 from datetime import UTC, datetime
 from pathlib import Path
+
+from jobscraper import jsonfile
 
 # My own marks on postings, kept apart from the runner's state so runs never overwrite them.
 FIELDS = {"starred": bool, "hidden": bool, "applied": bool, "note": str}
@@ -9,16 +9,11 @@ MAX_NOTE = 5000
 
 
 def load(path: Path) -> dict[str, dict]:
-    if not path.exists():
-        return {}
-    return json.loads(path.read_text(encoding="utf-8"))
+    return jsonfile.read(path)
 
 
 def save(path: Path, marks: dict[str, dict]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(marks, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    os.replace(tmp, path)
+    jsonfile.write(path, marks)
 
 
 def update(marks: dict[str, dict], key: str, field: str, value) -> dict:

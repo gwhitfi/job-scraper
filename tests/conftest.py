@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pytest
 
+from jobscraper import classify
 from jobscraper.models import Company
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -18,3 +19,16 @@ def make_company():
         return Company(id="x", name="X", adapter=adapter, url=url, added=date(2026, 1, 1), **kw)
 
     return make
+
+
+def llm_result(id: str, **kw) -> classify.Result:
+    """A classifier result with neutral defaults for fields a test doesn't care about."""
+    fields = dict(
+        reason="r",
+        score=5,
+        relevance="none",
+        level="unknown",
+        employer_note="",
+        employer_check="ok",
+    )
+    return classify.Result(id=id, **(fields | kw))

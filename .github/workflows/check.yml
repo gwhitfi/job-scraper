@@ -61,7 +61,8 @@ jobs:
         run: |
           dest="$HOME/.local/share/jobscraper/state"
           mkdir -p "$dest"
-          for f in postings.json health.json; do
+          for f in postings.json health.json email.json; do
+            [ -f "state/$f" ] || continue
             cp "state/$f" "$dest/$f.tmp"
             mv "$dest/$f.tmp" "$dest/$f"
           done
