@@ -14,19 +14,24 @@ concurrency:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    # Runs on my PC: Move Upstate SC blocks GitHub's cloud IPs. While the PC is off, GitHub
+    # keeps one queued run and starts it when the runner comes back (up to 24 hours).
+    runs-on: [self-hosted, linux]
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
 
       # state/ is a worktree of the `state` branch so bot commits stay out of main.
+      # The self-hosted workspace persists between runs, so clear the last run's worktree first.
       - name: Check out state branch
         run: |
+          rm -rf state
+          git worktree prune
           if git ls-remote --exit-code --heads origin state > /dev/null; then
             git fetch --depth=1 origin state
-            git worktree add state FETCH_HEAD
+            git worktree add --detach state FETCH_HEAD
           else
-            git worktree add --orphan -b state state
+            git worktree add --orphan -B state state
           fi
 
       - uses: astral-sh/setup-uv@v6
