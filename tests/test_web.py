@@ -113,6 +113,14 @@ def test_marks_move_postings_between_views(app):
     assert keys(app, "applied") == ["acme:6"]
 
 
+def test_starred_jobs_leave_match_tabs(app):
+    app.mark("acme:2", "starred", True)
+    assert "acme:2" not in keys(app, "near") + keys(app, "relevant")
+    assert keys(app, "starred") == ["acme:2"]
+    app.mark("acme:2", "starred", False)
+    assert keys(app, "near") == ["acme:2"]
+
+
 def test_mark_unknown_posting(app):
     with pytest.raises(KeyError):
         app.mark("acme:999", "starred", True)
@@ -124,7 +132,7 @@ def test_page_renders(app):
     assert "AFL (via Move Upstate SC)" in html
     assert "Data Analyst" not in html
     assert "Site checks failing: Move Upstate SC" in html
-    assert 'class="badge new"' in html  # acme:1 first seen today
+    assert 'class="badge new latest"' in html  # acme:1 found by the latest check
     assert "posted Oct 1" in html
 
 
@@ -199,6 +207,7 @@ def test_score_badge_and_relevance_sort(app):
     html = app.index({"view": "exact", "sort": "relevant"})
     assert html.index("BI Developer") < html.index("Web Developer")
     assert "10/10</span>" in html and "6/10</span>" in html
+    assert 'class="card tier-high"' in html and 'class="card tier-mid"' in html
     newest = app.index({"view": "exact", "sort": "newest"})
     assert newest.index("Web Developer") < newest.index("BI Developer")
 
@@ -367,3 +376,61 @@ added = 2026-01-01
 
     rewrite("not = [valid toml", 10)  # a broken edit keeps the last good config
     assert '<p class="company">Acme Renamed</p>' in app.index({})
+
+
+@pytest.mark.parametrize(
+    ("score", "tier"),
+    [
+        (None, ""),
+        (0, ""),
+        (1, "low"),
+        (3, "low"),
+        (4, "mid"),
+        (6, "mid"),
+        (7, "high"),
+        (10, "high"),
+    ],
+)
+def test_score_tier(score, tier):
+    assert web.score_tier(score) == tier
+
+
+def test_http_counts_follow_marks_and_filters(server, app):
+    before = httpx.get(server + "/api/counts").json()
+    assert before == app.counts({})
+    app.mark("acme:1", "hidden", True)
+    after = httpx.get(server + "/api/counts").json()
+    assert after["hidden"] == before["hidden"] + 1
+    assert after["relevant"] == before["relevant"] - 1
+    assert httpx.get(server + "/api/counts?q=nomatch").json()["hidden"] == 0
+
+
+def test_applied_jobs_move_to_applied_tab(app):
+    assert "acme:1" in keys(app, "exact")
+    app.mark("acme:1", "applied", True)
+    app.mark("acme:1", "starred", True)
+    assert "acme:1" not in keys(app, "exact") + keys(app, "relevant")
+    assert "acme:1" in keys(app, "applied") and "acme:1" in keys(app, "starred")
+
+
+def test_new_badge_tiers(monkeypatch):
+    monkeypatch.setattr(web, "BADGES_SINCE", NOW - timedelta(days=30))
+    latest = NOW - timedelta(hours=1)
+
+    def tier(hours_ago, **kw):
+        p = posting("acme:1", "Dev", first_seen=NOW - timedelta(hours=hours_ago), **kw)
+        return web.new_tier(p, latest, NOW)
+
+    assert tier(1) == "latest"
+    assert tier(3) == "recent"
+    assert tier(47) == "recent"
+    assert tier(50) == "older"
+    assert tier(95) == "older"
+    assert tier(97) == ""
+    assert tier(1, status="removed") == ""
+
+
+def test_no_new_badge_for_postings_from_before_badges(monkeypatch):
+    monkeypatch.setattr(web, "BADGES_SINCE", NOW - timedelta(hours=2))
+    old = posting("acme:1", "Dev", first_seen=NOW - timedelta(hours=3))
+    assert web.new_tier(old, old.first_seen, NOW) == ""

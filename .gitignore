@@ -7,3 +7,4 @@ __pycache__/
 .env
 state/
 companies-to-add.md
+learn/

@@ -2,7 +2,7 @@ import json
 import logging
 import threading
 from dataclasses import dataclass, field
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from html import escape
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -16,7 +16,12 @@ from jobscraper.state import Posting, State
 
 log = logging.getLogger(__name__)
 
-NEW_DAYS = 2  # postings first seen this recently get a "new" badge
+# "New" badge colors by when a posting was first seen: red if the latest check found it,
+# then orange up to NEW_HOURS, yellow up to RECENT_HOURS, and no badge after that.
+NEW_HOURS = 48
+RECENT_HOURS = 96
+# Last check before the colored badges started; postings already loaded by then get none.
+BADGES_SINCE = datetime(2026, 10, 13, 17, 37, 26, 111779, tzinfo=UTC)
 STALE_HOURS = 6  # no successful check for this long means the runner (or my PC) is probably off
 # Matches the cron in .github/workflows/check.yml ("17 */2 * * *", UTC); a test keeps them in sync.
 SCHEDULE_MINUTE = 17
@@ -24,7 +29,7 @@ SCHEDULE_EVERY_HOURS = 2
 
 VIEWS = {
     "exact": "Exact",
-    "near": "Near",
+    "near": "Close",
     "maybe": "Probably not",
     "relevant": "All matches",
     "unverified": "Unverified",
@@ -154,19 +159,23 @@ class App:
     def in_view(r: Row, view: str) -> bool:
         active = r.posting.status == "active"
         hidden = r.marks.get("hidden", False)
+        applied = r.marks.get("applied", False)
+        starred = r.marks.get("starred", False)
         if view == "hidden":
             return hidden
         if view == "starred":
-            return r.marks.get("starred", False) and not hidden
+            return starred and not hidden
         if view == "applied":
-            return r.marks.get("applied", False)
-        if view == "blocked":
-            return active and r.group is not None and r.employer_status == "blocked"
-        if hidden or not active or r.group is None:
+            return applied
+        # Applied jobs move to the Applied tab, like hidden ones move to Hidden.
+        if hidden or applied or not active or r.group is None:
             return False
+        if view == "blocked":
+            return r.employer_status == "blocked"
         if view == "unverified":
             return r.employer_status == "unverified"
-        if r.employer_status in ("unverified", "blocked"):
+        # Starred jobs move to the Starred tab instead of the match tabs.
+        if starred or r.employer_status in ("unverified", "blocked"):
             return False
         return view == "relevant" or r.group == view
 
@@ -196,14 +205,23 @@ class App:
 
     # --- pages ---
 
+    def _scoped(self, query: dict[str, str]) -> list[Row]:
+        """Rows matching the page's source filter and search, before picking a tab."""
+        source = query.get("source") if query.get("source") in SOURCES else "all"
+        q = query.get("q", "").strip()
+        return [r for r in self.rows() if self.in_source(r, source) and self.matches_query(r, q)]
+
+    def counts(self, query: dict[str, str]) -> dict[str, int]:
+        scoped = self._scoped(query)
+        return {v: sum(self.in_view(r, v) for r in scoped) for v in VIEWS}
+
     def index(self, query: dict[str, str]) -> str:
         self.reload_config()
         view = query.get("view") if query.get("view") in VIEWS else "exact"
         source = query.get("source") if query.get("source") in SOURCES else "all"
         sort = query.get("sort") if query.get("sort") in SORTS else "newest"
         q = query.get("q", "").strip()
-        rows = self.rows()
-        scoped = [r for r in rows if self.in_source(r, source) and self.matches_query(r, q)]
+        scoped = self._scoped(query)
         counts = {v: sum(self.in_view(r, v) for r in scoped) for v in VIEWS}
         shown = sorted(
             (r for r in scoped if self.in_view(r, view)), key=lambda r: self.sort_key(r, sort)
@@ -213,7 +231,7 @@ class App:
 
 # --- rendering ---
 
-GROUP_LABELS = {"exact": "Exact", "near": "Near", "maybe": "Probably not"}
+GROUP_LABELS = {"exact": "Exact", "near": "Close", "maybe": "Probably not"}
 
 # Google Fonts offered in the settings panel, by fallback category.
 FONTS = {
@@ -321,21 +339,49 @@ def _updated(app: App) -> str:
     return f"updated {last.astimezone():%b %-d, %-I:%M %p} · {next_text}"
 
 
-def _card(r: Row, today: date) -> str:
+def score_tier(score: int | None) -> str:
+    """Color band for a 1-10 score: high 7-10, mid 4-6, low 1-3; "" when unscored."""
+    if not score:
+        return ""
+    return "high" if score >= 7 else "mid" if score >= 4 else "low"
+
+
+def new_tier(p: Posting, latest_check: datetime | None, now: datetime) -> str:
+    """Badge color for a newly found posting: "latest", "recent", "older", or "" for none.
+
+    A run stamps first_seen and last_success with the same time, so postings the latest
+    check found have first_seen equal to it.
+    """
+    if p.status != "active" or p.first_seen <= BADGES_SINCE:
+        return ""
+    if latest_check and p.first_seen >= latest_check:
+        return "latest"
+    age = now - p.first_seen
+    if age <= timedelta(hours=NEW_HOURS):
+        return "recent"
+    if age <= timedelta(hours=RECENT_HOURS):
+        return "older"
+    return ""
+
+
+def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
     p = r.posting
     c = p.classification or {}
     badges = []
     if r.group:
         badges.append(f'<span class="badge g-{r.group}">{GROUP_LABELS[r.group]}</span>')
-    if p.first_seen.date() >= today - timedelta(days=NEW_DAYS) and p.status == "active":
-        badges.append('<span class="badge new">New</span>')
+    fresh = new_tier(p, latest_check, now)
+    if fresh:
+        badges.append(f'<span class="badge new {fresh}">New</span>')
     if p.status == "removed":
         badges.append('<span class="badge closed">Closed</span>')
     if p.area == "extended":
         badges.append('<span class="badge outside">Outside Upstate</span>')
     score = c.get("score")
-    if score:
-        badges.append(f'<span class="score" title="Similarity to target role">{score}/10</span>')
+    tier = score_tier(score)
+    score_html = (
+        f'<span class="score" title="Similarity to target role">{score}/10</span>' if score else ""
+    )
     when = f"posted {p.posted_date:%b %-d}" if p.posted_date else f"seen {p.first_seen:%b %-d}"
     level = c.get("level", "unknown")
     far = f"{r.miles:.0f} mi" if r.miles is not None else ""
@@ -356,11 +402,14 @@ def _card(r: Row, today: date) -> str:
         )
 
     return f"""
-<article class="card" data-key="{key}">
-  <div class="badges">{"".join(badges)}</div>
+<article class="card{f" tier-{tier}" if tier else ""}" data-key="{key}">
   <p class="company">{escape(r.source)}</p>
-  <h2><a href="{href}" target="_blank" rel="noopener">{escape(p.title)}</a></h2>
+  <div class="title-row">
+    <h2><a href="{href}" target="_blank" rel="noopener">{escape(p.title)}</a></h2>
+    {score_html}
+  </div>
   <p class="meta">{meta}</p>
+  {f'<div class="badges">{"".join(badges)}</div>' if badges else ""}
   {_also_on(r)}
   {f'<p class="reason">{reason}</p>' if reason else ""}
   {_employer_panel(r)}
@@ -438,9 +487,10 @@ def render_page(
     counts: dict[str, int],
     shown: list[Row],
 ) -> str:
-    today = datetime.now(UTC).date()
+    now = datetime.now(UTC)
+    latest_check = _last_update(app)
     tabs = "".join(
-        f'<a class="tab{" active" if v == view else ""}" '
+        f'<a class="tab{" active" if v == view else ""}" data-view="{v}" '
         f'href="{escape(_link(v, source, q, sort))}">{label} <span>{counts[v]}</span></a>'
         for v, label in VIEWS.items()
     )
@@ -452,7 +502,8 @@ def render_page(
         f'<option value="{k}"{" selected" if k == sort else ""}>{label}</option>'
         for k, label in SORTS.items()
     )
-    cards = "".join(_card(r, today) for r in shown) or '<p class="empty">Nothing here.</p>'
+    cards = "".join(_card(r, now, latest_check) for r in shown)
+    cards = cards or '<p class="empty">Nothing here.</p>'
     return PAGE.format(
         head_script=HEAD_SCRIPT,
         font_head=_font_select("head", "Company &amp; position"),
@@ -480,93 +531,146 @@ PAGE = """<!doctype html>
 {head_script}
 <style>
 :root {{
-  --bg: #f6f7f9; --card: #fff; --text: #1b1f24; --muted: #5d6673; --line: #dde1e6;
-  --accent: #2557d6; --exact: #1a7f37; --near: #9a6700; --maybe: #6e7781; --warn: #b42318;
-  --company: #0b5cad; --title: #9a4a00;
+  color-scheme: light dark;
+  --bg: #f4f5f7; --card: #fff; --text: #16191d; --muted: #5b6470; --line: #e1e4e8;
+  --accent: #2557d6; --accent-text: #fff; --warn: #b42318;
+  --high: #1a7f37; --mid: #9a6700; --low: #c62828; --unscored: #16191d;
+  --exact: var(--high); --near: var(--mid); --maybe: #6e7781;
+  --shadow: 0 1px 2px rgb(16 24 40 / .06);
+  --radius: 10px;
 }}
 @media (prefers-color-scheme: dark) {{
   :root {{
-    --bg: #0f1216; --card: #171b21; --text: #e6e9ed; --muted: #9aa4b2; --line: #2a3038;
-    --accent: #7aa2ff; --exact: #4ac26b; --near: #e3b341; --maybe: #9aa4b2; --warn: #ff7b72;
-    --company: #79c0ff; --title: #ffcf70;
+    --bg: #0e1115; --card: #161a20; --text: #e6e9ed; --muted: #98a2b0; --line: #262c34;
+    --accent: #7aa2ff; --accent-text: #0e1115; --warn: #ff7b72;
+    --high: #4ac26b; --mid: #e3b341; --low: #ff7b72; --unscored: #e6e9ed;
+    --maybe: #98a2b0;
+    --shadow: none;
   }}
 }}
 * {{ box-sizing: border-box; }}
-body {{ margin: 0; background: var(--bg); color: var(--text); font-size: 16px; line-height: 1.45;
-  font-family: var(--font-body, system-ui, -apple-system, "Segoe UI", sans-serif); }}
-button, input, select, textarea {{ font-family: inherit; }}
+body {{ margin: 0; background: var(--bg); color: var(--text); font-size: 16px; line-height: 1.5;
+  font-family: var(--font-body, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif);
+  -webkit-text-size-adjust: 100%; }}
+button, input, select, textarea {{ font: inherit; color: inherit; }}
+a {{ color: var(--accent); }}
+:focus-visible {{ outline: 2px solid var(--accent); outline-offset: 2px; }}
+
+/* Header */
 header {{ position: sticky; top: 0; z-index: 1; background: var(--bg);
   border-bottom: 1px solid var(--line); padding: 12px 16px 0; }}
-.top {{ display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }}
-h1 {{ font-size: 1.15rem; margin: 0; }}
-.updated {{ color: var(--muted); font-size: .85rem; }}
-form.filters {{ display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }}
-form.filters input, form.filters select {{ font: inherit; padding: 6px 8px; min-width: 0;
+.header-inner {{ max-width: 760px; margin: 0 auto; }}
+.top {{ display: flex; justify-content: space-between; align-items: center; gap: 12px; }}
+h1 {{ font-size: 1.1rem; font-weight: 700; letter-spacing: -.01em; margin: 0;
+  white-space: nowrap; }}
+.top-right {{ display: flex; align-items: center; gap: 10px; min-width: 0; }}
+.updated {{ color: var(--muted); font-size: .78rem; text-align: right; line-height: 1.3; }}
+.cog {{ flex: none; width: 40px; height: 40px; font-size: 1.15rem; line-height: 1; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--card); }}
+form.filters {{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0 4px; }}
+form.filters input, form.filters select {{ width: 100%; min-width: 0; height: 42px; padding: 0 12px;
   border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--text); }}
-form.filters input {{ flex: 1 1 100%; }}
-form.filters select {{ flex: 1; }}
-nav.tabs {{ display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }}
-.tab {{ white-space: nowrap; padding: 8px 10px; color: var(--muted); text-decoration: none;
-  border-bottom: 2px solid transparent; font-size: .92rem; }}
-.tab span {{ font-size: .8rem; opacity: .8; }}
+form.filters input {{ grid-column: 1 / -1; }}
+nav.tabs {{ display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px;
+  padding: 0 16px; -webkit-overflow-scrolling: touch; }}
+nav.tabs::-webkit-scrollbar {{ display: none; }}
+/* Fade at the right edge hints that the tab row scrolls. */
+nav.tabs {{ mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }}
+.tab {{ white-space: nowrap; padding: 10px 10px 9px; color: var(--muted); text-decoration: none;
+  border-bottom: 2px solid transparent; font-size: .9rem; font-weight: 500; }}
+.tab span {{ display: inline-block; min-width: 1.5em; margin-left: 2px; padding: 0 5px;
+  border-radius: 999px; background: var(--line); font-size: .74rem; text-align: center; }}
 .tab.active {{ color: var(--text); border-color: var(--accent); font-weight: 600; }}
-main {{ max-width: 760px; margin: 0 auto; padding: 12px 16px 48px; }}
 .banner {{ background: var(--warn); color: #fff; padding: 8px 12px; border-radius: 8px;
-  margin-top: 8px; font-size: .9rem; }}
-.card {{ background: var(--card); border: 1px solid var(--line); border-radius: 12px;
-  padding: 12px 14px; margin-bottom: 10px; }}
-.company, .card h2 {{ font-family: var(--font-head, inherit); font-weight: 700; }}
-.company {{ font-size: 17px; margin: 6px 0 0; color: var(--company); }}
-.card h2 {{ font-size: 15px; margin: 2px 0; }}
-.card h2 a {{ color: var(--title); text-decoration: none; }}
-.card h2 a:hover {{ color: var(--accent); }}
+  margin-top: 10px; font-size: .88rem; }}
+
+/* Cards */
+main {{ max-width: 792px; margin: 0 auto; padding: 12px 16px 48px; }}
+.card {{ background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--line);
+  border-radius: var(--radius); padding: 14px 14px 12px; margin-bottom: 10px;
+  box-shadow: var(--shadow); --tier: var(--unscored); }}
+.card.tier-high {{ --tier: var(--high); border-left-color: var(--high); }}
+.card.tier-mid {{ --tier: var(--mid); border-left-color: var(--mid); }}
+.card.tier-low {{ --tier: var(--low); border-left-color: var(--low); }}
+.company, .card h2 {{ font-family: var(--font-head, inherit); }}
+.company {{ margin: 0; font-size: .82rem; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .04em; }}
+.title-row {{ display: flex; align-items: flex-start; gap: 10px; margin: 2px 0 4px; }}
+.card h2 {{ flex: 1; min-width: 0; margin: 0; font-size: 1.08rem; font-weight: 700;
+  line-height: 1.3; overflow-wrap: anywhere; }}
+.card h2 a {{ color: var(--tier); text-decoration: none; }}
+.card h2 a:hover {{ text-decoration: underline; text-underline-offset: 3px; }}
+.score {{ flex: none; margin-top: 1px; padding: 2px 8px; border-radius: 999px; font-size: .78rem;
+  font-weight: 700; font-variant-numeric: tabular-nums; color: var(--tier);
+  background: color-mix(in srgb, var(--tier) 14%, transparent); }}
 .meta {{ color: var(--muted); font-size: .88rem; margin: 0; }}
-.posted {{ text-decoration: underline; text-underline-offset: 2px; }}
-.reason {{ font-size: .88rem; margin: 6px 0 0; }}
-.badges {{ display: flex; gap: 6px; flex-wrap: wrap; }}
-.badge {{ font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .03em;
-  padding: 1px 6px; border-radius: 999px; border: 1px solid currentColor; }}
+.posted {{ white-space: nowrap; }}
+.badges {{ display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }}
+.badge {{ font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+  padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; }}
 .g-exact {{ color: var(--exact); }} .g-near {{ color: var(--near); }}
-.g-maybe {{ color: var(--maybe); }} .new {{ color: var(--accent); }}
+.g-maybe {{ color: var(--maybe); }}
+.new {{ border-color: transparent; }}
+.new.latest {{ background: #d1242f; color: #fff; }}
+.new.recent {{ background: #f08c00; color: #1f1300; }}
+.new.older {{ background: #f5c400; color: #1f1300; }}
 .closed {{ color: var(--warn); }} .outside {{ color: var(--muted); }}
-.score {{ margin-left: auto; font-size: .78rem; font-weight: 700; color: var(--muted); }}
-.actions {{ display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }}
-.toggle {{ font: inherit; font-size: .88rem; padding: 6px 10px; border-radius: 8px; cursor: pointer;
-  border: 1px solid var(--line); background: transparent; color: var(--text); }}
-.toggle.on {{ background: var(--accent); border-color: var(--accent); color: #fff; }}
-.btn {{ font: inherit; font-size: .9rem; padding: 6px 14px; border-radius: 8px; cursor: pointer;
-  border: 1px solid var(--line); background: transparent; color: var(--text); }}
-.btn.primary {{ background: var(--accent); border-color: var(--accent); color: #fff; }}
-details {{ margin-top: 8px; font-size: .9rem; }}
-summary {{ color: var(--muted); cursor: pointer; }}
-textarea {{ width: 100%; margin-top: 6px; font: inherit; padding: 8px; border-radius: 8px;
-  border: 1px solid var(--line); background: var(--bg); color: var(--text); }}
+.reason {{ font-size: .9rem; line-height: 1.5; margin: 10px 0 0; padding-top: 10px;
+  border-top: 1px solid var(--line); }}
+.also-on {{ font-size: .82rem; color: var(--muted); margin: 4px 0 0; }}
+
+/* Controls */
+.actions {{ display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }}
+.toggle, .btn {{ min-height: 38px; padding: 0 12px; border-radius: 8px; cursor: pointer;
+  font-size: .86rem; font-weight: 500; border: 1px solid var(--line); background: transparent;
+  color: var(--text); }}
+.toggle {{ flex: 1; }}
+.toggle.on, .btn.primary {{ background: var(--accent); border-color: var(--accent);
+  color: var(--accent-text); }}
+.toggle:disabled, .btn:disabled {{ opacity: .6; cursor: progress; }}
+details {{ margin-top: 10px; font-size: .9rem; }}
+summary {{ color: var(--muted); cursor: pointer; padding: 4px 0; }}
+textarea {{ width: 100%; margin-top: 6px; padding: 8px 10px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--text); resize: vertical; }}
 .saved {{ color: var(--muted); font-size: .8rem; }}
-.empty {{ color: var(--muted); text-align: center; margin-top: 40px; }}
-.top-right {{ display: flex; align-items: center; gap: 8px; }}
-.cog {{ font-size: 1.2rem; line-height: 1; padding: 4px 6px; border-radius: 8px; cursor: pointer;
-  border: 1px solid var(--line); background: transparent; color: var(--text); }}
-dialog {{ border: 1px solid var(--line); border-radius: 12px; background: var(--card);
-  color: var(--text); width: min(92vw, 380px); padding: 16px; }}
-dialog::backdrop {{ background: rgb(0 0 0 / .45); }}
-dialog h2 {{ margin: 0 0 12px; font-size: 1.05rem; }}
-dialog label {{ display: block; font-size: .9rem; color: var(--muted); margin-bottom: 12px; }}
-dialog select {{ display: block; width: 100%; margin-top: 4px; font-size: 1rem; padding: 6px 8px;
-  border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--text); }}
-.also-on {{ font-size: .82rem; color: var(--muted); margin: 2px 0 0; }}
-.also-on a {{ color: var(--accent); }}
-.employer-panel {{ margin-top: 10px; padding: 8px 10px; border-radius: 8px;
-  border: 1px dashed var(--near); font-size: .88rem; }}
+.card.leaving {{ opacity: 0; transform: translateX(16px); transition: opacity .2s, transform .2s; }}
+.empty {{ color: var(--muted); text-align: center; margin-top: 48px; }}
+.employer-panel {{ margin-top: 12px; padding: 10px 12px; border-radius: 8px;
+  background: color-mix(in srgb, var(--mid) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--mid) 40%, transparent); font-size: .88rem; }}
 .employer-panel p {{ margin: 0 0 4px; }}
-.verify-links a {{ color: var(--accent); }}
-.employer-panel .actions {{ margin-top: 6px; }}
+.employer-panel .actions {{ margin-top: 8px; }}
 footer {{ max-width: 760px; margin: 0 auto; padding: 0 16px 32px; color: var(--muted);
   font-size: .8rem; text-align: center; }}
+
+/* Settings */
+dialog {{ border: 1px solid var(--line); border-radius: 12px; background: var(--card);
+  color: var(--text); width: min(92vw, 380px); padding: 18px; }}
+dialog::backdrop {{ background: rgb(0 0 0 / .45); }}
+dialog h2 {{ margin: 0 0 14px; font-size: 1.05rem; }}
+dialog label {{ display: block; font-size: .88rem; color: var(--muted); margin-bottom: 14px; }}
+dialog select {{ display: block; width: 100%; height: 42px; margin-top: 4px; padding: 0 10px;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--text); }}
 .dialog-actions {{ display: flex; justify-content: space-between; gap: 8px; }}
+
+/* Wider screens */
+@media (min-width: 640px) {{
+  header {{ padding: 16px 24px 0; }}
+  nav.tabs {{ margin: 0; padding: 0; flex-wrap: wrap; overflow: visible; mask-image: none; }}
+  h1 {{ font-size: 1.25rem; }}
+  .updated {{ font-size: .85rem; }}
+  form.filters {{ grid-template-columns: 1fr 170px 170px; }}
+  form.filters input {{ grid-column: auto; }}
+  main {{ max-width: 808px; padding: 16px 24px 56px; }}
+  .card {{ padding: 16px 20px 14px; margin-bottom: 12px; }}
+  .card h2 {{ font-size: 1.15rem; }}
+  .toggle {{ flex: none; }}
+}}
 </style>
 </head>
 <body>
 <header>
+  <div class="header-inner">
   <div class="top">
     <h1>Job Scraper</h1>
     <div class="top-right">
@@ -582,8 +686,9 @@ footer {{ max-width: 760px; margin: 0 auto; padding: 0 16px 32px; color: var(--m
     <select name="sort" onchange="this.form.submit()">{sort_opts}</select>
   </form>
   <nav class="tabs">{tabs}</nav>
+  </div>
 </header>
-<main>{cards}</main>
+<main data-view="{view}">{cards}</main>
 <footer>{footer}</footer>
 <dialog id="settings">
   <h2>Settings</h2>
@@ -615,12 +720,46 @@ document.addEventListener("click", async (e) => {{
     btn.setAttribute("aria-pressed", String(value));
     btn.classList.toggle("on", value);
     btn.textContent = value ? btn.dataset.on : btn.dataset.off;
+    if (!belongs(card)) dropCard(card);
+    refreshCounts();
   }} catch (err) {{
     alert("Couldn't save: " + err.message);
   }} finally {{
     btn.disabled = false;
   }}
 }});
+// Mirrors App.in_view for the marks, so a card leaves the current tab as soon as it no
+// longer fits (hidden, applied, unstarred on Starred, ...).
+function belongs(card) {{
+  const on = (f) => card.querySelector(`.toggle[data-field="${{f}}"]`)
+    .getAttribute("aria-pressed") === "true";
+  const view = card.closest("main").dataset.view;
+  if (view === "hidden") return on("hidden");
+  if (view === "applied") return on("applied");
+  if (view === "starred") return on("starred") && !on("hidden");
+  // Starred jobs leave the match tabs for Starred.
+  const matchTab = ["exact", "near", "maybe", "relevant"].includes(view);
+  return !on("hidden") && !on("applied") && !(matchTab && on("starred"));
+}}
+function dropCard(card) {{
+  const main = card.closest("main");
+  card.classList.add("leaving");
+  setTimeout(() => {{
+    card.remove();
+    if (!main.querySelector(".card")) main.innerHTML = '<p class="empty">Nothing here.</p>';
+  }}, 200);
+}}
+// Counts respect the page's source filter and search, so ask with the same query string.
+async function refreshCounts() {{
+  try {{
+    const res = await fetch("/api/counts" + location.search);
+    if (!res.ok) return;
+    for (const [view, n] of Object.entries(await res.json())) {{
+      const count = document.querySelector(`.tab[data-view="${{view}}"] span`);
+      if (count) count.textContent = n;
+    }}
+  }} catch (err) {{}}  // stale counts fix themselves on the next page load
+}}
 const settings = document.getElementById("settings");
 const fontSelects = settings.querySelectorAll("select[data-slot]");
 function syncFontSelects() {{
@@ -695,11 +834,13 @@ def make_server(app: App, host: str, port: int) -> ThreadingHTTPServer:
 
         def do_GET(self) -> None:
             url = urlparse(self.path)
-            if url.path != "/":
-                self._send(HTTPStatus.NOT_FOUND, "Not found", "text/plain")
-                return
             query = {k: v[0] for k, v in parse_qs(url.query).items()}
-            self._send(HTTPStatus.OK, app.index(query), "text/html")
+            if url.path == "/":
+                self._send(HTTPStatus.OK, app.index(query), "text/html")
+            elif url.path == "/api/counts":
+                self._send(HTTPStatus.OK, json.dumps(app.counts(query)), "application/json")
+            else:
+                self._send(HTTPStatus.NOT_FOUND, "Not found", "text/plain")
 
         def do_POST(self) -> None:
             path = urlparse(self.path).path
