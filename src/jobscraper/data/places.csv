@@ -1,0 +1,2233 @@
+state,name,lat,lon
+GA,Abbeville,31.9926,-83.3065
+GA,Acworth,34.062,-84.6811
+GA,Adairsville,34.3708,-84.9212
+GA,Adel,31.1248,-83.4255
+GA,Adrian,32.53,-82.5915
+GA,Ailey,32.1884,-82.5756
+GA,Alamo,32.1476,-82.7798
+GA,Alapaha,31.3831,-83.2237
+GA,Albany,31.5781,-84.1762
+GA,Aldora,33.0504,-84.1776
+GA,Allenhurst,31.7799,-81.6113
+GA,Allentown,32.5847,-83.2302
+GA,Alma,31.5433,-82.4756
+GA,Alpharetta,34.0709,-84.2726
+GA,Alston,32.0866,-82.4802
+GA,Alto,34.465,-83.5726
+GA,Ambrose,31.5951,-83.0149
+GA,Americus,32.0744,-84.2228
+GA,Andersonville,32.1974,-84.1456
+GA,Antioch,32.6828,-85.0536
+GA,Appling,33.571,-82.3102
+GA,Appling County,31.7397,-82.2901
+GA,Arabi,31.8194,-83.7192
+GA,Aragon,34.0463,-85.0567
+GA,Arcade,34.0735,-83.5281
+GA,Argyle,31.0732,-82.6489
+GA,Arlington,31.4375,-84.7292
+GA,Arnoldsville,33.915,-83.2184
+GA,Ashburn,31.7092,-83.6524
+GA,Athens,33.9496,-83.3701
+GA,Athens-Clarke County,33.9496,-83.3701
+GA,Atkinson County,31.2968,-82.8782
+GA,Atlanta,33.7629,-84.4227
+GA,Attapulgus,30.7495,-84.4839
+GA,Auburn,34.0152,-83.8337
+GA,Augusta,33.3655,-82.0734
+GA,Augusta-Richmond County,33.3655,-82.0734
+GA,Austell,33.8198,-84.6438
+GA,Avalon,34.4971,-83.1982
+GA,Avera,33.1934,-82.5287
+GA,Avondale Estates,33.7687,-84.2647
+GA,Axson,31.2799,-82.7271
+GA,Bacon County,31.5502,-82.4514
+GA,Baconton,31.3804,-84.1592
+GA,Bainbridge,30.9062,-84.5727
+GA,Baker County,31.3196,-84.4549
+GA,Baldwin,34.4978,-83.5426
+GA,Baldwin County,33.0595,-83.2555
+GA,Ball Ground,34.3417,-84.3669
+GA,Banks County,34.3519,-83.4984
+GA,Barnesville,33.0487,-84.1493
+GA,Barrow County,33.992,-83.7123
+GA,Bartow,32.8812,-82.4723
+GA,Bartow County,34.2409,-84.8382
+GA,Barwick,30.8937,-83.7388
+GA,Baxley,31.7648,-82.3493
+GA,Bellville,32.155,-81.9782
+GA,Belvedere Park,33.7489,-84.2598
+GA,Bemiss,30.933,-83.2219
+GA,Ben Hill County,31.7408,-83.1472
+GA,Berkeley Lake,33.9814,-84.1856
+GA,Berlin,31.0681,-83.6233
+GA,Berrien County,31.2887,-83.2279
+GA,Berry College,34.291,-85.1878
+GA,Bethlehem,33.9379,-83.71
+GA,Between,33.8177,-83.8011
+GA,Bibb County,32.809,-83.6941
+GA,Bishop,33.8187,-83.4382
+GA,Blackshear,31.2908,-82.2529
+GA,Blairsville,34.877,-83.952
+GA,Blakely,31.3809,-84.9271
+GA,Bleckley County,32.4354,-83.3317
+GA,Bloomingdale,32.125,-81.3084
+GA,Blue Ridge,34.8665,-84.3219
+GA,Bluffton,31.5198,-84.8691
+GA,Blythe,33.3031,-82.2074
+GA,Bogart,33.9476,-83.5337
+GA,Bolingbroke,32.9385,-83.7996
+GA,Bonanza,33.4589,-84.3378
+GA,Boston,30.7912,-83.7894
+GA,Bostwick,33.7377,-83.5139
+GA,Bowdon,33.5378,-85.254
+GA,Bowersville,34.3747,-83.0839
+GA,Bowman,34.2054,-83.0311
+GA,Box Springs,32.5446,-84.6575
+GA,Boykin,31.1003,-84.684
+GA,Brantley County,31.1973,-81.983
+GA,Braselton,34.1076,-83.8129
+GA,Braswell,33.9835,-84.9584
+GA,Bremen,33.7108,-85.1519
+GA,Brinson,30.9784,-84.7379
+GA,Bristol,31.4517,-82.2148
+GA,Bronwood,31.8305,-84.3643
+GA,Brookhaven,33.8631,-84.3375
+GA,Brooklet,32.3891,-81.67
+GA,Brooks,33.2933,-84.4514
+GA,Brooks County,30.8229,-83.5819
+GA,Broxton,31.6251,-82.8875
+GA,Brunswick,31.1361,-81.4669
+GA,Bryan County,32.018,-81.4385
+GA,Buchanan,33.8005,-85.1798
+GA,Buckhead,31.8618,-81.2603
+GA,Buena Vista,32.3185,-84.5176
+GA,Buford,34.1186,-83.9886
+GA,Bulloch County,32.3945,-81.7414
+GA,Burke County,33.0602,-82.0002
+GA,Butler,32.5572,-84.2373
+GA,Butts County,33.2904,-83.9582
+GA,Byromville,32.2016,-83.9072
+GA,Byron,32.6495,-83.748
+GA,Cadwell,32.3401,-83.0406
+GA,Cairo,30.8792,-84.2055
+GA,Calhoun,34.4998,-84.9331
+GA,Calhoun County,31.5213,-84.6263
+GA,Calvary,30.7183,-84.3571
+GA,Camak,33.4508,-82.6496
+GA,Camden County,30.9134,-81.642
+GA,Camilla,31.2341,-84.2096
+GA,Candler County,32.404,-82.0713
+GA,Candler-McAfee,33.7262,-84.2709
+GA,Canon,34.3417,-83.1118
+GA,Canoochee,32.6854,-82.1736
+GA,Canton,34.2472,-84.4907
+GA,Carl,34.003,-83.814
+GA,Carlton,34.0409,-83.0425
+GA,Carnesville,34.3768,-83.2345
+GA,Carroll County,33.5822,-85.0805
+GA,Carrollton,33.5818,-85.0833
+GA,Cartersville,34.1646,-84.8017
+GA,Cataula,32.665,-84.8652
+GA,Catoosa County,34.9002,-85.1394
+GA,Cave Spring,34.1086,-85.3397
+GA,Cecil,31.0466,-83.3909
+GA,Cedar Springs,31.1873,-85.0324
+GA,Cedartown,34.0217,-85.2475
+GA,Centerville,32.6365,-83.6857
+GA,Centralhatchee,33.3689,-85.1037
+GA,Chamblee,33.8811,-84.3017
+GA,Charlton County,30.7799,-82.1396
+GA,Chatham County,31.9804,-81.0852
+GA,Chatsworth,34.7811,-84.7825
+GA,Chattahoochee County,32.3474,-84.788
+GA,Chattahoochee Hills,33.5811,-84.7459
+GA,Chattanooga Valley,34.9241,-85.3431
+GA,Chattooga County,34.4742,-85.3453
+GA,Chauncey,32.1118,-83.068
+GA,Cherokee County,34.2443,-84.4751
+GA,Cherry Log,34.7851,-84.381
+GA,Chester,32.3944,-83.1557
+GA,Chickamauga,34.8775,-85.2883
+GA,Clarke County,33.9522,-83.3672
+GA,Clarkesville,34.6093,-83.5275
+GA,Clarkston,33.8135,-84.2418
+GA,Claxton,32.1621,-81.9097
+GA,Clay County,31.6198,-84.9926
+GA,Clayton,34.8766,-83.4033
+GA,Clayton County,33.5522,-84.413
+GA,Clermont,34.4801,-83.7704
+GA,Cleveland,34.597,-83.7607
+GA,Climax,30.8757,-84.4312
+GA,Clinch County,30.9177,-82.7026
+GA,Clyattville,30.6815,-83.3109
+GA,Cobb County,33.9399,-84.5741
+GA,Cobbtown,32.2792,-82.1383
+GA,Cochran,32.3881,-83.3504
+GA,Coffee County,31.5492,-82.8449
+GA,Cogdell,31.1663,-82.7216
+GA,Cohutta,34.9553,-84.9672
+GA,Colbert,34.0372,-83.2131
+GA,Coleman,31.6686,-84.893
+GA,College Park,33.6414,-84.4635
+GA,Collins,32.1792,-82.1099
+GA,Colquitt,31.1732,-84.7324
+GA,Colquitt County,31.1897,-83.7698
+GA,Columbia County,33.5521,-82.2496
+GA,Columbus,32.5102,-84.8749
+GA,Comer,34.0625,-83.1273
+GA,Commerce,34.2143,-83.4757
+GA,Concord,33.0921,-84.4388
+GA,Conley,33.6423,-84.3343
+GA,Conyers,33.6575,-83.9838
+GA,Cook County,31.1525,-83.4294
+GA,Coolidge,31.0108,-83.8665
+GA,Cordele,31.9561,-83.7701
+GA,Cornelia,34.5166,-83.5315
+GA,Country Club Estates,31.207,-81.4627
+GA,Covington,33.6054,-83.8466
+GA,Coweta County,33.3529,-84.7621
+GA,Crawford,33.8832,-83.1554
+GA,Crawford County,32.7094,-83.9792
+GA,Crawfordville,33.5546,-82.8967
+GA,Crescent,31.5187,-81.3702
+GA,Crisp County,31.9203,-83.7565
+GA,Crooked Creek,33.2657,-83.2752
+GA,Culloden,32.8649,-84.094
+GA,Cumming,34.2061,-84.1338
+GA,Cusseta,32.3474,-84.788
+GA,Cusseta-Chattahoochee County,32.3474,-84.788
+GA,Cuthbert,31.7707,-84.7936
+GA,Dacula,33.982,-83.9011
+GA,Dade County,34.8524,-85.5062
+GA,Dahlonega,34.5299,-83.9796
+GA,Daisy,32.151,-81.836
+GA,Dallas,33.9156,-84.8416
+GA,Dalton,34.7679,-84.9728
+GA,Damascus,31.2985,-84.7172
+GA,Danielsville,34.1256,-83.2161
+GA,Danville,32.606,-83.2461
+GA,Darien,31.3435,-81.4241
+GA,Dasher,30.7423,-83.2225
+GA,Davisboro,32.9814,-82.6036
+GA,Dawson,31.7719,-84.4435
+GA,Dawson County,34.4426,-84.1733
+GA,Dawsonville,34.4337,-84.1244
+GA,De Soto,31.9548,-84.0636
+GA,DeKalb County,33.7707,-84.2263
+GA,Dearing,33.4152,-82.3865
+GA,Decatur,33.7711,-84.2958
+GA,Decatur County,30.8806,-84.5839
+GA,Deenwood,31.2468,-82.3657
+GA,Deepstep,33.0167,-82.9725
+GA,Demorest,34.5635,-83.5423
+GA,Denton,31.7201,-82.6922
+GA,Dewy Rose,34.1715,-82.9427
+GA,Dexter,32.4332,-83.0591
+GA,Dillard,34.9715,-83.3812
+GA,Dixie,30.7884,-83.6681
+GA,Dixie Union,31.3464,-82.4603
+GA,Dock Junction,31.2014,-81.5157
+GA,Dodge County,32.1644,-83.1679
+GA,Doerun,31.3228,-83.9165
+GA,Donalsonville,31.0397,-84.8784
+GA,Dooling,32.23,-83.9289
+GA,Dooly County,32.152,-83.8072
+GA,Doraville,33.9083,-84.2699
+GA,Dougherty County,31.5326,-84.209
+GA,Douglas,31.5061,-82.8543
+GA,Douglas County,33.7012,-84.7673
+GA,Douglasville,33.7368,-84.7011
+GA,Druid Hills,33.7841,-84.3292
+GA,Du Pont,30.9891,-82.8691
+GA,Dublin,32.5355,-82.9288
+GA,Dudley,32.5335,-83.0836
+GA,Duluth,34.0015,-84.1505
+GA,Dunwoody,33.9414,-84.3127
+GA,Dutch Island,32.0036,-81.0328
+GA,Eagle Grove,34.2856,-83.0007
+GA,Early County,31.3242,-84.9067
+GA,East Dublin,32.5469,-82.867
+GA,East Ellijay,34.6652,-84.4908
+GA,East Griffin,33.2434,-84.2326
+GA,East Newnan,33.3458,-84.7767
+GA,East Point,33.6711,-84.4734
+GA,Eastanollee,34.53,-83.252
+GA,Eastman,32.1976,-83.1707
+GA,Eatonton,33.3258,-83.3889
+GA,Echols County,30.714,-82.8974
+GA,Edge Hill,33.1534,-82.625
+GA,Edison,31.5608,-84.7374
+GA,Effingham County,32.3617,-81.3434
+GA,Elbert County,34.1164,-82.8419
+GA,Elberton,34.1049,-82.8728
+GA,Ellaville,32.2377,-84.3091
+GA,Ellenton,31.1767,-83.5871
+GA,Ellerslie,32.6329,-84.7884
+GA,Ellijay,34.6914,-84.4835
+GA,Emanuel County,32.5912,-82.3002
+GA,Emerson,34.1312,-84.7454
+GA,Empire,32.3371,-83.283
+GA,Enigma,31.4013,-83.3199
+GA,Ephesus,33.4069,-85.2568
+GA,Epworth,34.951,-84.3808
+GA,Eton,34.8282,-84.7678
+GA,Euharlee,34.1436,-84.9328
+GA,Eulonia,31.5334,-81.4361
+GA,Evans,33.5676,-82.1406
+GA,Evans County,32.1531,-81.8902
+GA,Everett,31.3976,-81.637
+GA,Experiment,33.286,-84.2746
+GA,Faceville,30.7537,-84.6372
+GA,Fair Oaks,33.92,-84.5444
+GA,Fairburn,33.5478,-84.5873
+GA,Fairfield Plantation,33.6447,-84.9284
+GA,Fairmount,34.4386,-84.6994
+GA,Fairplay,33.6182,-84.8624
+GA,Fairview,34.9295,-85.294
+GA,Fannin County,34.8665,-84.3173
+GA,Fargo,30.6869,-82.5714
+GA,Fayette County,33.4127,-84.4939
+GA,Fayetteville,33.4491,-84.4728
+GA,Fitzgerald,31.713,-83.2522
+GA,Flemington,31.8494,-81.5612
+GA,Flovilla,33.2524,-83.9029
+GA,Flowery Branch,34.1713,-83.9187
+GA,Floyd County,34.2637,-85.2137
+GA,Folkston,30.8391,-82.0073
+GA,Forest Park,33.6205,-84.3582
+GA,Forsyth,33.0394,-83.9344
+GA,Forsyth County,34.2251,-84.1274
+GA,Fort Gaines,31.6259,-85.0587
+GA,Fort Oglethorpe,34.9318,-85.246
+GA,Fort Stewart,31.8812,-81.6132
+GA,Fort Valley,32.5511,-83.8799
+GA,Franklin,33.2798,-85.0986
+GA,Franklin County,34.3753,-83.2275
+GA,Franklin Springs,34.2834,-83.1461
+GA,Fulton County,33.79,-84.4682
+GA,Funston,31.1959,-83.8811
+GA,Gainesville,34.2901,-83.8291
+GA,Garden City,32.0872,-81.1766
+GA,Gardi,31.5418,-81.7995
+GA,Garfield,32.6492,-82.0973
+GA,Gay,33.0958,-84.5794
+GA,Geneva,32.5782,-84.5531
+GA,Georgetown,31.9827,-81.2303
+GA,Georgetown-Quitman County,31.8629,-85.0048
+GA,Gibson,33.2317,-82.601
+GA,Gillsville,34.3093,-83.6309
+GA,Gilmer County,34.6905,-84.4548
+GA,Girard,33.0339,-81.7155
+GA,Glascock County,33.2275,-82.6069
+GA,Glenn,33.1477,-85.214
+GA,Glennville,31.9388,-81.9324
+GA,Glenwood,32.1803,-82.6708
+GA,Glynn County,31.2127,-81.4964
+GA,Godfrey,33.4459,-83.5006
+GA,Good Hope,33.7901,-83.6174
+GA,Gordon,32.8862,-83.3336
+GA,Gordon County,34.5097,-84.8739
+GA,Gough,33.0841,-82.2313
+GA,Grady County,30.8759,-84.245
+GA,Graham,31.8249,-82.4976
+GA,Grantville,33.2371,-84.8301
+GA,Gray,33.002,-83.5409
+GA,Grayson,33.8908,-83.9581
+GA,Greene County,33.5767,-83.1666
+GA,Greensboro,33.5636,-83.1891
+GA,Greenville,33.0309,-84.7163
+GA,Gresham Park,33.707,-84.312
+GA,Griffin,33.2432,-84.2719
+GA,Grovetown,33.4498,-82.208
+GA,Gumbranch,31.8367,-81.6838
+GA,Gumlog,34.4989,-83.093
+GA,Guyton,32.3323,-81.3904
+GA,Gwinnett County,33.9588,-84.0257
+GA,Habersham County,34.6344,-83.5259
+GA,Hagan,32.1531,-81.9299
+GA,Hahira,30.9922,-83.3773
+GA,Hall County,34.3176,-83.8185
+GA,Hamilton,32.7647,-84.8753
+GA,Hampton,33.3777,-84.299
+GA,Hancock County,33.2692,-83.0005
+GA,Hannahs Mill,32.9373,-84.3409
+GA,Hapeville,33.6609,-84.4094
+GA,Haralson,33.2293,-84.5687
+GA,Haralson County,33.7952,-85.2201
+GA,Hardwick,33.0456,-83.2488
+GA,Harlem,33.4353,-82.3161
+GA,Harris County,32.7315,-84.9124
+GA,Harrison,32.8264,-82.7259
+GA,Hart County,34.3487,-82.9633
+GA,Hartwell,34.3496,-82.928
+GA,Hawkinsville,32.3012,-83.4789
+GA,Hazlehurst,31.8641,-82.5993
+GA,Heard County,33.2913,-85.1379
+GA,Helen,34.7084,-83.7276
+GA,Henderson,32.007,-81.2666
+GA,Henry County,33.4529,-84.154
+GA,Hephzibah,33.2923,-82.0957
+GA,Heron Bay,33.339,-84.1922
+GA,Hiawassee,34.9462,-83.7463
+GA,Hickox,31.1451,-81.9949
+GA,Higgston,32.2161,-82.4648
+GA,Hilltop,33.1082,-84.4371
+GA,Hiltonia,32.8833,-81.6615
+GA,Hinesville,31.8267,-81.6158
+GA,Hiram,33.8908,-84.7505
+GA,Hoboken,31.1805,-82.1309
+GA,Hogansville,33.167,-84.9028
+GA,Holly Springs,34.1672,-84.4845
+GA,Homeland,30.8601,-82.0208
+GA,Homer,34.338,-83.4948
+GA,Homerville,31.0382,-82.7421
+GA,Hortense,31.329,-81.954
+GA,Hoschton,34.0856,-83.7599
+GA,Houston County,32.4581,-83.6623
+GA,Howard,32.6041,-84.3791
+GA,Hull,34.0176,-83.2936
+GA,Ideal,32.3729,-84.189
+GA,Ila,34.1737,-83.2931
+GA,Indian Springs,34.9606,-85.159
+GA,Iron City,31.0136,-84.8133
+GA,Irondale,33.4833,-84.3655
+GA,Irwin County,31.6043,-83.277
+GA,Irwinton,32.8108,-83.1737
+GA,Isle of Hope,31.9859,-81.0525
+GA,Ivey,32.9099,-83.2998
+GA,Jackson,33.2924,-83.9678
+GA,Jackson County,34.1309,-83.5626
+GA,Jacksonville,31.8134,-82.9758
+GA,Jakin,31.0901,-84.9823
+GA,Jasper,34.4662,-84.4359
+GA,Jasper County,33.317,-83.6892
+GA,Jeff Davis County,31.8116,-82.6368
+GA,Jefferson,34.1362,-83.6022
+GA,Jefferson County,33.0582,-82.42
+GA,Jeffersonville,32.6863,-83.3427
+GA,Jekyll Island,31.0637,-81.4187
+GA,Jenkins County,32.7946,-81.9715
+GA,Jenkinsburg,33.3206,-84.0373
+GA,Jersey,33.7169,-83.8043
+GA,Jesup,31.5946,-81.8957
+GA,Johns Creek,34.0327,-84.2038
+GA,Johnson County,32.6946,-82.664
+GA,Jones County,33.0217,-83.5622
+GA,Jonesboro,33.5208,-84.3547
+GA,Juliette,33.1137,-83.8084
+GA,Junction City,32.6036,-84.4582
+GA,Kennesaw,34.0272,-84.6171
+GA,Kennesaw State University,34.0379,-84.5826
+GA,Keysville,33.2362,-82.2293
+GA,Kings Bay Base,30.7993,-81.5637
+GA,Kingsland,30.8461,-81.7909
+GA,Kingston,34.232,-84.9445
+GA,Kite,32.6915,-82.5124
+GA,Knoxville,32.7233,-83.9959
+GA,LaFayette,34.7088,-85.2815
+GA,LaGrange,33.027,-85.0383
+GA,Lake City,33.6065,-84.3412
+GA,Lake Park,30.6856,-83.1877
+GA,Lakeland,31.0408,-83.0747
+GA,Lakeview,34.9771,-85.2536
+GA,Lakeview Estates,33.705,-84.0377
+GA,Lamar County,33.0744,-84.1467
+GA,Lanier County,31.0382,-83.0632
+GA,Laurens County,32.3932,-82.9263
+GA,Lavonia,34.4339,-83.108
+GA,Lawrenceville,33.9529,-83.9922
+GA,Leary,31.4851,-84.5125
+GA,Lee County,31.8184,-84.1467
+GA,Leesburg,31.7321,-84.1685
+GA,Lenox,31.261,-83.4669
+GA,Leslie,31.9548,-84.0871
+GA,Lexington,33.8701,-83.1102
+GA,Liberty County,31.8075,-81.4579
+GA,Lilburn,33.8906,-84.1369
+GA,Lilly,32.1465,-83.8775
+GA,Lincoln County,33.7922,-82.4483
+GA,Lincoln Park,32.8674,-84.3356
+GA,Lincolnton,33.7927,-82.4784
+GA,Lindale,34.1877,-85.1807
+GA,Lithia Springs,33.7825,-84.6485
+GA,Lithonia,33.713,-84.1062
+GA,Locust Grove,33.3481,-84.1025
+GA,Loganville,33.8365,-83.8961
+GA,Lone Oak,33.1724,-84.8173
+GA,Long County,31.7496,-81.7429
+GA,Lookout Mountain,34.9665,-85.3619
+GA,Louisville,32.9929,-82.3972
+GA,Lovejoy,33.4437,-84.3189
+GA,Lowndes County,30.8331,-83.269
+GA,Ludowici,31.714,-81.7403
+GA,Lula,34.3981,-83.6619
+GA,Lumber City,31.9331,-82.6832
+GA,Lumpkin,32.048,-84.7981
+GA,Lumpkin County,34.5681,-83.9989
+GA,Luthersville,33.2096,-84.7443
+GA,Lyerly,34.4034,-85.4041
+GA,Lyons,32.2049,-82.3212
+GA,Mableton,33.813,-84.5769
+GA,Macon,32.809,-83.6941
+GA,Macon County,32.3627,-84.0512
+GA,Macon-Bibb County,32.809,-83.6941
+GA,Madison,33.579,-83.476
+GA,Madison County,34.1275,-83.2087
+GA,Manassas,32.1611,-82.024
+GA,Manchester,32.8591,-84.6344
+GA,Manor,31.1031,-82.5667
+GA,Mansfield,33.5174,-83.7346
+GA,Marietta,33.9536,-84.5425
+GA,Marion County,32.3593,-84.5287
+GA,Marshallville,32.4586,-83.9398
+GA,Martin,34.4858,-83.1975
+GA,Martinez,33.5204,-82.1012
+GA,Matthews,33.2193,-82.3017
+GA,Maxeys,33.7549,-83.1726
+GA,Maysville,34.2551,-83.5531
+GA,McCaysville,34.982,-84.3712
+GA,McDonough,33.4422,-84.151
+GA,McDuffie County,33.4806,-82.4796
+GA,McIntosh County,31.4856,-81.3721
+GA,McIntyre,32.8468,-83.2133
+GA,McRae-Helena,32.0636,-82.8969
+GA,Meansville,33.0514,-84.3105
+GA,Meigs,31.0718,-84.0927
+GA,Mendes,31.9947,-81.9704
+GA,Menlo,34.4835,-85.4776
+GA,Meriwether County,33.0293,-84.6671
+GA,Mershon,31.4633,-82.2528
+GA,Metter,32.3945,-82.0624
+GA,Midville,32.8213,-82.2353
+GA,Midway,31.801,-81.4167
+GA,Milan,32.0192,-83.0623
+GA,Milledgeville,33.0879,-83.2406
+GA,Millen,32.8069,-81.942
+GA,Miller County,31.1629,-84.7304
+GA,Millwood,31.2654,-82.6572
+GA,Milner,33.1161,-84.1877
+GA,Milstead,33.6879,-83.9907
+GA,Milton,34.1443,-84.3142
+GA,Mineral Bluff,34.9142,-84.2776
+GA,Mitchell,33.2217,-82.7012
+GA,Mitchell County,31.229,-84.192
+GA,Molena,33.0141,-84.5071
+GA,Monroe,33.7975,-83.7187
+GA,Monroe County,33.0188,-83.9218
+GA,Montezuma,32.2972,-84.0191
+GA,Montgomery,31.9479,-81.0979
+GA,Montgomery County,32.1721,-82.5333
+GA,Monticello,33.2959,-83.6866
+GA,Montrose,32.5592,-83.1532
+GA,Moody AFB,30.9696,-83.1943
+GA,Moreland,33.2864,-84.7696
+GA,Morgan,31.5381,-84.6032
+GA,Morgan County,33.5986,-83.4994
+GA,Morganton,34.875,-84.2443
+GA,Morrow,33.5783,-84.3356
+GA,Morven,30.944,-83.5
+GA,Moultrie,31.1794,-83.7908
+GA,Mount Airy,34.5235,-83.4972
+GA,Mount Vernon,32.1852,-82.5966
+GA,Mount Zion,33.6426,-85.181
+GA,Mountain City,34.9215,-83.3811
+GA,Mountain Park,34.083,-84.4136
+GA,Murray County,34.7971,-84.738
+GA,Muscogee County,32.5102,-84.8749
+GA,Musella,32.8019,-84.0324
+GA,Nahunta,31.2062,-81.9812
+GA,Nashville,31.2057,-83.2464
+GA,Naylor,30.9101,-83.0743
+GA,Nelson,34.3765,-84.369
+GA,New England,34.918,-85.4814
+GA,Newborn,33.5161,-83.6957
+GA,Newington,32.5892,-81.506
+GA,Newnan,33.3758,-84.7773
+GA,Newton,31.3168,-84.3395
+GA,Newton County,33.5528,-83.8514
+GA,Nicholls,31.5204,-82.6381
+GA,Nicholson,34.1166,-83.4251
+GA,Norcross,33.9374,-84.2056
+GA,Norman Park,31.269,-83.6845
+GA,Norristown,32.507,-82.4986
+GA,North Decatur,33.8073,-84.2889
+GA,North Druid Hills,33.8195,-84.3267
+GA,North High Shoals,33.8288,-83.5016
+GA,Norwood,33.4627,-82.706
+GA,Nunez,32.492,-82.3467
+GA,Oak Park,32.3644,-82.324
+GA,Oakwood,34.2221,-83.8849
+GA,Ochlocknee,30.9754,-84.0506
+GA,Ocilla,31.5986,-83.2498
+GA,Oconee,32.8536,-82.9594
+GA,Oconee County,33.8341,-83.4377
+GA,Odum,31.6719,-82.0242
+GA,Offerman,31.4099,-82.1143
+GA,Oglethorpe,32.2932,-84.0628
+GA,Oglethorpe County,33.8668,-83.0741
+GA,Ohoopee,32.1817,-82.222
+GA,Oliver,32.5231,-81.5363
+GA,Omega,31.339,-83.5937
+GA,Orchard Hill,33.1852,-84.212
+GA,Oxford,33.6284,-83.8723
+GA,Palmetto,33.536,-84.6738
+GA,Panthersville,33.7083,-84.2745
+GA,Parrott,31.8944,-84.5117
+GA,Patterson,31.3849,-82.1354
+GA,Paulding County,33.921,-84.8672
+GA,Pavo,30.9594,-83.7393
+GA,Peach County,32.5713,-83.832
+GA,Peachtree City,33.3919,-84.5707
+GA,Peachtree Corners,33.9671,-84.2323
+GA,Pearson,31.2972,-82.854
+GA,Pelham,31.1266,-84.1515
+GA,Pembroke,32.1445,-81.6169
+GA,Pendergrass,34.1659,-83.6789
+GA,Perkins,32.9193,-81.9444
+GA,Perry,32.4737,-83.7278
+GA,Phillipsburg,31.4389,-83.5203
+GA,Pickens County,34.4568,-84.4904
+GA,Pierce County,31.354,-82.2104
+GA,Pike County,33.0811,-84.3895
+GA,Pine Lake,33.7907,-84.2058
+GA,Pine Mountain,32.852,-84.8516
+GA,Pinehurst,32.1962,-83.7595
+GA,Pineview,32.1043,-83.5089
+GA,Piney Grove,32.6155,-85.0388
+GA,Pitts,31.9462,-83.5418
+GA,Plains,32.0331,-84.3945
+GA,Plainville,34.4053,-85.0315
+GA,Polk County,33.996,-85.1883
+GA,Pooler,32.1056,-81.256
+GA,Port Wentworth,32.192,-81.2057
+GA,Portal,32.5382,-81.9288
+GA,Porterdale,33.5737,-83.8948
+GA,Poulan,31.5145,-83.7898
+GA,Powder Springs,33.8644,-84.6812
+GA,Pulaski,32.3907,-81.9534
+GA,Pulaski County,32.2388,-83.4818
+GA,Putnam County,33.3211,-83.3718
+GA,Putney,31.4747,-84.1052
+GA,Quitman,30.7845,-83.5605
+GA,Quitman County,31.8629,-85.0048
+GA,Rabun County,34.8839,-83.4049
+GA,Randolph County,31.7627,-84.7523
+GA,Ranger,34.4996,-84.7118
+GA,Raoul,34.4577,-83.6009
+GA,Ray City,31.0728,-83.1901
+GA,Rayle,33.7913,-82.9085
+GA,Rebecca,31.8072,-83.4876
+GA,Redan,33.7387,-84.1671
+GA,Reed Creek,34.4409,-82.9137
+GA,Register,32.3645,-81.8805
+GA,Reidsville,32.0873,-82.1248
+GA,Remerton,30.8438,-83.3089
+GA,Rentz,32.3829,-82.9918
+GA,Resaca,34.5794,-84.9438
+GA,Rest Haven,34.1364,-83.9745
+GA,Reynolds,32.5605,-84.0944
+GA,Rhine,31.9893,-83.2004
+GA,Riceboro,31.7244,-81.4423
+GA,Richland,32.0888,-84.662
+GA,Richmond County,33.3615,-82.075
+GA,Richmond Hill,31.9002,-81.3101
+GA,Riddleville,32.9027,-82.665
+GA,Rincon,32.2947,-81.2353
+GA,Ringgold,34.9137,-85.1215
+GA,Riverdale,33.5639,-84.411
+GA,Roberta,32.7198,-84.0104
+GA,Robins AFB,32.61,-83.5829
+GA,Rochelle,31.9488,-83.4569
+GA,Rock Spring,34.8147,-85.2389
+GA,Rockdale County,33.6521,-84.0264
+GA,Rockingham,31.5419,-82.4177
+GA,Rockmart,34.0083,-85.045
+GA,Rocky Ford,32.6635,-81.8355
+GA,Rome,34.2661,-85.1861
+GA,Roopville,33.4566,-85.1304
+GA,Rossville,34.9758,-85.2896
+GA,Roswell,34.0395,-84.3509
+GA,Royston,34.2866,-83.1108
+GA,Russell,33.979,-83.6923
+GA,Rutledge,33.6257,-83.6097
+GA,Sale City,31.2629,-84.0208
+GA,Salem,32.7586,-84.1936
+GA,Sandersville,32.9818,-82.8051
+GA,Sandy Springs,33.9315,-84.3689
+GA,Santa Claus,32.1707,-82.3296
+GA,Sardis,32.9751,-81.7615
+GA,Sasser,31.7199,-84.3478
+GA,Satilla,31.7919,-82.5592
+GA,Sautee-Nacoochee,34.6888,-83.6831
+GA,Savannah,32.018,-81.1965
+GA,Schley County,32.2634,-84.3227
+GA,Scotland,32.0472,-82.8176
+GA,Scottdale,33.7954,-84.266
+GA,Screven,31.4842,-82.0169
+GA,Screven County,32.7448,-81.6176
+GA,Seminole County,30.934,-84.8677
+GA,Senoia,33.3077,-84.5548
+GA,Seville,31.961,-83.6006
+GA,Shady Dale,33.3985,-83.5894
+GA,Shannon,34.3403,-85.0841
+GA,Sharon,33.5627,-82.7954
+GA,Sharpsburg,33.3371,-84.6509
+GA,Shellman,31.7571,-84.6159
+GA,Shiloh,32.8116,-84.6987
+GA,Siloam,33.5409,-83.0849
+GA,Skidaway Island,31.9378,-81.0464
+GA,Sky Valley,34.985,-83.334
+GA,Smarr,32.987,-83.883
+GA,Smithville,31.9011,-84.2552
+GA,Smyrna,33.8626,-84.5161
+GA,Snellville,33.8602,-84.0063
+GA,Social Circle,33.6461,-83.7128
+GA,Soperton,32.3783,-82.594
+GA,South Fulton,33.6357,-84.5834
+GA,Spalding County,33.2623,-84.2849
+GA,Sparks,31.169,-83.4412
+GA,Sparta,33.2779,-82.9698
+GA,Springfield,32.3722,-81.3153
+GA,St. Marys,30.7567,-81.5784
+GA,St. Simons,31.1801,-81.3854
+GA,Stapleton,33.2169,-82.4672
+GA,Statesboro,32.4377,-81.7756
+GA,Statham,33.9628,-83.6038
+GA,Stephens County,34.5536,-83.2906
+GA,Sterling,31.2622,-81.5531
+GA,Stewart County,32.0732,-84.8349
+GA,Stillmore,32.4416,-82.2145
+GA,Stockbridge,33.53,-84.2343
+GA,Stockton,30.9464,-83.0036
+GA,Stone Mountain,33.8042,-84.1714
+GA,Stonecrest,33.6807,-84.1453
+GA,Sugar Hill,34.086,-84.034
+GA,Summertown,32.7452,-82.2769
+GA,Summerville,34.4787,-85.3491
+GA,Sumner,31.5103,-83.7368
+GA,Sumter County,32.0423,-84.2043
+GA,Sunny Side,33.3424,-84.2935
+GA,Sunnyside,31.2395,-82.3418
+GA,Sunset Village,32.8918,-84.4097
+GA,Surrency,31.7219,-82.1978
+GA,Suwanee,34.0511,-84.0659
+GA,Swainsboro,32.5856,-82.3348
+GA,Sycamore,31.6717,-83.6355
+GA,Sylvania,32.7472,-81.6407
+GA,Sylvester,31.5297,-83.8346
+GA,Talahi Island,32.033,-80.976
+GA,Talbot County,32.7046,-84.53
+GA,Talbotton,32.6772,-84.5406
+GA,Taliaferro County,33.5593,-82.8753
+GA,Talking Rock,34.5292,-84.492
+GA,Tallapoosa,33.7367,-85.2874
+GA,Tallulah Falls,34.7258,-83.3875
+GA,Talmo,34.1794,-83.7174
+GA,Tarrytown,32.319,-82.5599
+GA,Tate City,34.9764,-83.5515
+GA,Tattnall County,32.0438,-82.0592
+GA,Taylor County,32.5547,-84.2514
+GA,Taylorsville,34.0851,-84.9856
+GA,Tazewell,32.375,-84.438
+GA,Telfair County,31.9136,-82.9311
+GA,Temple,33.7332,-85.0273
+GA,Tennille,32.9366,-82.8121
+GA,Terrell County,31.7772,-84.4394
+GA,The Rock,32.9607,-84.2392
+GA,Thomas County,30.8646,-83.9198
+GA,Thomaston,32.8917,-84.3267
+GA,Thomasville,30.8394,-83.9788
+GA,Thomson,33.4693,-82.4951
+GA,Thunderbolt,32.0357,-81.0492
+GA,Tift County,31.457,-83.5259
+GA,Tifton,31.4621,-83.5205
+GA,Tiger,34.8461,-83.4326
+GA,Tignall,33.867,-82.7421
+GA,Toccoa,34.5821,-83.3272
+GA,Toombs County,32.1178,-82.3306
+GA,Toomsboro,32.8224,-83.0826
+GA,Towns County,34.9025,-83.7323
+GA,Trenton,34.8741,-85.5096
+GA,Treutlen County,32.4096,-82.5709
+GA,Trion,34.5484,-85.3108
+GA,Troup County,33.0345,-85.0284
+GA,Tucker,33.8452,-84.2021
+GA,Tunnel Hill,34.8554,-85.0368
+GA,Turin,33.323,-84.6387
+GA,Turner County,31.7248,-83.6203
+GA,Twiggs County,32.6658,-83.4259
+GA,Twin City,32.5822,-82.1594
+GA,Ty Ty,31.4719,-83.6503
+GA,Tybee Island,32.0102,-80.8559
+GA,Tyrone,33.4761,-84.5945
+GA,Unadilla,32.2573,-83.7359
+GA,Union City,33.5938,-84.5626
+GA,Union County,34.8333,-83.9893
+GA,Union Point,33.6188,-83.075
+GA,Unionville,31.4365,-83.5091
+GA,Upson County,32.8818,-84.2923
+GA,Uvalda,32.0381,-82.5075
+GA,Valdosta,30.8501,-83.2788
+GA,Varnell,34.9016,-84.9651
+GA,Vernonburg,31.9662,-81.1206
+GA,Vidalia,32.2121,-82.4022
+GA,Vidette,33.0361,-82.244
+GA,Vienna,32.0927,-83.7868
+GA,Villa Rica,33.7284,-84.9167
+GA,Vinings,33.8592,-84.4678
+GA,Waco,33.7026,-85.1892
+GA,Wadley,32.8648,-82.4028
+GA,Waleska,34.316,-84.5436
+GA,Walker County,34.7358,-85.3055
+GA,Walnut Grove,33.7479,-83.85
+GA,Walthourville,31.772,-81.6209
+GA,Walton County,33.7839,-83.7318
+GA,Ware County,31.0509,-82.4215
+GA,Waresboro,31.2475,-82.472
+GA,Warm Springs,32.8872,-84.6786
+GA,Warner Robins,32.5971,-83.6539
+GA,Warren County,33.4084,-82.6757
+GA,Warrenton,33.4077,-82.6651
+GA,Warthen,33.0948,-82.8049
+GA,Warwick,31.8298,-83.9206
+GA,Washington,33.7352,-82.7423
+GA,Washington County,32.9718,-82.7981
+GA,Watkinsville,33.8597,-83.4048
+GA,Waverly,31.1098,-81.7276
+GA,Waverly Hall,32.6829,-84.7283
+GA,Waycross,31.211,-82.3577
+GA,Wayne County,31.5478,-81.9124
+GA,Waynesboro,33.0913,-82.0143
+GA,Waynesville,31.2272,-81.7836
+GA,Webster County,32.0467,-84.5538
+GA,Wenona,31.9109,-83.7511
+GA,West Brow,34.9148,-85.4186
+GA,West Point,32.8985,-85.1415
+GA,Wheeler County,32.1053,-82.7338
+GA,Whigham,30.8839,-84.3274
+GA,White,34.2822,-84.748
+GA,White County,34.6442,-83.743
+GA,White Plains,33.4803,-83.0363
+GA,Whitemarsh Island,32.0303,-81.0129
+GA,Whitesburg,33.4921,-84.9143
+GA,Whitfield County,34.8017,-84.9685
+GA,Wilcox County,31.9627,-83.4383
+GA,Wildwood,34.9669,-85.4215
+GA,Wilkes County,33.779,-82.7479
+GA,Wilkinson County,32.8043,-83.1755
+GA,Willacoochee,31.3351,-83.044
+GA,Williamson,33.1783,-84.3576
+GA,Wilmington Island,31.9997,-80.9752
+GA,Winder,33.9916,-83.7236
+GA,Winterville,33.9666,-83.2816
+GA,Woodbine,30.9599,-81.7181
+GA,Woodbury,32.9852,-84.582
+GA,Woodland,32.7882,-84.5612
+GA,Woodstock,34.1031,-84.513
+GA,Woodville,33.6655,-83.1181
+GA,Woolsey,33.3629,-84.407
+GA,Worth County,31.5518,-83.85
+GA,Wrens,33.2074,-82.3876
+GA,Wrightsville,32.7268,-82.7191
+GA,Yatesville,32.913,-84.1413
+GA,Yonah,34.6442,-83.743
+GA,Young Harris,34.9346,-83.8477
+GA,Zebulon,33.091,-84.3395
+NC,Aberdeen,35.1346,-79.4355
+NC,Advance,35.9458,-80.3922
+NC,Ahoskie,36.2841,-76.9901
+NC,Alamance,36.0278,-79.489
+NC,Alamance County,36.044,-79.4006
+NC,Albemarle,35.3581,-80.1912
+NC,Alexander County,35.921,-81.1775
+NC,Alexis,35.3943,-81.1231
+NC,Alleghany County,36.4894,-81.1323
+NC,Alliance,35.1435,-76.8085
+NC,Altamahaw,36.1939,-79.5066
+NC,Anderson Creek,35.2771,-78.9602
+NC,Andrews,35.199,-83.8258
+NC,Angier,35.5119,-78.7399
+NC,Anson County,34.975,-80.1098
+NC,Ansonville,35.1042,-80.1097
+NC,Apex,35.7256,-78.8799
+NC,Aquadale,35.2244,-80.2235
+NC,Arapahoe,35.0215,-76.826
+NC,Archdale,35.9047,-79.9598
+NC,Archer Lodge,35.6823,-78.3704
+NC,Arden,35.466,-82.517
+NC,Arrowhead Beach,36.2271,-76.7029
+NC,Ashe County,36.4435,-81.4993
+NC,Asheboro,35.7138,-79.8133
+NC,Asheville,35.571,-82.5527
+NC,Ashley Heights,35.09,-79.3739
+NC,Askewville,36.1116,-76.9412
+NC,Atkinson,34.5275,-78.1697
+NC,Atlantic,34.8813,-76.3433
+NC,Atlantic Beach,34.7019,-76.7423
+NC,Aulander,36.228,-77.1136
+NC,Aurora,35.3029,-76.7893
+NC,Autryville,34.9965,-78.6412
+NC,Avery County,36.0721,-81.9203
+NC,Avery Creek,35.4651,-82.5718
+NC,Avon,35.3367,-75.5121
+NC,Ayden,35.4694,-77.4166
+NC,Badin,35.4072,-80.1183
+NC,Bailey,35.7806,-78.1129
+NC,Bakersville,36.0153,-82.1582
+NC,Bald Head Island,33.8663,-77.9809
+NC,Balfour,35.3526,-82.4887
+NC,Banner Elk,36.1589,-81.8678
+NC,Barbecue,35.3252,-79.0379
+NC,Barker Heights,35.3084,-82.4412
+NC,Barker Ten Mile,34.6825,-78.9888
+NC,Barnardsville,35.7819,-82.4555
+NC,Bath,35.4712,-76.8111
+NC,Bayboro,35.1493,-76.7694
+NC,Bayshore,34.2887,-77.8038
+NC,Bayview,35.4418,-76.7934
+NC,Bear Grass,35.7664,-77.1289
+NC,Beaufort,34.7227,-76.6512
+NC,Beaufort County,35.4823,-76.842
+NC,Beech Mountain,36.2104,-81.887
+NC,Belhaven,35.543,-76.6231
+NC,Bell Arthur,35.5912,-77.5127
+NC,Belmont,35.2213,-81.0411
+NC,Belville,34.2167,-77.9988
+NC,Belvoir,35.7111,-77.4699
+NC,Belwood,35.4843,-81.5274
+NC,Bennett,35.5753,-79.5346
+NC,Benson,35.3871,-78.5409
+NC,Bent Creek,35.5111,-82.617
+NC,Bermuda Run,36.0043,-80.4291
+NC,Bertie County,36.059,-76.9624
+NC,Bessemer City,35.2843,-81.2829
+NC,Bethania,36.1798,-80.3349
+NC,Bethel,35.8072,-77.3762
+NC,Bethlehem,35.8175,-81.3008
+NC,Beulaville,34.9228,-77.7713
+NC,Biltmore Forest,35.5349,-82.5379
+NC,Biscoe,35.3589,-79.7797
+NC,Black Creek,35.6368,-77.9326
+NC,Black Mountain,35.6147,-82.3255
+NC,Bladen County,34.5919,-78.5395
+NC,Bladenboro,34.5409,-78.7947
+NC,Blowing Rock,36.1292,-81.6663
+NC,Blue Clay Farms,34.2987,-77.8913
+NC,Boardman,34.4301,-78.9426
+NC,Bogue,34.6917,-77.0285
+NC,Boiling Spring Lakes,34.0439,-78.0749
+NC,Boiling Springs,35.2521,-81.6636
+NC,Bolivia,34.0699,-78.1474
+NC,Bolton,34.3174,-78.4014
+NC,Bonnetsville,35.0057,-78.4019
+NC,Boone,36.2138,-81.6652
+NC,Boonville,36.234,-80.7093
+NC,Bostic,35.3625,-81.836
+NC,Bowdens,35.0619,-78.1084
+NC,Bowmore,34.9358,-79.3
+NC,Brandywine Bay,34.7404,-76.83
+NC,Brevard,35.2478,-82.7285
+NC,Briar Chapel,35.8242,-79.1168
+NC,Brices Creek,35.037,-77.0819
+NC,Bridgeton,35.1278,-77.0126
+NC,Broad Creek,34.7341,-76.919
+NC,Broadway,35.4573,-79.0572
+NC,Brogden,35.2956,-78.0294
+NC,Brookford,35.7031,-81.3445
+NC,Brunswick,34.2788,-78.7177
+NC,Brunswick County,34.0388,-78.2278
+NC,Bryson City,35.4266,-83.4473
+NC,Buies Creek,35.4079,-78.7432
+NC,Buncombe County,35.6094,-82.5304
+NC,Bunn,35.9577,-78.2524
+NC,Bunnlevel,35.3065,-78.7591
+NC,Burgaw,34.5515,-77.923
+NC,Burke County,35.7462,-81.7062
+NC,Burlington,36.0761,-79.4683
+NC,Burnsville,35.9163,-82.2977
+NC,Butner,36.1343,-78.7407
+NC,Butters,34.5665,-78.8511
+NC,Buxton,35.2533,-75.5383
+NC,Cabarrus County,35.3883,-80.5527
+NC,Cajah's Mountain,35.8507,-81.5362
+NC,Calabash,33.9081,-78.5438
+NC,Caldwell County,35.9664,-81.5125
+NC,Calypso,35.1546,-78.1044
+NC,Camden,36.3252,-76.1692
+NC,Camden County,36.3423,-76.1625
+NC,Cameron,35.3259,-79.2542
+NC,Candor,35.2964,-79.7325
+NC,Canton,35.5321,-82.8337
+NC,Cape Carteret,34.6943,-77.0602
+NC,Cape Colony,36.0196,-76.5828
+NC,Caroleen,35.2811,-81.7914
+NC,Carolina Beach,34.0419,-77.8998
+NC,Carolina Meadows,35.8597,-79.0179
+NC,Carolina Shores,33.9079,-78.5731
+NC,Carrboro,35.9262,-79.087
+NC,Carteret County,34.8583,-76.5359
+NC,Carthage,35.3223,-79.4109
+NC,Cary,35.7813,-78.8234
+NC,Casar,35.5127,-81.6168
+NC,Cashiers,35.1079,-83.098
+NC,Castalia,36.0823,-78.0576
+NC,Castle Hayne,34.3555,-77.9099
+NC,Caswell Beach,33.9059,-78.0487
+NC,Caswell County,36.3943,-79.3396
+NC,Catawba,35.7076,-81.0695
+NC,Catawba County,35.6619,-81.2149
+NC,Cedar Point,34.6858,-77.0815
+NC,Cedar Rock,35.9435,-81.4584
+NC,Centerville,36.188,-78.1144
+NC,Cerro Gordo,34.3226,-78.9287
+NC,Chadbourn,34.3252,-78.825
+NC,Chapel Hill,35.9283,-79.0414
+NC,Charlotte,35.209,-80.831
+NC,Chatham County,35.705,-79.2515
+NC,Cherokee,35.4859,-83.3011
+NC,Cherokee County,35.1371,-84.0614
+NC,Cherry Branch,34.9343,-76.8112
+NC,Cherryville,35.3846,-81.3789
+NC,Chimney Rock Village,35.4503,-82.255
+NC,China Grove,35.5725,-80.5748
+NC,Chinquapin,34.8292,-77.8246
+NC,Chocowinity,35.5146,-77.1015
+NC,Chowan Beach,36.2139,-76.7124
+NC,Chowan County,36.129,-76.6028
+NC,Claremont,35.7094,-81.1547
+NC,Clarkton,34.4886,-78.6558
+NC,Clay County,35.053,-83.7523
+NC,Clayton,35.6581,-78.446
+NC,Clemmons,36.0332,-80.3867
+NC,Cleveland,35.7331,-80.6815
+NC,Cleveland County,35.3346,-81.5571
+NC,Cliffside,35.248,-81.7653
+NC,Clinton,35.0004,-78.3315
+NC,Clyde,35.5331,-82.9108
+NC,Coats,35.4064,-78.6695
+NC,Cofield,36.3567,-76.9105
+NC,Coinjock,36.351,-75.952
+NC,Colerain,36.2016,-76.7664
+NC,Columbia,35.9234,-76.2405
+NC,Columbus,35.2512,-82.2098
+NC,Columbus County,34.2616,-78.6393
+NC,Como,36.4983,-76.9996
+NC,Concord,35.3921,-80.6355
+NC,Conetoe,35.8179,-77.4571
+NC,Connelly Springs,35.755,-81.497
+NC,Conover,35.7152,-81.2168
+NC,Conway,36.4389,-77.2287
+NC,Cooleemee,35.8112,-80.5569
+NC,Cordova,34.9147,-79.8158
+NC,Cornelius,35.4732,-80.8813
+NC,Cove City,35.189,-77.3205
+NC,Cove Creek,36.2874,-81.7864
+NC,Cramerton,35.23,-81.0733
+NC,Craven County,35.1168,-77.0813
+NC,Creedmoor,36.125,-78.678
+NC,Creswell,35.8714,-76.3991
+NC,Cricket,36.1688,-81.1934
+NC,Crossnore,36.0222,-81.9308
+NC,Crouse,35.4241,-81.3012
+NC,Cullowhee,35.3097,-83.1815
+NC,Cumberland County,35.0502,-78.8287
+NC,Currituck County,36.3722,-75.9412
+NC,Cypress Landing,35.4976,-77.0547
+NC,Dallas,35.3179,-81.1832
+NC,Dana,35.3206,-82.3611
+NC,Danbury,36.411,-80.2117
+NC,Dare County,35.6063,-75.7675
+NC,Davidson,35.4804,-80.8209
+NC,Davidson County,35.7951,-80.2071
+NC,Davie County,35.9294,-80.5426
+NC,Davis,34.7909,-76.4686
+NC,Deep Run,35.1414,-77.7162
+NC,Deercroft,34.9571,-79.4331
+NC,Delco,34.3188,-78.2267
+NC,Dellview,35.3866,-81.4127
+NC,Delway,34.819,-78.2153
+NC,Denton,35.638,-80.1102
+NC,Denver,35.5456,-81.0447
+NC,Dillsboro,35.3706,-83.2526
+NC,Dobbins Heights,34.9069,-79.6933
+NC,Dobson,36.3926,-80.7237
+NC,Dortches,36.0117,-77.8571
+NC,Dover,35.2155,-77.4338
+NC,Drexel,35.7568,-81.6088
+NC,Dublin,34.6562,-78.7231
+NC,Duck,36.1866,-75.7541
+NC,Dudley,35.2652,-78.0405
+NC,Dundarrach,34.9247,-79.1575
+NC,Dunn,35.3116,-78.613
+NC,Duplin County,34.9344,-77.9335
+NC,Durham,35.9779,-78.8981
+NC,Durham County,36.0338,-78.8781
+NC,Earl,35.1954,-81.534
+NC,East Arcadia,34.3818,-78.3233
+NC,East Bend,36.2175,-80.5089
+NC,East Flat Rock,35.281,-82.4166
+NC,East Rockingham,34.9119,-79.7648
+NC,East Spencer,35.6799,-80.4236
+NC,Eastover,35.0953,-78.7862
+NC,Eden,36.503,-79.74
+NC,Edenton,36.0586,-76.599
+NC,Edgecombe County,35.9171,-77.6027
+NC,Edneyville,35.4026,-82.3343
+NC,Efland,36.0804,-79.1713
+NC,Elizabeth City,36.2942,-76.2382
+NC,Elizabethtown,34.6215,-78.6063
+NC,Elk Park,36.1582,-81.9808
+NC,Elkin,36.2634,-80.8471
+NC,Ellenboro,35.3309,-81.7613
+NC,Ellerbe,35.0695,-79.757
+NC,Elm City,35.804,-77.8567
+NC,Elon,36.1023,-79.5088
+NC,Elrod,34.6072,-79.2308
+NC,Elroy,35.3308,-77.9226
+NC,Emerald Isle,34.6644,-77.0314
+NC,Emma,35.602,-82.5958
+NC,Enfield,36.1799,-77.669
+NC,Engelhard,35.5092,-76.0095
+NC,Enochville,35.5202,-80.6658
+NC,Erwin,35.3222,-78.6735
+NC,Etowah,35.3044,-82.5887
+NC,Eureka,35.5414,-77.8763
+NC,Everetts,35.8346,-77.1721
+NC,Evergreen,34.4149,-78.9114
+NC,Fair Bluff,34.3126,-79.0331
+NC,Fairfield,35.5504,-76.2265
+NC,Fairfield Harbour,35.0695,-76.9584
+NC,Fairmont,34.4948,-79.1132
+NC,Fairplains,36.1929,-81.1515
+NC,Fairview,35.5225,-82.4013
+NC,Faison,35.1165,-78.1363
+NC,Faith,35.59,-80.4583
+NC,Falcon,35.1948,-78.6539
+NC,Falkland,35.6985,-77.5129
+NC,Fallston,35.4294,-81.5022
+NC,Farmington,36.0085,-80.5357
+NC,Farmville,35.595,-77.5906
+NC,Fayetteville,35.0828,-78.9735
+NC,Fearrington Village,35.7983,-79.079
+NC,Five Points,35.0154,-79.3513
+NC,Flat Rock,35.2668,-82.4516
+NC,Fletcher,35.4329,-82.5074
+NC,Fontana Dam,35.4328,-83.8248
+NC,Forest City,35.3347,-81.8708
+NC,Forest Hills,35.2958,-83.1954
+NC,Forest Oaks,35.9885,-79.708
+NC,Forsyth County,36.1325,-80.257
+NC,Foscoe,36.1523,-81.7765
+NC,Fountain,35.6721,-77.6317
+NC,Four Oaks,35.4456,-78.4176
+NC,Foxfire,35.1785,-79.563
+NC,Franklin,35.1794,-83.3807
+NC,Franklin County,36.0882,-78.2831
+NC,Franklinton,36.1008,-78.4532
+NC,Franklinville,35.7413,-79.6912
+NC,Fremont,35.5437,-77.9751
+NC,Frisco,35.2479,-75.5987
+NC,Fruitland,35.3978,-82.4213
+NC,Fuquay-Varina,35.5951,-78.7766
+NC,Gamewell,35.864,-81.5978
+NC,Garland,34.7859,-78.3949
+NC,Garner,35.6895,-78.6146
+NC,Garysburg,36.4479,-77.5604
+NC,Gaston,36.4952,-77.6464
+NC,Gaston County,35.2928,-81.1774
+NC,Gastonia,35.2488,-81.1864
+NC,Gates County,36.4421,-76.7024
+NC,Gatesville,36.4074,-76.7566
+NC,Germanton,36.2501,-80.239
+NC,Gerton,35.4758,-82.3504
+NC,Gibson,34.7595,-79.6069
+NC,Gibsonville,36.1022,-79.543
+NC,Glen Alpine,35.7307,-81.7826
+NC,Glen Raven,36.1241,-79.4673
+NC,Glenville,35.1692,-83.1204
+NC,Glenwood,35.6158,-81.9828
+NC,Gloucester,34.7321,-76.5386
+NC,Godwin,35.2171,-78.6843
+NC,Gold Hill,35.5186,-80.3475
+NC,Goldsboro,35.3782,-77.9719
+NC,Goldston,35.591,-79.3238
+NC,Gorman,36.0418,-78.8069
+NC,Governors Club,35.8422,-79.0475
+NC,Governors Village,35.853,-79.0255
+NC,Graham,36.0564,-79.3894
+NC,Graham County,35.3484,-83.8309
+NC,Graingers,35.3163,-77.5066
+NC,Grandfather Village,36.093,-81.8538
+NC,Grandy,36.2352,-75.8798
+NC,Granite Falls,35.7972,-81.4244
+NC,Granite Quarry,35.6131,-80.4487
+NC,Grantsboro,35.1449,-76.8447
+NC,Granville County,36.2999,-78.6576
+NC,Green Level,36.1228,-79.345
+NC,Greene County,35.482,-77.6817
+NC,Greenevers,34.8271,-77.9251
+NC,Greensboro,36.0949,-79.8236
+NC,Greenville,35.5964,-77.3753
+NC,Grifton,35.38,-77.4425
+NC,Grimesland,35.5671,-77.1982
+NC,Grover,35.1717,-81.4581
+NC,Guilford County,36.0791,-79.7887
+NC,Gulf,35.5576,-79.2808
+NC,Half Moon,34.8298,-77.4591
+NC,Halifax,36.3255,-77.5901
+NC,Halifax County,36.2514,-77.6448
+NC,Hallsboro,34.3189,-78.5934
+NC,Hamilton,35.9444,-77.2067
+NC,Hamlet,34.8892,-79.7106
+NC,Hampstead,34.3625,-77.7543
+NC,Harkers Island,34.698,-76.5555
+NC,Harmony,35.958,-80.7744
+NC,Harnett County,35.3687,-78.8717
+NC,Harrells,34.7278,-78.2015
+NC,Harrellsville,36.3017,-76.7918
+NC,Harrisburg,35.3075,-80.6456
+NC,Hassell,35.9086,-77.2764
+NC,Hatteras,35.2199,-75.6879
+NC,Havelock,34.9089,-76.8995
+NC,Haw River,36.0919,-79.3589
+NC,Hayesville,35.045,-83.8179
+NC,Hays,36.2469,-81.1142
+NC,Haywood County,35.5589,-82.9813
+NC,Hemby Bridge,35.1087,-80.6249
+NC,Henderson,36.326,-78.4149
+NC,Henderson County,35.3364,-82.4796
+NC,Hendersonville,35.3234,-82.4558
+NC,Henrietta,35.2578,-81.8044
+NC,Hertford,36.1768,-76.4666
+NC,Hertford County,36.3635,-76.9816
+NC,Hickory,35.7397,-81.3202
+NC,Hiddenite,35.9077,-81.0811
+NC,High Point,35.9908,-79.9927
+NC,High Shoals,35.39,-81.2021
+NC,Highlands,35.0538,-83.1976
+NC,Hightsville,34.2694,-77.9375
+NC,Hildebran,35.7182,-81.421
+NC,Hillsborough,36.0779,-79.098
+NC,Hobgood,36.0267,-77.394
+NC,Hobucken,35.2518,-76.5731
+NC,Hoffman,35.0313,-79.5491
+NC,Hoke County,35.0172,-79.242
+NC,Holden Beach,33.912,-78.3208
+NC,Hollister,36.2583,-77.9357
+NC,Holly Ridge,34.4935,-77.5631
+NC,Holly Springs,35.6533,-78.8408
+NC,Hookerton,35.4231,-77.589
+NC,Hoopers Creek,35.4449,-82.4356
+NC,Hope Mills,34.9692,-78.9599
+NC,Horse Shoe,35.3324,-82.5627
+NC,Hot Springs,35.8936,-82.8294
+NC,Hudson,35.8477,-81.4867
+NC,Huntersville,35.4068,-80.8687
+NC,Hyde County,35.4082,-76.1537
+NC,Icard,35.7255,-81.4585
+NC,Indian Beach,34.6856,-76.8982
+NC,Indian Trail,35.0686,-80.6512
+NC,Ingold,34.8277,-78.3518
+NC,Iredell County,35.8063,-80.8745
+NC,Iron Station,35.4539,-81.1547
+NC,Ivanhoe,34.5836,-78.2517
+NC,JAARS,34.8645,-80.7503
+NC,Jackson,36.3901,-77.4193
+NC,Jackson County,35.2855,-83.124
+NC,Jackson Heights,35.2236,-77.6333
+NC,Jackson Springs,35.2127,-79.6298
+NC,Jacksonville,34.7297,-77.3937
+NC,James City,35.0454,-76.9981
+NC,Jamestown,35.9984,-79.9346
+NC,Jamesville,35.8122,-76.9002
+NC,Jefferson,36.4206,-81.4683
+NC,Johnston County,35.5134,-78.3673
+NC,Jones County,35.0323,-77.3562
+NC,Jonesville,36.2353,-80.8337
+NC,Kannapolis,35.4793,-80.638
+NC,Keener,35.1211,-78.2984
+NC,Kelford,36.1812,-77.2243
+NC,Kelly,34.464,-78.311
+NC,Kenansville,34.9598,-77.966
+NC,Kenly,35.6008,-78.1279
+NC,Kernersville,36.1062,-80.0819
+NC,Kill Devil Hills,36.0171,-75.6714
+NC,King,36.2747,-80.3569
+NC,Kings Grant,34.2659,-77.861
+NC,Kings Mountain,35.2358,-81.3504
+NC,Kingstown,35.3621,-81.6201
+NC,Kinston,35.2751,-77.5934
+NC,Kittrell,36.2218,-78.4413
+NC,Kitty Hawk,36.0701,-75.7172
+NC,Knightdale,35.7917,-78.4965
+NC,Kure Beach,33.9993,-77.9076
+NC,La Grange,35.3065,-77.7899
+NC,Lake Junaluska,35.5302,-82.9728
+NC,Lake Lure,35.4484,-82.2022
+NC,Lake Norman of Catawba,35.5984,-80.9875
+NC,Lake Norman of Iredell,35.5443,-80.9299
+NC,Lake Park,35.0845,-80.6344
+NC,Lake Royale,35.9649,-78.1922
+NC,Lake Santeetlah,35.364,-83.8664
+NC,Lake Waccamaw,34.3182,-78.5112
+NC,Landis,35.5496,-80.6105
+NC,Lansing,36.4995,-81.5096
+NC,Lasker,36.3502,-77.3057
+NC,Lattimore,35.3154,-81.6602
+NC,Laurel Hill,34.8095,-79.5455
+NC,Laurel Park,35.3115,-82.5036
+NC,Laurinburg,34.7621,-79.4774
+NC,Lawndale,35.4144,-81.5621
+NC,Lee County,35.4763,-79.1721
+NC,Leggett,35.9895,-77.5801
+NC,Leland,34.2137,-78.0432
+NC,Lenoir,35.9077,-81.5248
+NC,Lenoir County,35.2401,-77.6355
+NC,Lewiston Woodville,36.1149,-77.1796
+NC,Lewisville,36.1052,-80.4246
+NC,Lexington,35.7972,-80.2743
+NC,Liberty,35.855,-79.5693
+NC,Light Oak,35.2867,-81.4774
+NC,Lilesville,34.9675,-79.9845
+NC,Lillington,35.4131,-78.8117
+NC,Lincoln County,35.4885,-81.2269
+NC,Lincolnton,35.4757,-81.2392
+NC,Linden,35.2546,-78.7476
+NC,Linville,36.0675,-81.8714
+NC,Littleton,36.4343,-77.911
+NC,Locust,35.2686,-80.4367
+NC,Long Creek,34.434,-78.0172
+NC,Long View,35.7231,-81.3855
+NC,Louisburg,36.0983,-78.3001
+NC,Love Valley,35.9897,-80.9726
+NC,Lowell,35.2758,-81.1049
+NC,Lowesville,35.4245,-81.0052
+NC,Lowgap,36.525,-80.8712
+NC,Lucama,35.6449,-78.0074
+NC,Lumber Bridge,34.8899,-79.0723
+NC,Lumberton,34.6306,-79.0186
+NC,Macclesfield,35.7523,-77.6697
+NC,Macon,36.4402,-78.0833
+NC,Macon County,35.153,-83.4219
+NC,Madison,36.394,-79.976
+NC,Madison County,35.8642,-82.7126
+NC,Maggie Valley,35.5258,-83.0619
+NC,Magnolia,34.8962,-78.0533
+NC,Maiden,35.5915,-81.2315
+NC,Mamers,35.4113,-78.9366
+NC,Manns Harbor,35.8985,-75.7807
+NC,Manteo,35.8986,-75.6513
+NC,Mar-Mac,35.3308,-78.057
+NC,Marble,35.177,-83.9265
+NC,Marietta,34.3682,-79.1249
+NC,Marion,35.6761,-82.0011
+NC,Mars Hill,35.8282,-82.5486
+NC,Marshall,35.7986,-82.68
+NC,Marshallberg,34.726,-76.5136
+NC,Marshville,34.9862,-80.369
+NC,Martin County,35.8473,-77.1196
+NC,Marvin,34.9996,-80.8167
+NC,Matthews,35.1198,-80.7097
+NC,Maury,35.4792,-77.5902
+NC,Maxton,34.7365,-79.3527
+NC,Mayodan,36.4226,-79.9689
+NC,Maysville,34.9071,-77.232
+NC,McAdenville,35.2654,-81.0799
+NC,McDonald,34.5537,-79.1763
+NC,McDowell County,35.6823,-82.048
+NC,McFarlan,34.8148,-79.9766
+NC,McLeansville,36.0976,-79.6547
+NC,Mebane,36.0817,-79.2767
+NC,Mecklenburg County,35.2469,-80.8338
+NC,Mesic,35.2042,-76.6458
+NC,Micro,35.5624,-78.2035
+NC,Middleburg,36.3989,-78.3234
+NC,Middlesex,35.7894,-78.2048
+NC,Midland,35.2492,-80.5301
+NC,Midway,35.9751,-80.2204
+NC,Millers Creek,36.1909,-81.2356
+NC,Millingport,35.3764,-80.3113
+NC,Mills River,35.3813,-82.5889
+NC,Milton,36.5377,-79.2079
+NC,Milwaukee,36.4025,-77.2312
+NC,Mineral Springs,34.9442,-80.6864
+NC,Minnesott Beach,34.9865,-76.8241
+NC,Mint Hill,35.1785,-80.6557
+NC,Misenheimer,35.477,-80.286
+NC,Mitchell County,36.0131,-82.1636
+NC,Mocksville,35.8997,-80.5611
+NC,Momeyer,35.96,-78.0481
+NC,Moncure,35.6258,-79.0747
+NC,Monroe,35.0016,-80.5613
+NC,Montgomery County,35.3275,-79.9108
+NC,Montreat,35.648,-82.2992
+NC,Moore County,35.3083,-79.4927
+NC,Mooresboro,35.2992,-81.6986
+NC,Mooresville,35.5837,-80.8278
+NC,Moravian Falls,36.1088,-81.1864
+NC,Morehead City,34.7279,-76.7391
+NC,Morganton,35.7408,-81.7003
+NC,Morrisville,35.8364,-78.839
+NC,Morven,34.8643,-80.0
+NC,Mount Airy,36.5085,-80.6145
+NC,Mount Gilead,35.2164,-80.005
+NC,Mount Holly,35.3144,-81.0066
+NC,Mount Olive,35.1998,-78.0661
+NC,Mount Pleasant,35.3943,-80.4318
+NC,Mountain Home,35.3703,-82.502
+NC,Mountain View,35.6831,-81.369
+NC,Moyock,36.5012,-76.1733
+NC,Mulberry,36.2257,-81.1652
+NC,Murfreesboro,36.442,-77.0977
+NC,Murphy,35.0943,-84.0249
+NC,Murraysville,34.2916,-77.8423
+NC,Myrtle Grove,34.1269,-77.8889
+NC,Nags Head,35.9475,-75.6257
+NC,Nash County,35.9659,-77.9876
+NC,Nashville,35.9692,-77.9567
+NC,Navassa,34.2834,-78.0387
+NC,Nebo,35.7158,-81.9139
+NC,Neuse Forest,34.9651,-76.9443
+NC,New Bern,35.0967,-77.0726
+NC,New Hanover County,34.1834,-77.8642
+NC,New Hope,35.3782,-77.8922
+NC,New London,35.4349,-80.2198
+NC,Newland,36.088,-81.9274
+NC,Newport,34.7707,-76.8791
+NC,Newton,35.6622,-81.2323
+NC,Newton Grove,35.2512,-78.3537
+NC,Norlina,36.4449,-78.1952
+NC,Norman,35.1698,-79.7232
+NC,North Topsail Beach,34.4885,-77.4375
+NC,North Wilkesboro,36.1728,-81.1389
+NC,Northampton County,36.4218,-77.3984
+NC,Northchase,34.3078,-77.8775
+NC,Northlakes,35.7805,-81.3678
+NC,Northwest,34.316,-78.1448
+NC,Norwood,35.2328,-80.1108
+NC,Oak City,35.9625,-77.3051
+NC,Oak Island,33.9133,-78.1198
+NC,Oak Ridge,36.1741,-79.9922
+NC,Oakboro,35.2285,-80.3342
+NC,Ocean Isle Beach,33.8876,-78.4621
+NC,Ocracoke,35.0732,-75.9985
+NC,Ogden,34.2634,-77.789
+NC,Old Fort,35.6303,-82.178
+NC,Old Hundred,34.8245,-79.5921
+NC,Onslow County,34.7631,-77.4995
+NC,Orange County,36.0625,-79.12
+NC,Oriental,35.0309,-76.6808
+NC,Orrum,34.4667,-79.0089
+NC,Ossipee,36.1663,-79.5169
+NC,Oxford,36.3217,-78.5865
+NC,Pamlico County,35.1476,-76.6653
+NC,Pantego,35.5874,-76.6594
+NC,Parkton,34.9028,-79.0113
+NC,Parmele,35.8181,-77.3143
+NC,Pasquotank County,36.2652,-76.2607
+NC,Patterson Springs,35.2328,-81.5161
+NC,Peachland,34.9931,-80.266
+NC,Peletier,34.7284,-77.0713
+NC,Pembroke,34.6766,-79.1934
+NC,Pender County,34.5126,-77.8881
+NC,Perquimans County,36.1809,-76.4032
+NC,Person County,36.3864,-78.9656
+NC,Pikeville,35.4972,-77.9878
+NC,Pilot Mountain,36.3839,-80.4742
+NC,Pine Knoll Shores,34.6972,-76.8319
+NC,Pine Level,35.5033,-78.2486
+NC,Pinebluff,35.1089,-79.4715
+NC,Pinehurst,35.1911,-79.4698
+NC,Pinetops,35.7911,-77.6378
+NC,Pinetown,35.6111,-76.8558
+NC,Pineville,35.0937,-80.8935
+NC,Piney Green,34.7655,-77.301
+NC,Pink Hill,35.0562,-77.7436
+NC,Pinnacle,36.3228,-80.4232
+NC,Pitt County,35.5925,-77.3727
+NC,Pittsboro,35.7284,-79.1559
+NC,Plain View,35.244,-78.5602
+NC,Pleasant Garden,35.952,-79.7547
+NC,Pleasant Hill,36.254,-80.8946
+NC,Plymouth,35.8585,-76.7482
+NC,Polk County,35.2779,-82.1676
+NC,Polkton,35.003,-80.1963
+NC,Polkville,35.4163,-81.644
+NC,Pollocksville,35.006,-77.2222
+NC,Porters Neck,34.2932,-77.7706
+NC,Potters Hill,34.9645,-77.7032
+NC,Powellsville,36.2253,-76.9316
+NC,Princeton,35.4667,-78.1616
+NC,Princeville,35.8876,-77.529
+NC,Proctorville,34.4752,-79.037
+NC,Prospect,34.7358,-79.2252
+NC,Pumpkin Center,34.786,-77.3642
+NC,Raeford,34.9813,-79.2296
+NC,Raemon,34.6171,-79.3463
+NC,Raleigh,35.8319,-78.641
+NC,Ramseur,35.7371,-79.6548
+NC,Randleman,35.8159,-79.8077
+NC,Randolph County,35.7099,-79.8062
+NC,Ranlo,35.2899,-81.1291
+NC,Raynham,34.5761,-79.1909
+NC,Red Cross,35.2652,-80.3623
+NC,Red Oak,36.0613,-77.9038
+NC,Red Springs,34.8061,-79.1811
+NC,Reidsville,36.3413,-79.6738
+NC,Rennert,34.8141,-79.0791
+NC,Rex,34.8508,-79.0469
+NC,Rhodhiss,35.7655,-81.4322
+NC,Rich Square,36.2739,-77.2839
+NC,Richfield,35.4725,-80.2595
+NC,Richlands,34.9002,-77.5428
+NC,Richmond County,35.0046,-79.7557
+NC,Riegelwood,34.3401,-78.2204
+NC,River Bend,35.0689,-77.1499
+NC,River Road,35.5084,-76.9871
+NC,Roanoke Rapids,36.446,-77.6486
+NC,Robbins,35.4277,-79.5829
+NC,Robbinsville,35.3215,-83.8095
+NC,Roberdel,34.9791,-79.7479
+NC,Robersonville,35.8247,-77.2533
+NC,Robeson County,34.6392,-79.1009
+NC,Rockfish,34.9906,-79.0701
+NC,Rockingham,34.9386,-79.7603
+NC,Rockingham County,36.3818,-79.7828
+NC,Rockwell,35.553,-80.4092
+NC,Rocky Mount,35.9685,-77.8083
+NC,Rocky Point,34.444,-77.8909
+NC,Rodanthe,35.5925,-75.4664
+NC,Rolesville,35.9158,-78.4631
+NC,Ronda,36.2217,-80.9432
+NC,Roper,35.8786,-76.6171
+NC,Rose Hill,34.826,-78.0259
+NC,Roseboro,34.9557,-78.5141
+NC,Rosman,35.1458,-82.8202
+NC,Rougemont,36.2134,-78.9109
+NC,Rowan County,35.6414,-80.5217
+NC,Rowland,34.5361,-79.2929
+NC,Roxboro,36.3946,-78.9773
+NC,Roxobel,36.2015,-77.2398
+NC,Royal Pines,35.4788,-82.5023
+NC,Ruffin,36.4382,-79.5334
+NC,Rural Hall,36.2245,-80.2969
+NC,Ruth,35.3824,-81.9448
+NC,Rutherford College,35.7517,-81.527
+NC,Rutherford County,35.4027,-81.9196
+NC,Rutherfordton,35.3641,-81.9613
+NC,Salem,35.6997,-81.7003
+NC,Salemburg,35.0138,-78.5027
+NC,Salisbury,35.6662,-80.4926
+NC,Saluda,35.2375,-82.3469
+NC,Salvo,35.5485,-75.4682
+NC,Sampson County,34.9893,-78.3713
+NC,Sandy Creek,34.2819,-78.1588
+NC,Sandyfield,34.3676,-78.3038
+NC,Sanford,35.4938,-79.1765
+NC,Saratoga,35.6537,-77.7756
+NC,Sawmills,35.8176,-81.4763
+NC,Saxapahaw,35.9608,-79.3162
+NC,Scotch Meadows,34.6889,-79.5177
+NC,Scotland County,34.84,-79.4773
+NC,Scotland Neck,36.1308,-77.4214
+NC,Sea Breeze,34.0675,-77.8923
+NC,Seaboard,36.4907,-77.442
+NC,Seagrove,35.5395,-79.7814
+NC,Sedalia,36.0758,-79.6177
+NC,Selma,35.5397,-78.2917
+NC,Seven Devils,36.1495,-81.8132
+NC,Seven Lakes,35.2642,-79.586
+NC,Seven Springs,35.2248,-77.8451
+NC,Severn,36.5142,-77.1893
+NC,Shallotte,33.9782,-78.3808
+NC,Shannon,34.8477,-79.1396
+NC,Sharpsburg,35.8664,-77.8303
+NC,Shelby,35.2904,-81.5456
+NC,Siler City,35.7271,-79.4637
+NC,Silver City,34.9972,-79.2292
+NC,Silver Lake,34.1423,-77.9089
+NC,Simpson,35.5753,-77.279
+NC,Sims,35.7593,-78.0603
+NC,Skippers Corner,34.3267,-77.9146
+NC,Smithfield,35.5238,-78.3522
+NC,Smithtown,36.2331,-80.5712
+NC,Sneads Ferry,34.5552,-77.3776
+NC,Snow Hill,35.4503,-77.6763
+NC,South Henderson,36.3033,-78.4059
+NC,South Mills,36.4379,-76.3307
+NC,South Rosemary,36.4534,-77.7134
+NC,South Weldon,36.4136,-77.6024
+NC,Southern Pines,35.195,-79.4021
+NC,Southern Shores,36.1167,-75.733
+NC,Southmont,35.6504,-80.276
+NC,Southport,33.9333,-78.0085
+NC,Sparta,36.503,-81.1226
+NC,Speed,35.9685,-77.4445
+NC,Spencer,35.7,-80.4211
+NC,Spencer Mountain,35.3086,-81.1134
+NC,Spindale,35.3597,-81.9232
+NC,Spivey's Corner,35.1982,-78.4826
+NC,Spout Springs,35.2736,-79.0456
+NC,Spring Hope,35.9441,-78.109
+NC,Spring Lake,35.1846,-78.9947
+NC,Springdale,35.2903,-81.1453
+NC,Spruce Pine,35.914,-82.0697
+NC,St. Helena,34.5166,-77.9174
+NC,St. James,33.9444,-78.1003
+NC,St. Pauls,34.8092,-78.9766
+NC,St. Stephens,35.7646,-81.2729
+NC,Staley,35.7979,-79.5517
+NC,Stallings,35.1103,-80.6601
+NC,Stanfield,35.2337,-80.4302
+NC,Stanley,35.3547,-81.0918
+NC,Stanly County,35.3104,-80.2544
+NC,Stantonsburg,35.6052,-77.8191
+NC,Star,35.3991,-79.7833
+NC,Statesville,35.7855,-80.873
+NC,Stedman,35.0135,-78.7001
+NC,Stem,36.1957,-78.7222
+NC,Stokes,35.7105,-77.2676
+NC,Stokes County,36.3938,-80.2699
+NC,Stokesdale,36.2281,-79.9774
+NC,Stoneville,36.4653,-79.9064
+NC,Stonewall,35.1388,-76.7415
+NC,Stony Point,35.8678,-81.0441
+NC,Stovall,36.442,-78.5733
+NC,Sugar Mountain,36.1264,-81.8647
+NC,Summerfield,36.1969,-79.8972
+NC,Sunbury,36.4469,-76.6127
+NC,Sunset Beach,33.8923,-78.5073
+NC,Surf City,34.4373,-77.5349
+NC,Surry County,36.4154,-80.6865
+NC,Swain County,35.5688,-83.4656
+NC,Swan Quarter,35.413,-76.3197
+NC,Swannanoa,35.6008,-82.3872
+NC,Swansboro,34.6936,-77.1343
+NC,Swepsonville,36.0288,-79.3561
+NC,Sylva,35.3754,-83.2185
+NC,Tabor City,34.1545,-78.8732
+NC,Tar Heel,34.7339,-78.7909
+NC,Tarboro,35.9052,-77.5572
+NC,Taylorsville,35.9168,-81.176
+NC,Taylortown,35.2146,-79.4917
+NC,Teachey,34.7708,-78.006
+NC,Thomasville,35.8813,-80.0815
+NC,Toast,36.4967,-80.6355
+NC,Tobaccoville,36.2256,-80.3588
+NC,Topsail Beach,34.3664,-77.6476
+NC,Transylvania County,35.2101,-82.8167
+NC,Trent Woods,35.082,-77.092
+NC,Trenton,35.0633,-77.3546
+NC,Trinity,35.8768,-80.0104
+NC,Troutman,35.697,-80.885
+NC,Troy,35.3646,-79.8919
+NC,Tryon,35.2088,-82.2379
+NC,Turkey,34.995,-78.1842
+NC,Tyro,35.7997,-80.3764
+NC,Tyrrell County,35.8704,-76.1653
+NC,Union County,34.9918,-80.5304
+NC,Unionville,35.0785,-80.5171
+NC,Valdese,35.7555,-81.5727
+NC,Valle Crucis,36.2156,-81.7966
+NC,Valley Hill,35.2939,-82.4927
+NC,Vance County,36.3655,-78.4054
+NC,Vanceboro,35.3031,-77.1567
+NC,Vandemere,35.1927,-76.6617
+NC,Vander,35.0383,-78.7854
+NC,Vann Crossroads,35.1701,-78.4041
+NC,Varnamtown,33.9458,-78.2327
+NC,Vass,35.2539,-79.2846
+NC,Waco,35.3626,-81.4293
+NC,Wade,35.1634,-78.7397
+NC,Wadesboro,34.9638,-80.0747
+NC,Wagram,34.8891,-79.3652
+NC,Wake County,35.7898,-78.6506
+NC,Wake Forest,35.9644,-78.5133
+NC,Wakulla,34.797,-79.256
+NC,Walkertown,36.1497,-80.1689
+NC,Wallace,34.7379,-77.9906
+NC,Wallburg,36.0131,-80.1669
+NC,Walnut Cove,36.2935,-80.1409
+NC,Walnut Creek,35.3094,-77.8747
+NC,Walstonburg,35.5961,-77.698
+NC,Wanchese,35.8402,-75.6417
+NC,Warren County,36.3981,-78.0999
+NC,Warrenton,36.399,-78.157
+NC,Warsaw,34.9996,-78.0927
+NC,Washington,35.558,-77.0542
+NC,Washington County,35.8447,-76.5723
+NC,Washington Park,35.5329,-77.0316
+NC,Watauga County,36.2354,-81.7099
+NC,Watha,34.6512,-77.9576
+NC,Waves,35.5659,-75.4655
+NC,Waxhaw,34.9375,-80.74
+NC,Wayne County,35.3542,-78.0087
+NC,Waynesville,35.4857,-82.9992
+NC,Weaverville,35.6993,-82.5557
+NC,Webster,35.35,-83.219
+NC,Weddington,35.0221,-80.7354
+NC,Welcome,35.9066,-80.2548
+NC,Weldon,36.424,-77.613
+NC,Wendell,35.7936,-78.3511
+NC,Wentworth,36.4012,-79.7569
+NC,Wesley Chapel,35.0058,-80.6934
+NC,West Canton,35.5387,-82.8647
+NC,West Jefferson,36.3831,-81.4896
+NC,West Marion,35.6524,-82.019
+NC,Westport,35.4973,-80.9769
+NC,Whispering Pines,35.2482,-79.3719
+NC,Whitakers,36.1057,-77.713
+NC,White Lake,34.6502,-78.4911
+NC,White Oak,34.7397,-78.7186
+NC,White Plains,36.4438,-80.649
+NC,Whiteville,34.3305,-78.7014
+NC,Whitsett,36.0792,-79.5723
+NC,Whittier,35.4347,-83.3548
+NC,Wilkes County,36.2089,-81.1661
+NC,Wilkesboro,36.1424,-81.1769
+NC,Williamston,35.8465,-77.0661
+NC,Wilmington,34.2092,-77.8858
+NC,Wilson,35.7315,-77.9308
+NC,Wilson County,35.7004,-77.9216
+NC,Wilson's Mills,35.5862,-78.363
+NC,Windsor,35.993,-76.9399
+NC,Winfall,36.2116,-76.4567
+NC,Wingate,34.9875,-80.4476
+NC,Winston-Salem,36.1029,-80.2608
+NC,Winterville,35.5287,-77.4001
+NC,Winton,36.3894,-76.9347
+NC,Woodfin,35.6461,-82.5944
+NC,Woodland,36.3306,-77.2149
+NC,Woodlawn,36.118,-79.2959
+NC,Wrightsboro,34.2876,-77.9301
+NC,Wrightsville Beach,34.213,-77.7979
+NC,Yadkin College,35.8721,-80.3861
+NC,Yadkin County,36.1588,-80.6652
+NC,Yadkinville,36.1316,-80.6593
+NC,Yancey County,35.8893,-82.304
+NC,Yanceyville,36.4102,-79.3294
+NC,Youngsville,36.0351,-78.4817
+NC,Zebulon,35.8295,-78.3142
+SC,Abbeville,34.1785,-82.3777
+SC,Abbeville County,34.229,-82.4541
+SC,Abney Crossroads,34.5064,-80.5107
+SC,Adams Run,32.7219,-80.3466
+SC,Aiken,33.5316,-81.7251
+SC,Aiken County,33.55,-81.633
+SC,Alcolu,33.7591,-80.2249
+SC,Allendale,33.008,-81.3092
+SC,Allendale County,32.9798,-81.3633
+SC,Anderson,34.5215,-82.6435
+SC,Anderson County,34.5212,-82.6386
+SC,Andrews,33.4495,-79.566
+SC,Antreville,34.2962,-82.5603
+SC,Arcadia,34.9611,-81.9931
+SC,Arcadia Lakes,34.0516,-80.9631
+SC,Arial,34.8461,-82.6406
+SC,Arkwright,34.915,-81.9387
+SC,Arthurtown,33.9654,-81.0011
+SC,Ashwood,34.123,-80.2968
+SC,Atlantic Beach,33.8036,-78.7177
+SC,Awendaw,32.9679,-79.6548
+SC,Aynor,34.0002,-79.2071
+SC,Bamberg,33.3001,-81.0312
+SC,Bamberg County,33.203,-81.0532
+SC,Barnwell,33.2416,-81.3661
+SC,Barnwell County,33.2606,-81.4342
+SC,Batesburg-Leesville,33.9133,-81.5281
+SC,Baxter Village,35.0272,-80.9779
+SC,Beaufort,32.4581,-80.7225
+SC,Beaufort County,32.3581,-80.6894
+SC,Beech Island,33.4286,-81.8903
+SC,Belton,34.5238,-82.4927
+SC,Belvedere,33.5393,-81.9336
+SC,Ben Avon,34.9346,-81.8754
+SC,Bennettsville,34.6282,-79.686
+SC,Berea,34.8785,-82.4662
+SC,Berkeley County,33.2077,-79.9537
+SC,Bethune,34.4142,-80.3487
+SC,Bishopville,34.2201,-80.2474
+SC,Blacksburg,35.1221,-81.5181
+SC,Blackville,33.3478,-81.2949
+SC,Blenheim,34.5098,-79.6525
+SC,Bluffton,32.2144,-80.9295
+SC,Blythewood,34.2092,-80.9953
+SC,Boiling Springs,35.045,-81.9779
+SC,Bonneau,33.3136,-79.9539
+SC,Bonneau Beach,33.3221,-79.9886
+SC,Bowman,33.3483,-80.6843
+SC,Boykin,34.1151,-80.588
+SC,Bradley,34.0301,-82.2393
+SC,Branchville,33.2517,-80.8161
+SC,Briarcliffe Acres,33.7901,-78.749
+SC,Brookdale,33.5208,-80.8384
+SC,Browntown,34.2053,-80.316
+SC,Brunson,32.9243,-81.1886
+SC,Bucksport,33.669,-79.1169
+SC,Buffalo,34.7244,-81.6844
+SC,Buford,34.748,-80.6285
+SC,Burnettown,33.5211,-81.8647
+SC,Burton,32.4248,-80.7406
+SC,Caesars Head,35.1071,-82.6184
+SC,Calhoun County,33.6748,-80.7803
+SC,Calhoun Falls,34.093,-82.5965
+SC,Camden,34.2589,-80.6092
+SC,Cameron,33.558,-80.715
+SC,Camp Croft,34.9088,-81.8636
+SC,Campobello,35.1258,-82.1494
+SC,Cane Savannah,33.8927,-80.442
+SC,Capitol View,33.9672,-80.9238
+SC,Carlisle,34.592,-81.4645
+SC,Carolina Forest,33.7664,-78.9135
+SC,Cash,34.6196,-79.8895
+SC,Catawba,34.8396,-80.8999
+SC,Cateechee,34.7666,-82.7788
+SC,Cayce,33.9505,-81.0398
+SC,Centenary,34.0257,-79.3524
+SC,Centerville,34.5283,-82.7167
+SC,Central,34.7234,-82.7747
+SC,Central Pacolet,34.9096,-81.7528
+SC,Chapin,34.1653,-81.3393
+SC,Charleston,32.828,-79.9729
+SC,Charleston County,32.8005,-79.9425
+SC,Cheraw,34.6979,-79.914
+SC,Cherokee County,35.0498,-81.6076
+SC,Cherokee Falls,35.0639,-81.5445
+SC,Cherryvale,33.9495,-80.4593
+SC,Chesnee,35.1462,-81.863
+SC,Chester,34.705,-81.2132
+SC,Chester County,34.6893,-81.1612
+SC,Chesterfield,34.733,-80.078
+SC,Chesterfield County,34.637,-80.1592
+SC,Chickasaw Point,34.5355,-83.0765
+SC,City View,34.8625,-82.4258
+SC,Clarendon County,33.6647,-80.2179
+SC,Clarks Hill,33.6582,-82.166
+SC,Clearwater,33.5028,-81.9111
+SC,Clemson,34.6836,-82.8106
+SC,Clemson University,34.6756,-82.8352
+SC,Clifton,34.9861,-81.8204
+SC,Clinton,34.4739,-81.8609
+SC,Clio,34.579,-79.5461
+SC,Clover,35.1116,-81.2203
+SC,Cokesbury,34.29,-82.2087
+SC,Colleton County,32.8494,-80.6564
+SC,Columbia,34.0405,-80.9061
+SC,Conestee,34.7638,-82.3516
+SC,Converse,34.9957,-81.8431
+SC,Conway,33.8345,-79.0492
+SC,Coosawhatchie,32.5861,-80.9354
+SC,Cope,33.3777,-81.0079
+SC,Cordova,33.4345,-80.921
+SC,Coronaca,34.2518,-82.1052
+SC,Cottageville,32.9362,-80.4803
+SC,Coward,33.9771,-79.7506
+SC,Cowpens,35.0186,-81.8041
+SC,Cross Anchor,34.6442,-81.858
+SC,Cross Hill,34.3045,-81.9836
+SC,Dacusville,34.9343,-82.5605
+SC,Dale,32.5554,-80.7016
+SC,Dalzell,34.0203,-80.4329
+SC,Danwood,34.0903,-79.7695
+SC,Darlington,34.3014,-79.8672
+SC,Darlington County,34.3322,-79.9621
+SC,Daufuskie Island,32.1105,-80.8571
+SC,Daviston,33.8862,-79.3718
+SC,DeBordieu Colony,33.3706,-79.1758
+SC,Denmark,33.3137,-81.1338
+SC,Dentsville,34.0755,-80.9552
+SC,Dillon,34.4244,-79.3676
+SC,Dillon County,34.3902,-79.3752
+SC,Donalds,34.3745,-82.3432
+SC,Dorchester County,33.0822,-80.4047
+SC,Dovesville,34.4038,-79.9085
+SC,Drayton,34.9762,-81.9026
+SC,Due West,34.3348,-82.3903
+SC,Dunbar,33.5352,-79.3523
+SC,Duncan,34.9324,-82.1437
+SC,Dunean,34.8193,-82.423
+SC,Easley,34.8198,-82.5822
+SC,East Camden,34.2687,-80.5681
+SC,East Gaffney,35.0854,-81.6243
+SC,East Sumter,33.9269,-80.2929
+SC,Eastover,33.8779,-80.6949
+SC,Edgefield,33.7853,-81.9286
+SC,Edgefield County,33.7795,-81.9596
+SC,Edisto,33.4779,-80.8993
+SC,Edisto Beach,32.4987,-80.3135
+SC,Edmund,33.8637,-81.1918
+SC,Ehrhardt,33.0985,-81.0138
+SC,Elgin,34.1702,-80.7931
+SC,Elko,33.3807,-81.3805
+SC,Elliott,34.1109,-80.171
+SC,Elloree,33.53,-80.5708
+SC,Enoree,34.6605,-81.9625
+SC,Estill,32.7505,-81.2388
+SC,Eureka Mill,34.718,-81.1929
+SC,Eutawville,33.3978,-80.3428
+SC,Fair Play,34.5081,-82.9868
+SC,Fairfax,32.9594,-81.2362
+SC,Fairfield County,34.3957,-81.127
+SC,Fairforest,34.9471,-82.0182
+SC,Fairview Crossroads,33.7622,-81.3595
+SC,Fingerville,35.1351,-82.0004
+SC,Finklea,34.0989,-78.9858
+SC,Five Forks,34.8099,-82.2229
+SC,Florence,34.1789,-79.7922
+SC,Florence County,34.0285,-79.7102
+SC,Floydale,34.3211,-79.337
+SC,Folly Beach,32.6693,-79.9606
+SC,Forest Acres,34.0331,-80.9732
+SC,Forestbrook,33.7242,-78.9678
+SC,Foreston,33.6368,-80.0607
+SC,Fort Lawn,34.7002,-80.8991
+SC,Fort Mill,35.006,-80.94
+SC,Fountain Inn,34.6966,-82.2021
+SC,Fripp Island,32.3221,-80.4869
+SC,Furman,32.6812,-81.1877
+SC,Gadsden,33.8472,-80.7656
+SC,Gaffney,35.0736,-81.6615
+SC,Gantt,34.7871,-82.4013
+SC,Garden City,33.5917,-79.0066
+SC,Gaston,33.818,-81.0997
+SC,Gayle Mill,34.7022,-81.2392
+SC,Georgetown,33.3724,-79.2808
+SC,Georgetown County,33.4175,-79.2963
+SC,Gifford,32.86,-81.2385
+SC,Gilbert,33.9241,-81.391
+SC,Gillisonville,32.6116,-81.0002
+SC,Glendale,34.9451,-81.8364
+SC,Glenn Springs,34.812,-81.8505
+SC,Gloverville,33.5268,-81.8131
+SC,Golden Grove,34.7187,-82.4296
+SC,Goose Creek,32.9949,-80.0092
+SC,Govan,33.2228,-81.1748
+SC,Gramling,35.0775,-82.1346
+SC,Graniteville,33.5647,-81.8092
+SC,Gray Court,34.6083,-82.1151
+SC,Great Falls,34.5721,-80.9053
+SC,Greeleyville,33.5802,-79.99
+SC,Green Sea,34.1288,-78.972
+SC,Greenville,34.8369,-82.363
+SC,Greenville County,34.8926,-82.3721
+SC,Greenwood,34.1954,-82.1537
+SC,Greenwood County,34.1558,-82.1279
+SC,Greer,34.9333,-82.2308
+SC,Grover,33.1092,-80.592
+SC,Hamer,34.4745,-79.3254
+SC,Hampton,32.8676,-81.1094
+SC,Hampton County,32.7783,-81.1438
+SC,Hanahan,32.931,-80.0022
+SC,Harbor Island,32.4083,-80.4382
+SC,Hardeeville,32.2953,-81.041
+SC,Harleyville,33.2131,-80.4478
+SC,Hartsville,34.366,-80.0833
+SC,Heath Springs,34.5933,-80.675
+SC,Helena,34.2807,-81.6445
+SC,Hemingway,33.7533,-79.4463
+SC,Hickory Grove,34.9773,-81.4194
+SC,Hilda,33.2805,-81.2447
+SC,Hilltop,34.9755,-81.9585
+SC,Hilton Head Island,32.1903,-80.7384
+SC,Hodges,34.2888,-82.25
+SC,Holly Hill,33.3244,-80.4131
+SC,Hollywood,32.7513,-80.2019
+SC,Homeland Park,34.4642,-82.6588
+SC,Homewood,33.8901,-79.0505
+SC,Honea Path,34.4476,-82.395
+SC,Hopkins,33.9002,-80.8568
+SC,Horry County,33.9093,-78.9767
+SC,India Hook,35.0144,-81.0281
+SC,Inman,35.0458,-82.0885
+SC,Inman Mills,35.0409,-82.1024
+SC,Irmo,34.1026,-81.1959
+SC,Irwin,34.6939,-80.8223
+SC,Islandton,32.9093,-80.9359
+SC,Isle of Palms,32.8039,-79.7524
+SC,Iva,34.3081,-82.6634
+SC,Jackson,33.3286,-81.792
+SC,Jacksonboro,32.7718,-80.4769
+SC,James Island,32.7361,-79.9372
+SC,Jamestown,33.2859,-79.6946
+SC,Jasper County,32.4306,-81.0216
+SC,Jefferson,34.6512,-80.3841
+SC,Jenkinsville,34.3111,-81.2867
+SC,Joanna,34.4159,-81.8002
+SC,Johnsonville,33.8142,-79.4443
+SC,Johnston,33.8334,-81.8048
+SC,Jonesville,34.8339,-81.6824
+SC,Judson,34.8331,-82.4276
+SC,Keowee Key,34.8209,-82.9123
+SC,Kershaw,34.5433,-80.5872
+SC,Kershaw County,34.3384,-80.5909
+SC,Ketchuptown,34.1091,-79.1557
+SC,Kiawah Island,32.6164,-80.0606
+SC,Kingstree,33.6672,-79.8287
+SC,Kline,33.1247,-81.3425
+SC,La France,34.6163,-82.7707
+SC,Ladson,33.0095,-80.108
+SC,Lake City,33.8677,-79.7539
+SC,Lake Murray of Richland,34.1207,-81.2654
+SC,Lake Secession,34.2899,-82.5857
+SC,Lake View,34.3408,-79.1664
+SC,Lake Wylie,35.0985,-81.0722
+SC,Lakewood,33.8341,-80.3489
+SC,Lamar,34.1695,-80.0651
+SC,Lancaster,34.7239,-80.7857
+SC,Lancaster County,34.6868,-80.7037
+SC,Landrum,35.1751,-82.1857
+SC,Lane,33.5251,-79.8797
+SC,Langley,33.5152,-81.835
+SC,Latta,34.3389,-79.4336
+SC,Laurel Bay,32.4599,-80.7865
+SC,Laurens,34.5027,-82.0214
+SC,Laurens County,34.4837,-82.0055
+SC,Lee County,34.1586,-80.2512
+SC,Lesslie,34.8838,-80.9486
+SC,Lexington,33.9929,-81.2218
+SC,Lexington County,33.8923,-81.273
+SC,Liberty,34.7913,-82.6963
+SC,Lincolnville,33.0079,-80.1555
+SC,Litchfield Beach,33.4744,-79.1146
+SC,Little Mountain,34.1969,-81.4124
+SC,Little River,33.8806,-78.6405
+SC,Little Rock,34.4691,-79.3899
+SC,Live Oak,34.056,-78.9397
+SC,Livingston,33.5531,-81.1195
+SC,Lobeco,32.5512,-80.7354
+SC,Lockhart,34.7961,-81.467
+SC,Lodge,33.0678,-80.9537
+SC,Longcreek,34.7842,-83.2564
+SC,Loris,34.0575,-78.8884
+SC,Lowndesville,34.2099,-82.6476
+SC,Lowrys,34.804,-81.2372
+SC,Lugoff,34.2119,-80.6976
+SC,Luray,32.8142,-81.2403
+SC,Lydia,34.2865,-80.1185
+SC,Lyman,34.975,-82.1241
+SC,Lynchburg,34.06,-80.077
+SC,Manning,33.6933,-80.2168
+SC,Manville,34.1598,-80.2974
+SC,Marietta,35.0375,-82.4909
+SC,Marion,34.1787,-79.3957
+SC,Marion County,34.0836,-79.354
+SC,Marlboro County,34.6017,-79.6794
+SC,Mauldin,34.781,-82.3042
+SC,Mayesville,33.9849,-80.2044
+SC,Mayo,35.0857,-81.8535
+SC,McBee,34.467,-80.2571
+SC,McClellanville,33.087,-79.4671
+SC,McColl,34.6665,-79.5442
+SC,McConnells,34.877,-81.2316
+SC,McCormick,33.9128,-82.2876
+SC,McCormick County,33.8976,-82.3162
+SC,Meggett,32.6897,-80.2576
+SC,Modoc,33.7215,-82.2174
+SC,Monarch Mill,34.7161,-81.5847
+SC,Moncks Corner,33.1998,-79.9866
+SC,Monetta,33.85,-81.6099
+SC,Moore,34.866,-81.993
+SC,Mount Carmel,34.0185,-82.5044
+SC,Mount Croghan,34.7697,-80.2264
+SC,Mount Pleasant,32.8084,-79.865
+SC,Mountville,34.373,-81.9774
+SC,Mulberry,33.9589,-80.3291
+SC,Mullins,34.2043,-79.255
+SC,Murphys Estates,33.6011,-81.946
+SC,Murrells Inlet,33.5573,-79.0572
+SC,Myrtle Beach,33.7104,-78.886
+SC,Neeses,33.5364,-81.1236
+SC,New Ellenton,33.4196,-81.6824
+SC,Newberry,34.2799,-81.6003
+SC,Newberry County,34.2899,-81.5997
+SC,Newport,34.9963,-81.0807
+SC,Newry,34.7248,-82.9146
+SC,Newtown,34.4013,-79.3568
+SC,Nichols,34.2352,-79.1491
+SC,Ninety Six,34.1695,-82.023
+SC,Norris,34.7661,-82.7525
+SC,North,33.6164,-81.103
+SC,North Augusta,33.5233,-81.9566
+SC,North Charleston,32.9179,-80.065
+SC,North Hartsville,34.4026,-80.0723
+SC,North Myrtle Beach,33.822,-78.703
+SC,North Santee,33.5422,-80.4141
+SC,Northlake,34.5706,-82.6843
+SC,Norway,33.4498,-81.1267
+SC,Oak Grove,33.983,-81.1514
+SC,Oakland,33.9894,-80.4959
+SC,Oconee County,34.7488,-83.0615
+SC,Olanta,33.9362,-79.9318
+SC,Olar,33.1799,-81.1853
+SC,Olympia,33.9739,-81.0361
+SC,Orangeburg,33.4936,-80.8669
+SC,Orangeburg County,33.4361,-80.8029
+SC,Oswego,34.0056,-80.2861
+SC,Pacolet,34.9054,-81.7637
+SC,Pageland,34.7701,-80.3857
+SC,Pamplico,33.995,-79.5706
+SC,Parker,34.85,-82.453
+SC,Parksville,33.7866,-82.2174
+SC,Patrick,34.5753,-80.0445
+SC,Pauline,34.8343,-81.8663
+SC,Pawleys Island,33.4281,-79.125
+SC,Paxville,33.739,-80.3586
+SC,Peak,34.2363,-81.3288
+SC,Pelion,33.7849,-81.2597
+SC,Pelzer,34.6429,-82.4605
+SC,Pendleton,34.6422,-82.7791
+SC,Perry,33.6283,-81.3081
+SC,Pickens,34.8857,-82.7102
+SC,Pickens County,34.8854,-82.7234
+SC,Piedmont,34.7056,-82.4667
+SC,Pimlico,33.0992,-79.9596
+SC,Pine Ridge,34.3957,-80.1684
+SC,Pinewood,33.7396,-80.462
+SC,Pinopolis,33.2286,-80.0386
+SC,Plum Branch,33.849,-82.2638
+SC,Pomaria,34.2687,-81.4178
+SC,Port Royal,32.3554,-80.7003
+SC,Powdersville,34.78,-82.4976
+SC,Princeton,34.4913,-82.2959
+SC,Privateer,33.8168,-80.3914
+SC,Promised Land,34.1277,-82.2307
+SC,Prosperity,34.2134,-81.5284
+SC,Quinby,34.228,-79.7359
+SC,Rains,34.0942,-79.3214
+SC,Ravenel,32.7763,-80.2319
+SC,Red Bank,33.9295,-81.2339
+SC,Red Hill,33.778,-79.0151
+SC,Reevesville,33.1973,-80.6417
+SC,Reidville,34.8658,-82.1106
+SC,Rembert,34.1037,-80.5305
+SC,Richburg,34.7166,-81.0196
+SC,Richland County,34.0291,-80.898
+SC,Ridge Spring,33.8453,-81.6612
+SC,Ridgeland,32.4688,-80.9211
+SC,Ridgeville,33.09,-80.3072
+SC,Ridgeway,34.3065,-80.9601
+SC,Riverview,35.0142,-80.9889
+SC,Rock Hill,34.9382,-81.0192
+SC,Rockville,32.6028,-80.1914
+SC,Roebuck,34.879,-81.9644
+SC,Rowesville,33.3722,-80.8362
+SC,Ruby,34.7482,-80.1791
+SC,Russellville,33.397,-79.9637
+SC,Salem,34.8879,-82.9752
+SC,Salley,33.5669,-81.3037
+SC,Saluda,34.0012,-81.7716
+SC,Saluda County,34.0053,-81.7279
+SC,Sandy Springs,34.6025,-82.7509
+SC,Sangaree,33.0327,-80.1253
+SC,Sans Souci,34.8908,-82.423
+SC,Santee,33.4846,-80.49
+SC,Saxon,34.9611,-81.9693
+SC,Scotia,32.6805,-81.2433
+SC,Scranton,33.9173,-79.7441
+SC,Seabrook,32.5348,-80.7562
+SC,Seabrook Island,32.575,-80.182
+SC,Sellers,34.2826,-79.4723
+SC,Seneca,34.6811,-82.9656
+SC,Seven Oaks,34.0462,-81.1409
+SC,Sharon,34.952,-81.3435
+SC,Sheldon,32.5955,-80.7994
+SC,Shell Point,32.3756,-80.7538
+SC,Shiloh,33.9482,-80.0189
+SC,Silverstreet,34.2177,-81.7146
+SC,Simpsonville,34.7285,-82.2564
+SC,Six Mile,34.8093,-82.8116
+SC,Slater,35.0375,-82.4909
+SC,Slater-Marietta,35.0375,-82.4909
+SC,Smoaks,33.0895,-80.8142
+SC,Smyrna,35.042,-81.4094
+SC,Snelling,33.2443,-81.475
+SC,Socastee,33.6874,-79.0089
+SC,Society Hill,34.5098,-79.8535
+SC,South Congaree,33.9095,-81.1375
+SC,South Sumter,33.8853,-80.3376
+SC,South Union,34.5595,-83.049
+SC,Southern Shops,34.9821,-81.9909
+SC,Spartanburg,34.9456,-81.9259
+SC,Spartanburg County,34.932,-81.9916
+SC,Springdale,34.6904,-80.7763
+SC,Springfield,33.4967,-81.2795
+SC,St. Andrews,34.0511,-81.1056
+SC,St. Charles,34.0806,-80.2249
+SC,St. George,33.1861,-80.5795
+SC,St. Matthews,33.6646,-80.7788
+SC,St. Stephen,33.4026,-79.9252
+SC,Starr,34.3779,-82.6953
+SC,Startex,34.9302,-82.0891
+SC,Stateburg,33.9749,-80.5259
+SC,Stuckey,33.7322,-79.5131
+SC,Sullivan's Island,32.7709,-79.8311
+SC,Summerton,33.6015,-80.3526
+SC,Summerville,33.0058,-80.1793
+SC,Summit,33.9246,-81.4226
+SC,Sumter,33.9408,-80.3955
+SC,Sumter County,33.9161,-80.3824
+SC,Surfside Beach,33.6097,-78.9775
+SC,Swansea,33.74,-81.1045
+SC,Sycamore,33.0347,-81.2239
+SC,Tamassee,34.8798,-83.014
+SC,Tatum,34.6438,-79.5867
+SC,Taylors,34.9143,-82.3139
+SC,Tega Cay,35.0393,-81.0106
+SC,The Cliffs Valley,35.1395,-82.436
+SC,Tigerville,35.0651,-82.3699
+SC,Timmonsville,34.1331,-79.941
+SC,Townville,34.567,-82.894
+SC,Tradesville,34.7709,-80.5502
+SC,Travelers Rest,34.96,-82.445
+SC,Trenton,33.7406,-81.8409
+SC,Troy,33.9919,-82.2979
+SC,Turbeville,33.8895,-80.0161
+SC,Ulmer,33.1022,-81.209
+SC,Union,34.7238,-81.6249
+SC,Union County,34.6904,-81.6159
+SC,Unity,34.8016,-80.6918
+SC,Utica,34.676,-82.9221
+SC,Valley Falls,35.0066,-81.9689
+SC,Van Wyck,34.8556,-80.8293
+SC,Vance,33.4364,-80.4202
+SC,Varnville,32.852,-81.0802
+SC,Wade Hampton,34.8827,-82.3317
+SC,Wagener,33.6513,-81.3626
+SC,Walhalla,34.7695,-83.0554
+SC,Wallace,34.7231,-79.8403
+SC,Walterboro,32.9013,-80.6762
+SC,Ward,33.8573,-81.7313
+SC,Ware Place,34.6247,-82.3848
+SC,Ware Shoals,34.3878,-82.2433
+SC,Warrenville,33.547,-81.8017
+SC,Waterloo,34.3562,-82.0572
+SC,Watts Mills,34.5162,-81.9855
+SC,Wedgefield,33.8809,-80.5159
+SC,Welcome,34.8143,-82.4718
+SC,Wellford,34.958,-82.0953
+SC,West Columbia,33.9901,-81.0994
+SC,West Pelzer,34.6449,-82.4748
+SC,West Union,34.756,-83.0441
+SC,Westminster,34.6666,-83.0907
+SC,White Knoll,33.8911,-81.2362
+SC,Whitmire,34.5041,-81.6142
+SC,Whitney,34.9836,-81.9224
+SC,Wilkinson Heights,33.4919,-80.8285
+SC,Williams,33.0341,-80.8428
+SC,Williamsburg County,33.6265,-79.7165
+SC,Williamston,34.6191,-82.4804
+SC,Willington,33.9651,-82.4503
+SC,Williston,33.4017,-81.4219
+SC,Windsor,33.4809,-81.5137
+SC,Winnsboro,34.3686,-81.0914
+SC,Winnsboro Mills,34.3558,-81.0697
+SC,Wisacky,34.1466,-80.1914
+SC,Woodfield,34.0592,-80.9306
+SC,Woodford,33.6687,-81.112
+SC,Woodruff,34.7451,-82.0375
+SC,Wyboo,33.5657,-80.2153
+SC,Yemassee,32.6783,-80.8479
+SC,York,34.9983,-81.2331
+SC,York County,34.9702,-81.1832
+SC,Zion,34.2588,-79.3117

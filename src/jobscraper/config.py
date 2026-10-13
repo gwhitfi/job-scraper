@@ -30,6 +30,7 @@ class Web:
     url: str = ""  # where I open the page; linked from alert emails
     host: str = "127.0.0.1"
     port: int = 8787
+    home: str = "Anderson, SC"  # distances on the page are measured from here
 
 
 @dataclass(frozen=True)

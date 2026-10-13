@@ -118,7 +118,7 @@ def test_batch_raises_when_truncated():
         classify.classify_batch([posting("a:1", "Dev")], PROFILE, ACME, client)
 
 
-def test_llm_splits_into_batches_and_skips_failed_ones(monkeypatch):
+def test_llm_isolates_the_posting_that_breaks_a_batch(monkeypatch):
     monkeypatch.setattr(classify, "BATCH_SIZE", 2)
     postings = [posting(f"a:{i}", "Dev") for i in range(5)]
     calls = []
@@ -139,8 +139,29 @@ def test_llm_splits_into_batches_and_skips_failed_ones(monkeypatch):
 
     client = SimpleNamespace(messages=SimpleNamespace(parse=parse))
     out = classify.classify_llm(postings, PROFILE, ACME, client)
-    assert len(calls) == 3
-    assert set(out) == {"a:0", "a:1", "a:4"}  # the a:2/a:3 batch failed
+    # [a0 a1] ok; [a2 a3] fails, splits into [a2] (fails) and [a3] (ok); [a4] ok
+    assert len(calls) == 5
+    assert set(out) == {"a:0", "a:1", "a:3", "a:4"}
+
+
+def test_llm_stops_when_claude_is_unavailable(monkeypatch):
+    import anthropic
+    import httpx
+
+    monkeypatch.setattr(classify, "BATCH_SIZE", 2)
+    calls = []
+
+    def parse(**kwargs):
+        calls.append(kwargs)
+        request = httpx.Request("POST", "https://api.anthropic.com/v1/messages")
+        raise anthropic.RateLimitError(
+            "slow down", response=httpx.Response(429, request=request), body=None
+        )
+
+    client = SimpleNamespace(messages=SimpleNamespace(parse=parse))
+    postings = [posting(f"a:{i}", "Dev") for i in range(6)]
+    assert classify.classify_llm(postings, PROFILE, ACME, client) == {}
+    assert len(calls) == 1  # no splitting, no further batches
 
 
 @pytest.mark.parametrize(

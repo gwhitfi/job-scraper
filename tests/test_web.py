@@ -300,3 +300,23 @@ def test_duplicate_hidden_and_linked_from_company_card(app):
     assert "mus:9" not in keys(app, "exact")
     html = app.index({"view": "exact"})
     assert "Also listed on" in html and ">Move Upstate SC</a>" in html
+
+
+def test_nearest_sort_and_miles(app):
+    st = app.state()
+    st.postings["acme:1"].location = "Charlotte, NC"
+    st.postings["mus:9"].location = "Pendleton, SC"
+    st.postings["acme:3"].location = "Remote"
+    html = app.index({"view": "relevant", "sort": "nearest"})
+    titles = ("BI Developer", "Data Analyst", "Web Developer", "Ops Specialist")
+    order = [html.index(t) for t in titles]
+    assert order == sorted(order)  # 11 mi, 27 mi, 113 mi, then remote last
+    assert "Pendleton, SC · 11 mi" in html
+
+
+def test_footer_shows_claude_cost(app, tmp_path):
+    from jobscraper import usage
+
+    run = usage.Usage(calls=1, input_tokens=100_000, output_tokens=10_000)
+    usage.record(tmp_path / "state" / "usage.json", run, "claude-sonnet-5-5", NOW)
+    assert "Claude: $0.30 this month" in app.index({})

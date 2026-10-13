@@ -8,7 +8,18 @@ from pathlib import Path
 import anthropic
 from dotenv import find_dotenv, load_dotenv
 
-from jobscraper import classify, config, employers, http, locations, notify, runner, state, web
+from jobscraper import (
+    classify,
+    config,
+    employers,
+    http,
+    locations,
+    notify,
+    runner,
+    state,
+    usage,
+    web,
+)
 
 # Where the scheduled run publishes state for the web page, and where my marks live.
 DATA_DIR = Path.home() / ".local" / "share" / "jobscraper"
@@ -63,6 +74,13 @@ def cmd_run(args: argparse.Namespace) -> None:
         print(f"{names[company_id]}: {count} postings")
     for company_id, error in result.failed.items():
         print(f"{names[company_id]}: FAILED ({error})")
+    if result.usage.calls:
+        cost = result.usage.cost(cfg.classifier_model)
+        print(
+            f"Claude: {result.usage.calls} call(s), {result.usage.input_tokens:,} in / "
+            f"{result.usage.output_tokens:,} out tokens"
+            + (f", ${cost:.4f}" if cost is not None else "")
+        )
     print()
     print(notify.subject(result.digest))
     print(notify.render_text(result.digest, names, show_reasons=True))
@@ -71,6 +89,9 @@ def cmd_run(args: argparse.Namespace) -> None:
         print("\n(dry run: state not saved, no email sent)")
         return
     state.save(st, args.state_dir)
+    usage.record(
+        args.state_dir / "usage.json", result.usage, cfg.classifier_model, datetime.now(UTC)
+    )
     if args.no_email:
         return
     outbox_path = args.state_dir / "email.json"

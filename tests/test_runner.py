@@ -359,3 +359,25 @@ def test_board_duplicates_are_not_classified_or_announced(fake_sites, monkeypatc
     assert s.postings["board:x"].duplicate_of == "acme:1"
     assert s.postings["board:x"].classification is None  # not sent to the classifier
     assert sorted(p.key for p in result.digest.new_exact) == ["acme:1", "board:y"]
+
+
+def test_run_reports_claude_usage(fake_sites):
+    class CountingLLM(StubLLM):
+        def __init__(self):
+            super().__init__("core")
+            original = self.messages.parse
+
+            def parse(**kwargs):
+                response = original(**kwargs)
+                response.usage = SimpleNamespace(input_tokens=1000, output_tokens=200)
+                return response
+
+            self.messages.parse = parse
+
+    fake_sites["acme"] = [raw("1", "Software Developer I"), raw("2", "Web Developer")]
+    result = do_run(cfg("acme"), State(), llm=CountingLLM())
+    assert (result.usage.calls, result.usage.input_tokens, result.usage.output_tokens) == (
+        1,
+        1000,
+        200,
+    )

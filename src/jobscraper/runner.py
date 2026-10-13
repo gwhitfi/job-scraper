@@ -12,6 +12,7 @@ from jobscraper.config import Config
 from jobscraper.models import Company, RawPosting
 from jobscraper.notify import Digest
 from jobscraper.state import Posting, State
+from jobscraper.usage import Usage
 
 log = logging.getLogger(__name__)
 
@@ -24,6 +25,7 @@ class RunResult:
     digest: Digest
     fetched: dict[str, int] = field(default_factory=dict)  # company_id -> postings found
     failed: dict[str, str] = field(default_factory=dict)  # company_id -> error
+    usage: Usage = field(default_factory=Usage)  # Claude tokens spent this run
 
 
 def fetch_with_retry(
@@ -76,7 +78,9 @@ def _has_llm_result(p: Posting) -> bool:
     return p.classification is not None and p.classification.get("model") != classify.KEYWORD_MODEL
 
 
-def _classify_pending(state: State, cfg: Config, llm: anthropic.Anthropic | None) -> list[str]:
+def _classify_pending(
+    state: State, cfg: Config, llm: anthropic.Anthropic | None, usage: Usage
+) -> list[str]:
     """Classify postings that need it; return keys that just became relevant on an LLM retry.
 
     Postings redone because the rules changed aren't returned: they aren't new jobs.
@@ -99,7 +103,7 @@ def _classify_pending(state: State, cfg: Config, llm: anthropic.Anthropic | None
     if llm is not None:
         try:
             results = classify.classify_llm(
-                pending, cfg.profile, companies, llm, cfg.classifier_model
+                pending, cfg.profile, companies, llm, cfg.classifier_model, usage
             )
         except Exception:
             log.exception("LLM classification failed, using keywords")
@@ -163,7 +167,7 @@ def run(
             result.digest.health.append(event)
 
     dedupe.mark_duplicates(state, cfg.companies, adapters.BOARD_ADAPTERS)
-    upgraded = _classify_pending(state, cfg, llm)
+    upgraded = _classify_pending(state, cfg, llm, result.usage)
 
     def group(key: str) -> str | None:
         p = state.postings[key]

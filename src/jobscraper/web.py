@@ -9,7 +9,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote_plus, urlencode, urlparse
 
-from jobscraper import classify, employers, notify, state, userdata
+from jobscraper import classify, distance, employers, jsonfile, notify, state, usage, userdata
 from jobscraper.config import Config
 from jobscraper.state import Posting, State
 
@@ -33,7 +33,7 @@ VIEWS = {
     "blocked": "Blocked",
 }
 SOURCES = {"all": "All sources", "companies": "Company sites", "boards": "Job boards"}
-SORTS = {"newest": "Newest", "relevant": "Most relevant"}
+SORTS = {"newest": "Newest", "relevant": "Most relevant", "nearest": "Nearest"}
 
 
 @dataclass
@@ -47,6 +47,7 @@ class Row:
     employer_key: str
     # Where else this job is listed, as (board name, url).
     also_on: list[tuple[str, str]] = field(default_factory=list)
+    miles: float | None = None  # from [web] home; None for remote or unknown places
 
 
 class App:
@@ -58,6 +59,7 @@ class App:
         self.lock = threading.Lock()
         self._cache: tuple[float, State] | None = None
         self.companies = {c.id: c for c in cfg.companies}
+        self.home = distance.home_coords(cfg.web.home)
 
     # --- data ---
 
@@ -92,6 +94,7 @@ class App:
                     employer=employers.status(p, self.companies, decisions),
                     employer_key=employers.employer_key(p),
                     also_on=duplicates.get(p.key, []),
+                    miles=distance.miles_from(self.home, p.location),
                 )
             )
         return out
@@ -160,6 +163,9 @@ class App:
             # Keyword-only results have no score yet; they sort last.
             score = (p.classification or {}).get("score") or 0
             return (-score, -when, p.title.lower())
+        if sort == "nearest":
+            # Remote and unknown places sort last.
+            return (r.miles is None, r.miles or 0, -when, p.title.lower())
         return (-when, p.title.lower())
 
     # --- pages ---
@@ -301,7 +307,8 @@ def _card(r: Row, today: date) -> str:
         badges.append(f'<span class="score" title="Similarity to target role">{score}/10</span>')
     when = f"posted {p.posted_date:%b %-d}" if p.posted_date else f"seen {p.first_seen:%b %-d}"
     level = c.get("level", "unknown")
-    meta_parts = [escape(x) for x in (p.location, level if level != "unknown" else "") if x]
+    far = f"{r.miles:.0f} mi" if r.miles is not None else ""
+    meta_parts = [escape(x) for x in (p.location, far, level if level != "unknown" else "") if x]
     meta_parts.append(f'<span class="posted">{escape(when)}</span>')
     meta = " · ".join(meta_parts)
     reason = escape(c.get("reason", ""))
@@ -425,6 +432,9 @@ def render_page(
         sort_opts=sort_opts,
         q=escape(q),
         cards=cards,
+        footer=escape(
+            usage.summary(jsonfile.read(app.state_dir / "usage.json"), datetime.now(UTC))
+        ),
     )
 
 
@@ -517,6 +527,8 @@ dialog select {{ display: block; width: 100%; margin-top: 4px; font-size: 1rem; 
 .employer-panel p {{ margin: 0 0 4px; }}
 .verify-links a {{ color: var(--accent); }}
 .employer-panel .actions {{ margin-top: 6px; }}
+footer {{ max-width: 760px; margin: 0 auto; padding: 0 16px 32px; color: var(--muted);
+  font-size: .8rem; text-align: center; }}
 .dialog-actions {{ display: flex; justify-content: space-between; gap: 8px; }}
 </style>
 </head>
@@ -539,6 +551,7 @@ dialog select {{ display: block; width: 100%; margin-top: 4px; font-size: 1rem; 
   <nav class="tabs">{tabs}</nav>
 </header>
 <main>{cards}</main>
+<footer>{footer}</footer>
 <dialog id="settings">
   <h2>Settings</h2>
   {font_head}

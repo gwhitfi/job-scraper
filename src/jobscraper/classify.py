@@ -12,6 +12,7 @@ from pydantic import BaseModel
 from jobscraper.config import DEFAULT_MODEL, Profile
 from jobscraper.models import Company
 from jobscraper.state import Posting
+from jobscraper.usage import Usage
 
 log = logging.getLogger(__name__)
 
@@ -124,18 +125,54 @@ def classify_llm(
     companies: dict[str, Company],
     client: anthropic.Anthropic,
     model: str = DEFAULT_MODEL,
+    usage: Usage | None = None,
 ) -> dict[str, dict]:
-    """Classify in batches. A failed batch is logged and its postings left out for a retry."""
+    """Classify in batches; postings that can't be classified are left out for a retry."""
     results: dict[str, dict] = {}
     for start in range(0, len(postings), BATCH_SIZE):
         batch = postings[start : start + BATCH_SIZE]
         try:
-            results |= classify_batch(batch, profile, companies, client, model)
-        except (anthropic.APIError, RuntimeError) as e:
-            log.warning("Classifier batch of %d failed: %s", len(batch), e)
-        except Exception:  # e.g. a reply that fails validation
-            log.exception("Classifier batch of %d failed", len(batch))
+            results |= _classify_splitting(batch, profile, companies, client, model, usage)
+        except Exception as e:
+            if not _unavailable(e):
+                raise
+            # Claude itself is down or refusing us; more calls this run would fail too.
+            log.warning("Claude unavailable, skipping %d postings: %s", len(postings) - start, e)
+            break
     return results
+
+
+def _unavailable(e: Exception) -> bool:
+    """Outages, rate limits, and credential problems, as opposed to a bad batch."""
+    if isinstance(e, anthropic.APIConnectionError):
+        return True
+    return isinstance(e, anthropic.APIStatusError) and (
+        e.status_code >= 500 or e.status_code in (401, 403, 429)
+    )
+
+
+def _classify_splitting(
+    batch: list[Posting],
+    profile: Profile,
+    companies: dict[str, Company],
+    client: anthropic.Anthropic,
+    model: str,
+    usage: Usage | None,
+) -> dict[str, dict]:
+    """Classify a batch; if its content breaks the reply, split it to isolate the bad posting."""
+    try:
+        return classify_batch(batch, profile, companies, client, model, usage)
+    except Exception as e:
+        if _unavailable(e):
+            raise
+        if len(batch) == 1:
+            log.warning("Couldn't classify %s: %s: %s", batch[0].key, type(e).__name__, e)
+            return {}
+        log.warning("Batch of %d failed (%s: %s); splitting", len(batch), type(e).__name__, e)
+        mid = len(batch) // 2
+        return _classify_splitting(
+            batch[:mid], profile, companies, client, model, usage
+        ) | _classify_splitting(batch[mid:], profile, companies, client, model, usage)
 
 
 def classify_batch(
@@ -144,6 +181,7 @@ def classify_batch(
     companies: dict[str, Company],
     client: anthropic.Anthropic,
     model: str = DEFAULT_MODEL,
+    usage: Usage | None = None,
 ) -> dict[str, dict]:
     """Classify postings in one request. Postings missing from the reply are left out."""
     response = client.messages.parse(
@@ -153,6 +191,8 @@ def classify_batch(
         messages=[{"role": "user", "content": _prompt(postings, profile, companies)}],
         output_format=Results,
     )
+    if usage is not None and getattr(response, "usage", None):
+        usage.add(response.usage)  # billed even if the reply turns out unusable
     if response.stop_reason != "end_turn" or response.parsed_output is None:
         raise RuntimeError(f"Classifier stopped early: {response.stop_reason}")
 
