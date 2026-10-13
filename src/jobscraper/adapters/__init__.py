@@ -2,13 +2,14 @@ from collections.abc import Callable
 
 import httpx
 
-from jobscraper.adapters import michelin, successfactors, ultipro
+from jobscraper.adapters import michelin, moveupstatesc, successfactors, ultipro
 from jobscraper.models import Company, RawPosting
 
 Adapter = Callable[[Company, httpx.Client], list[RawPosting]]
 
 ADAPTERS: dict[str, Adapter] = {
     "michelin": michelin.fetch,
+    "moveupstatesc": moveupstatesc.fetch,
     "successfactors": successfactors.fetch,
     "ultipro": ultipro.fetch,
 }

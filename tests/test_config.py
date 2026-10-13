@@ -14,7 +14,8 @@ def test_loads_repo_config():
     arthrex = cfg.company("arthrex")
     assert arthrex.added == date(2026, 10, 12)
     assert arthrex.enabled
-    assert cfg.company("scansource").locations == ("SC",)
+    assert cfg.company("scansource").locations == ("upstate_sc",)
+    assert "Pendleton, SC" in cfg.regions["upstate_sc"]
 
 
 def test_duplicate_company_ids_rejected(tmp_path):
@@ -25,4 +26,15 @@ def test_duplicate_company_ids_rejected(tmp_path):
         '[[companies]]\nid = "a"\nname = "A"\nadapter = "x"\nurl = "u"\nadded = 2026-01-01\n'
     )
     with pytest.raises(ValueError):
+        config.load(p)
+
+
+def test_unknown_location_rejected(tmp_path):
+    p = tmp_path / "config.toml"
+    p.write_text(
+        '[profile]\ntarget_role = "x"\n[notifications]\nemail = "a@b.c"\n'
+        '[[companies]]\nid = "a"\nname = "A"\nadapter = "x"\nurl = "u"\nadded = 2026-01-01\n'
+        'locations = ["upstate"]\n'
+    )
+    with pytest.raises(ValueError, match="upstate"):
         config.load(p)

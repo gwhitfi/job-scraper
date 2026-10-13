@@ -47,6 +47,7 @@ def apply_results(
                 posted_date=raw.posted_date,
                 category=raw.category,
                 summary=raw.summary,
+                employer=raw.employer,
                 first_seen=now,
                 last_seen=now,
             )
@@ -60,9 +61,11 @@ def apply_results(
         existing.title = raw.title
         existing.location = raw.location
         existing.url = raw.url
-        existing.posted_date = raw.posted_date or existing.posted_date
+        # Keep the first date seen; boards that only say "3 days ago" would drift otherwise.
+        existing.posted_date = existing.posted_date or raw.posted_date
         existing.category = raw.category
         existing.summary = raw.summary
+        existing.employer = raw.employer
         existing.last_seen = now
         existing.missed_runs = 0
 

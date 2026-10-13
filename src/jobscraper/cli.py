@@ -7,18 +7,24 @@ from pathlib import Path
 import anthropic
 from dotenv import find_dotenv, load_dotenv
 
-from jobscraper import adapters, classify, config, http, notify, runner, state
+from jobscraper import classify, config, http, locations, notify, runner, state
 
 
 def cmd_test(args: argparse.Namespace) -> None:
     cfg = config.load(args.config)
     company = cfg.company(args.company_id)
-    adapter = adapters.get(company.adapter)
     with http.client() as c:
-        postings = adapter(company, c)
+        postings, dropped = runner.fetch_company(company, c, cfg.regions)
     for p in postings:
         print(f"{p.source_id}\t{p.title}\t{p.location}\t{p.posted_date or '-'}\t{p.url}")
     print(f"\n{len(postings)} postings from {company.name}")
+    if dropped:
+        f = locations.build_filter(company.locations, cfg.regions, company.remote)
+        gaps = {id(p) for p in locations.possible_gaps(dropped, f)}
+        print(f"{len(dropped)} dropped by location filter {list(company.locations)}")
+        for p in dropped:
+            # "check" marks in-state jobs, which usually mean a town is missing from a region.
+            print(f"  {'check:' if id(p) in gaps else '      '} {p.title} ({p.location})")
 
 
 def _llm_client(enabled: bool) -> anthropic.Anthropic | None:

@@ -1,4 +1,5 @@
 from datetime import UTC, date, datetime, timedelta
+from types import SimpleNamespace
 
 import httpx
 import pytest
@@ -58,7 +59,7 @@ def test_new_relevant_jobs_reported_irrelevant_ones_stored(fake_sites):
     fake_sites["acme"] = [raw("1", "Software Developer I"), raw("2", "Forklift Operator")]
     s = State()
     result = do_run(cfg("acme"), s)
-    assert [p.key for p in result.digest.new] == ["acme:1"]
+    assert [p.key for p in result.digest.new_exact] == ["acme:1"]
     assert s.postings["acme:2"].classification["relevance"] == "none"
     assert result.fetched == {"acme": 2}
 
@@ -94,7 +95,7 @@ def test_failure_isolated_retried_and_alerted_once(fake_sites):
     fake_sites["beta"] = [raw("7", "Data Analyst")]
     result = do_run(cfg("acme", "beta"), s, hours=5)
     assert [e.kind for e in result.digest.health] == ["recovered"]
-    assert [p.key for p in result.digest.new] == ["beta:7"]
+    assert [p.key for p in result.digest.new_near] == ["beta:7"]
 
 
 def test_suspicious_empty_does_not_remove(fake_sites):
@@ -123,38 +124,94 @@ class FailingLLM:
 
 
 class StubLLM:
-    """Says every posting is a core entry-level job."""
+    """Gives every posting the same verdict and counts calls."""
 
-    class messages:  # noqa: N801
-        @staticmethod
-        def parse(**kwargs):
-            from types import SimpleNamespace
+    def __init__(self, relevance: str = "core"):
+        self.calls = 0
+        stub = self
 
-            ids = [
-                line.split("id=")[1].split(" |")[0]
-                for line in kwargs["messages"][0]["content"].splitlines()
-                if line.startswith("- id=")
-            ]
-            results = [
-                classify.Result(id=i, relevance="core", level="entry", reason="stub") for i in ids
-            ]
-            return SimpleNamespace(
-                stop_reason="end_turn", parsed_output=classify.Results(results=results)
-            )
+        class Messages:
+            @staticmethod
+            def parse(**kwargs):
+                stub.calls += 1
+                ids = [
+                    line.split("id=")[1].split(" |")[0]
+                    for line in kwargs["messages"][0]["content"].splitlines()
+                    if line.startswith("- id=")
+                ]
+                results = [
+                    classify.Result(id=i, relevance=relevance, level="entry", reason="stub")
+                    for i in ids
+                ]
+                return SimpleNamespace(
+                    stop_reason="end_turn", parsed_output=classify.Results(results=results)
+                )
+
+        self.messages = Messages()
 
 
 def test_llm_failure_falls_back_then_retry_upgrades(fake_sites):
     fake_sites["acme"] = [raw("1", "Platform Engineer")]  # no keyword hit
     s = State()
     result = do_run(cfg("acme"), s, llm=FailingLLM())
-    assert result.digest.new == []
+    assert result.digest.is_empty()
     assert s.postings["acme:1"].classification["model"] == classify.KEYWORD_MODEL
 
     result = do_run(cfg("acme"), s, hours=1, llm=StubLLM())
-    assert [p.key for p in result.digest.new] == ["acme:1"]
+    assert [p.key for p in result.digest.new_exact] == ["acme:1"]
     assert s.postings["acme:1"].classification["model"] == classify.DEFAULT_MODEL
     # Classified by the LLM now, so it isn't sent again.
     assert do_run(cfg("acme"), s, hours=2, llm=StubLLM()).digest.is_empty()
+
+
+def test_still_available_lists_older_exact_matches(fake_sites):
+    fake_sites["acme"] = [raw("1", "Software Developer I")]
+    s = State()
+    first = do_run(cfg("acme"), s, llm=StubLLM())
+    assert [p.key for p in first.digest.new_exact] == ["acme:1"]
+    assert first.digest.still_available == []  # already listed as new
+
+    fake_sites["acme"] = [raw("1", "Software Developer I"), raw("2", "Web Developer")]
+    second = do_run(cfg("acme"), s, hours=1, llm=StubLLM())
+    assert [p.key for p in second.digest.new_exact] == ["acme:2"]
+    assert [p.key for p in second.digest.still_available] == ["acme:1"]
+
+
+def test_rule_change_reclassifies_once_without_announcing(fake_sites):
+    fake_sites["acme"] = [raw("1", "Platform Engineer")]
+    s = State()
+    do_run(cfg("acme"), s, llm=StubLLM("none"))
+
+    changed = cfg("acme")
+    changed = Config(
+        Profile(**{**PROFILE.__dict__, "core_examples": ("platform engineer",)}),
+        changed.notifications,
+        changed.companies,
+    )
+    llm = StubLLM("core")
+    result = do_run(changed, s, hours=1, llm=llm)
+    assert llm.calls == 1
+    assert s.postings["acme:1"].classification["relevance"] == "core"
+    assert result.digest.new_exact == []
+    assert [p.key for p in result.digest.still_available] == ["acme:1"]
+
+    do_run(changed, s, hours=2, llm=llm)
+    assert llm.calls == 1  # up to date now
+
+
+def test_stale_llm_results_kept_without_llm(fake_sites):
+    fake_sites["acme"] = [raw("1", "Platform Engineer")]
+    s = State()
+    do_run(cfg("acme"), s, llm=StubLLM("adjacent"))
+    changed = Config(
+        Profile(**{**PROFILE.__dict__, "mode": "strict"}),
+        Notifications("a@b.c"),
+        cfg("acme").companies,
+    )
+    for llm in (None, FailingLLM()):
+        do_run(changed, s, hours=1, llm=llm)
+        assert s.postings["acme:1"].classification["relevance"] == "adjacent"
+        assert s.postings["acme:1"].classification["model"] == classify.DEFAULT_MODEL
 
 
 def test_fetch_retries_then_succeeds(monkeypatch):

@@ -55,20 +55,18 @@ def _is_remote(opp: dict) -> bool:
     return any("remote" in t.lower() for t in texts)
 
 
-def parse(data: dict, board_url: str, states: tuple[str, ...] = ()) -> list[RawPosting]:
-    """Convert one search response; if `states` is set, keep postings there or remote."""
+def parse(data: dict, board_url: str) -> list[RawPosting]:
     postings = []
     for opp in data["opportunities"]:
-        locations = [_location(loc) for loc in opp.get("Locations") or []]
-        in_states = any(state in states for _, state in locations)
-        if states and not in_states and not _is_remote(opp):
-            continue
+        texts = [text for text, _ in (_location(loc) for loc in opp.get("Locations") or [])]
+        if _is_remote(opp) and not any("remote" in t.lower() for t in texts):
+            texts.append("Remote")  # so the shared location filter keeps it
         posted = opp.get("PostedDate")
         postings.append(
             RawPosting(
                 source_id=opp["Id"],
                 title=" ".join(opp["Title"].split()),
-                location="; ".join(text for text, _ in locations) or "Remote",
+                location="; ".join(texts),
                 url=f"{board_url.rstrip('/')}/OpportunityDetail?opportunityId={opp['Id']}",
                 posted_date=datetime.fromisoformat(posted).date() if posted else None,
                 category=opp.get("JobCategoryName") or "",
@@ -88,7 +86,7 @@ def fetch(company: Company, client: httpx.Client, delay: float = 1.0) -> list[Ra
         resp = client.post(endpoint, json=_search_body(page * PAGE_SIZE))
         resp.raise_for_status()
         data = resp.json()
-        for p in parse(data, board_url, company.locations):
+        for p in parse(data, board_url):
             postings.setdefault(p.source_id, p)
         if (page + 1) * PAGE_SIZE >= data["totalCount"] or not data["opportunities"]:
             break

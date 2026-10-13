@@ -1,11 +1,11 @@
 import json
-from datetime import date
+from datetime import date, timedelta
 
 import httpx
 import pytest
 from conftest import fixture_text
 
-from jobscraper.adapters import michelin, successfactors, ultipro
+from jobscraper.adapters import michelin, moveupstatesc, successfactors, ultipro
 
 MICHELIN_URL = "https://jobs.michelinman.com/job-offer-result-list?criteria=%7B%7D&page=1"
 ULTIPRO_URL = "https://recruiting.ultipro.com/ABC/JobBoard/123/"
@@ -85,33 +85,28 @@ def test_michelin_follows_pages_and_dedupes(make_company):
 # --- UltiPro (ScanSource) ---
 
 
-def test_ultipro_filters_by_state():
+def test_ultipro_parses_all_locations():
     data = json.loads(fixture_text("scansource.json"))
-    all_postings = ultipro.parse(data, ULTIPRO_URL)
-    sc_postings = ultipro.parse(data, ULTIPRO_URL, ("SC",))
-    assert len(all_postings) == 50
-    assert len(sc_postings) == 36
-    assert all("SC" in p.location for p in sc_postings)
-    p = sc_postings[0]
+    postings = ultipro.parse(data, ULTIPRO_URL)
+    assert len(postings) == 50
+    assert sum(", SC" in p.location for p in postings) == 36
+    p = next(p for p in postings if ", SC" in p.location)
     assert "  " not in p.title
     assert p.category
     assert p.summary and "\n" not in p.summary
     assert p.url == f"{ULTIPRO_URL.rstrip('/')}/OpportunityDetail?opportunityId={p.source_id}"
 
 
-def test_ultipro_keeps_remote_jobs_outside_states():
+def test_ultipro_marks_remote_jobs():
     data = json.loads(fixture_text("scansource.json"))
-    out_of_state = next(
-        o
-        for o in data["opportunities"]
-        if all(loc["Address"]["State"]["Code"] != "SC" for loc in o["Locations"])
-    )
-    no_locations = {**out_of_state, "Id": "no-loc", "Locations": []}
-    remote_title = {**out_of_state, "Id": "remote-title", "Title": "Developer (Remote)"}
-    data = {"opportunities": [out_of_state, no_locations, remote_title], "totalCount": 3}
-    postings = ultipro.parse(data, ULTIPRO_URL, ("SC",))
-    assert [p.source_id for p in postings] == ["no-loc", "remote-title"]
-    assert postings[0].location == "Remote"
+    onsite = data["opportunities"][0]
+    no_locations = {**onsite, "Id": "no-loc", "Locations": []}
+    remote_title = {**onsite, "Id": "remote-title", "Title": "Developer (Remote)"}
+    data = {"opportunities": [onsite, no_locations, remote_title], "totalCount": 3}
+    by_id = {p.source_id: p for p in ultipro.parse(data, ULTIPRO_URL)}
+    assert "remote" not in by_id[onsite["Id"]].location.lower()
+    assert by_id["no-loc"].location == "Remote"
+    assert by_id["remote-title"].location.endswith("Remote")
 
 
 def test_ultipro_paginates_until_total(make_company):
@@ -132,3 +127,67 @@ def test_ultipro_paginates_until_total(make_company):
     postings = ultipro.fetch(company, mock_client(handler), delay=0)
     assert skips == [0, 50]
     assert len(postings) == 52
+
+
+# --- Move Upstate SC (job board) ---
+
+MUS_URL = "https://moveupstatesc.com/find-a-job/it-tech-development/"
+TODAY = date(2026, 10, 13)
+
+
+def test_moveupstatesc_parses_cards_and_pager():
+    postings, last_page = moveupstatesc.parse(fixture_text("moveupstatesc_p1.html"), TODAY)
+    assert last_page == 5
+    assert len(postings) == 60
+    assert len({p.source_id for p in postings}) == 60
+    first = postings[0]
+    assert first.title == "Business Intelligence Developer"
+    assert first.employer == "AFL"
+    assert first.location == "Duncan, SC 29334"
+    assert first.posted_date == date(2026, 10, 10)
+    assert first.url.startswith("https://www.indeed.com/viewjob?jk=")
+    assert first.source_id == first.url.split("jk=")[1]
+    assert first.summary.startswith("AFL manufactures")
+    assert all("Posted" not in p.title for p in postings)
+    assert any(p.employer == "" and p.location == "Greenville, SC 29601" for p in postings)
+
+
+@pytest.mark.parametrize(
+    ("text", "days"),
+    [
+        ("Posted today", 0),
+        ("Just posted", 0),
+        ("Posted 1 day ago", 1),
+        ("Posted 6 days ago", 6),
+        ("Posted 2 weeks ago", 14),
+        ("Posted 1 month ago", 30),
+        ("Posted 30+ days ago", 30),
+    ],
+)
+def test_moveupstatesc_relative_dates(text, days):
+    assert moveupstatesc.posted_date(text, TODAY) == TODAY - timedelta(days=days)
+
+
+def test_moveupstatesc_unknown_date():
+    assert moveupstatesc.posted_date("Posted recently", TODAY) is None
+
+
+def test_moveupstatesc_follows_pages(make_company):
+    html = fixture_text("moveupstatesc_p1.html")
+    requested = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requested.append(request.url.path)
+        # Every page returns the same cards; dedupe keeps one copy.
+        return httpx.Response(200, text=html)
+
+    company = make_company("moveupstatesc", MUS_URL)
+    postings = moveupstatesc.fetch(company, mock_client(handler), delay=0)
+    assert requested == [
+        "/find-a-job/it-tech-development/",
+        "/find-a-job/it-tech-development/page/2/",
+        "/find-a-job/it-tech-development/page/3/",
+        "/find-a-job/it-tech-development/page/4/",
+        "/find-a-job/it-tech-development/page/5/",
+    ]
+    assert len(postings) == 60

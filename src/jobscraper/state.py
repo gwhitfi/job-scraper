@@ -25,6 +25,7 @@ class Posting:
     classification: dict | None = None
     category: str = ""
     summary: str = ""
+    employer: str = ""
 
 
 @dataclass

@@ -1,4 +1,4 @@
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 from jobscraper import tracker
 from jobscraper.models import RawPosting
@@ -77,6 +77,21 @@ def test_category_and_summary_stored():
     r = RawPosting("1", "Dev", "SC", "https://x/1", category="IT", summary="Builds things")
     tracker.apply_results(s, "co", [r], T0)
     assert (s.postings["co:1"].category, s.postings["co:1"].summary) == ("IT", "Builds things")
+
+
+def test_first_posted_date_kept():
+    s = State()
+    first = RawPosting("1", "Dev", "SC", "u", posted_date=date(2026, 10, 1))
+    later = RawPosting("1", "Dev", "SC", "u", posted_date=date(2026, 10, 3))
+    tracker.apply_results(s, "co", [first], T0)
+    tracker.apply_results(s, "co", [later], T0)
+    assert s.postings["co:1"].posted_date == date(2026, 10, 1)
+
+
+def test_employer_stored():
+    s = State()
+    tracker.apply_results(s, "co", [RawPosting("1", "Dev", "SC", "u", employer="AFL")], T0)
+    assert s.postings["co:1"].employer == "AFL"
 
 
 def test_title_changes_are_updated_silently():

@@ -6,3 +6,4 @@ __pycache__/
 .ruff_cache/
 .env
 state/
+companies-to-add.md

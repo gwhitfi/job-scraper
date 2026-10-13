@@ -14,12 +14,27 @@ SMTP_PORT = 465
 
 @dataclass
 class Digest:
-    new: list[Posting] = field(default_factory=list)
+    new_exact: list[Posting] = field(default_factory=list)
+    new_near: list[Posting] = field(default_factory=list)
+    new_maybe: list[Posting] = field(default_factory=list)
     removed: list[Posting] = field(default_factory=list)
     health: list[HealthEvent] = field(default_factory=list)
+    # Reminder only; doesn't trigger an email by itself.
+    still_available: list[Posting] = field(default_factory=list)
 
     def is_empty(self) -> bool:
-        return not (self.new or self.removed or self.health)
+        return not (
+            self.new_exact or self.new_near or self.new_maybe or self.removed or self.health
+        )
+
+    def job_sections(self) -> list[tuple[str, list[Posting]]]:
+        sections = [
+            ("New exact matches", self.new_exact),
+            ("New near matches", self.new_near),
+            ("New probably-not matches (Claude unsure)", self.new_maybe),
+            ("Still available exact matches", self.still_available),
+        ]
+        return [(title, postings) for title, postings in sections if postings]
 
 
 def _posted(p: Posting) -> str:
@@ -37,10 +52,15 @@ def _days_up(p: Posting) -> int:
     return (end - p.first_seen).days
 
 
-def _by_company(postings: list[Posting]) -> dict[str, list[Posting]]:
+def _source(p: Posting, names: dict[str, str]) -> str:
+    name = names.get(p.company_id, p.company_id)
+    return f"{p.employer} (via {name})" if p.employer else name
+
+
+def _by_company(postings: list[Posting], names: dict[str, str]) -> dict[str, list[Posting]]:
     groups: dict[str, list[Posting]] = {}
-    for p in sorted(postings, key=lambda p: (p.company_id, p.title)):
-        groups.setdefault(p.company_id, []).append(p)
+    for p in sorted(postings, key=lambda p: (_source(p, names).lower(), p.title)):
+        groups.setdefault(_source(p, names), []).append(p)
     return groups
 
 
@@ -56,11 +76,16 @@ def _health_line(e: HealthEvent, names: dict[str, str]) -> str:
 
 
 def subject(d: Digest) -> str:
-    parts = []
-    if d.new:
-        parts.append(f"{len(d.new)} new")
-    if d.removed:
-        parts.append(f"{len(d.removed)} removed")
+    parts = [
+        f"{len(postings)} {label}"
+        for label, postings in (
+            ("exact", d.new_exact),
+            ("near", d.new_near),
+            ("maybe", d.new_maybe),
+            ("removed", d.removed),
+        )
+        if postings
+    ]
     if any(e.kind == "failing" for e in d.health):
         parts.append("site check failing")
     return "Job Scraper: " + (", ".join(parts) or "nothing to report")
@@ -68,11 +93,11 @@ def subject(d: Digest) -> str:
 
 def render_text(d: Digest, names: dict[str, str], show_reasons: bool = False) -> str:
     out = []
-    if d.new:
-        out.append("NEW JOBS")
-        for company_id, postings in _by_company(d.new).items():
-            out.append(f"\n{names.get(company_id, company_id)}")
-            for p in postings:
+    for title, postings in d.job_sections():
+        out.append(title.upper())
+        for source, group in _by_company(postings, names).items():
+            out.append(f"\n{source}")
+            for p in group:
                 out.append(f"  - {p.title} ({p.location}) [{_level(p)}, {_posted(p)}]")
                 if show_reasons:
                     out.append(f"    why: {(p.classification or {}).get('reason', '-')}")
@@ -81,9 +106,7 @@ def render_text(d: Digest, names: dict[str, str], show_reasons: bool = False) ->
     if d.removed:
         out.append("REMOVED JOBS")
         for p in sorted(d.removed, key=lambda p: (p.company_id, p.title)):
-            out.append(
-                f"  - {p.title} at {names.get(p.company_id, p.company_id)}, up {_days_up(p)} days"
-            )
+            out.append(f"  - {p.title} at {_source(p, names)}, up {_days_up(p)} days")
         out.append("")
     if d.health:
         out.append("SITE HEALTH")
@@ -94,11 +117,11 @@ def render_text(d: Digest, names: dict[str, str], show_reasons: bool = False) ->
 
 def render_html(d: Digest, names: dict[str, str]) -> str:
     out = []
-    if d.new:
-        out.append("<h2>New jobs</h2>")
-        for company_id, postings in _by_company(d.new).items():
-            out.append(f"<h3>{escape(names.get(company_id, company_id))}</h3><ul>")
-            for p in postings:
+    for title, postings in d.job_sections():
+        out.append(f"<h2>{escape(title)}</h2>")
+        for source, group in _by_company(postings, names).items():
+            out.append(f"<h3>{escape(source)}</h3><ul>")
+            for p in group:
                 out.append(
                     f'<li><a href="{escape(p.url)}">{escape(p.title)}</a> '
                     f"&middot; {escape(p.location)} &middot; {escape(_level(p))} "
@@ -108,8 +131,9 @@ def render_html(d: Digest, names: dict[str, str]) -> str:
     if d.removed:
         out.append("<h2>Removed jobs</h2><ul>")
         for p in sorted(d.removed, key=lambda p: (p.company_id, p.title)):
-            company = names.get(p.company_id, p.company_id)
-            out.append(f"<li>{escape(p.title)} at {escape(company)}, up {_days_up(p)} days</li>")
+            out.append(
+                f"<li>{escape(p.title)} at {escape(_source(p, names))}, up {_days_up(p)} days</li>"
+            )
         out.append("</ul>")
     if d.health:
         out.append("<h2>Site health</h2><ul>")

@@ -1,6 +1,17 @@
 [profile]
 target_role = "software developer"
-mode = "adjacent"                      # "strict" | "adjacent"
+mode = "adjacent"                      # "strict" (exact only) | "adjacent" (exact, near, maybe)
+# Other names for the target role; always exact matches
+core_examples = [
+  "software engineer",
+  "developer",
+  "dev",
+  "programmer",
+  "web developer",
+  "application developer",
+  "front-end/back-end/full-stack developer",
+  "SWE",
+]
 adjacent_examples = [
   "IT support",
   "data analyst",
@@ -18,6 +29,46 @@ exclude_examples = [
 levels = ["intern", "entry", "mid"]    # allowed: intern, entry, mid, senior, lead
 keywords = ["programming", "software", "developer"]
 
+# Named city lists usable in a company's `locations`.
+[regions]
+# Upstate SC: Abbeville, Anderson, Cherokee, Greenville, Greenwood, Laurens, Oconee,
+# Pickens, Spartanburg, and Union counties.
+upstate_sc = [
+  # Abbeville
+  "Abbeville, SC", "Calhoun Falls, SC", "Donalds, SC", "Due West, SC",
+  # Anderson
+  "Anderson, SC", "Belton, SC", "Centerville, SC", "Honea Path, SC", "Iva, SC",
+  "Pelzer, SC", "Pendleton, SC", "Piedmont, SC", "Powdersville, SC", "Sandy Springs, SC",
+  "Starr, SC", "Townville, SC", "West Pelzer, SC", "Williamston, SC",
+  # Cherokee
+  "Blacksburg, SC", "Gaffney, SC",
+  # Greenville
+  "Berea, SC", "Five Forks, SC", "Fountain Inn, SC", "Gantt, SC", "Greenville, SC",
+  "Greer, SC", "Marietta, SC", "Mauldin, SC", "Parker, SC", "Simpsonville, SC",
+  "Slater, SC", "Taylors, SC", "Tigerville, SC", "Travelers Rest, SC", "Wade Hampton, SC",
+  "Welcome, SC",
+  # Greenwood
+  "Greenwood, SC", "Hodges, SC", "Ninety Six, SC", "Ware Shoals, SC",
+  # Laurens
+  "Clinton, SC", "Cross Hill, SC", "Gray Court, SC", "Joanna, SC", "Laurens, SC",
+  # Oconee
+  "Fair Play, SC", "Salem, SC", "Seneca, SC", "Walhalla, SC", "West Union, SC",
+  "Westminster, SC",
+  # Pickens
+  "Central, SC", "Clemson, SC", "Easley, SC", "Liberty, SC", "Norris, SC", "Pickens, SC",
+  "Six Mile, SC",
+  # Spartanburg
+  "Boiling Springs, SC", "Campobello, SC", "Chesnee, SC", "Cowpens, SC", "Duncan, SC",
+  "Fairforest, SC", "Inman, SC", "Landrum, SC", "Lyman, SC", "Moore, SC", "Pacolet, SC",
+  "Reidville, SC", "Roebuck, SC", "Spartanburg, SC", "Wellford, SC", "Woodruff, SC",
+  # Union
+  "Jonesville, SC", "Lockhart, SC", "Union, SC",
+  # Listings sometimes give only the county
+  "Abbeville County, SC", "Anderson County, SC", "Cherokee County, SC", "Greenville County, SC",
+  "Greenwood County, SC", "Laurens County, SC", "Oconee County, SC", "Pickens County, SC",
+  "Spartanburg County, SC", "Union County, SC",
+]
+
 [classifier]
 model = "claude-sonnet-5-5"
 
@@ -31,6 +82,7 @@ name = "Arthrex"
 about = "Medical device manufacturer"
 adapter = "successfactors"
 url = "https://careers.arthrex.com/go/Jobs-in-South-Carolina/7566200/"
+locations = ["upstate_sc"]           # page covers all of SC
 added = 2026-10-12
 
 [[companies]]
@@ -39,8 +91,17 @@ name = "ScanSource"
 about = "Technology distributor (IT, communications, POS hardware)"
 adapter = "ultipro"
 url = "https://recruiting.ultipro.com/SCA1004SCSO/JobBoard/220bcab6-cf46-46e3-8fd5-181b273b0628/"
-locations = ["SC"]
+locations = ["upstate_sc"]           # remote jobs are always kept
 added = 2026-10-12
+
+[[companies]]
+id = "moveupstatesc"
+name = "Move Upstate SC"
+about = "Regional job board; listings come from Indeed"
+adapter = "moveupstatesc"
+url = "https://moveupstatesc.com/find-a-job/it-tech-development/"
+locations = ["upstate_sc"]           # board is regional, but some listings are just over the GA line
+added = 2026-10-13
 
 [[companies]]
 id = "michelin"

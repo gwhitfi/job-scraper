@@ -13,6 +13,7 @@ class RawPosting:
     posted_date: date | None = None
     category: str = ""  # department/sector as the site labels it
     summary: str = ""  # short description, when the listing has one
+    employer: str = ""  # set by job boards that list many employers
 
 
 @dataclass(frozen=True)
@@ -23,5 +24,7 @@ class Company:
     url: str
     added: date
     enabled: bool = True
+    # State codes, "City, ST", or region names; empty means keep every location.
     locations: tuple[str, ...] = ()
+    remote: bool = True  # keep remote jobs even outside `locations`
     about: str = ""  # one line of context for the classifier, e.g. "Medical device maker"
