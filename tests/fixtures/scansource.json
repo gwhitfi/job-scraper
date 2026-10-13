@@ -1,0 +1,2836 @@
+{
+  "opportunities": [
+    {
+      "Id": "3d61610a-112a-435a-ba9a-8496ad046fbe",
+      "Featured": false,
+      "Title": "Advantix:  National Channel Manager",
+      "RequisitionNumber": "ADVAN004748",
+      "FullTime": true,
+      "JobCategoryName": "Advantix",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-10-12T20:35:02.555Z",
+      "BriefDescription": "Summary:\nThe National Channel Manager will be responsible for engaging with the Tech Brokers, to promote Advantix Solutions and update on Partner opportunities. The NCM will focus on training Partners on Advantix Solutions, join customer calls to do Discovery, provide an overview of solutions, portal demo of capabilities and working with the Partner and Customer to sign contracts. Once a contract is signed, the Channel Manager will provide a hand off to the Implementation Teammates for kick off.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "41a558ac-bd5b-48f1-9a2a-bd8e371dd6e2",
+      "Featured": false,
+      "Title": "Advantix:  Solutions Architect",
+      "RequisitionNumber": "ADVAN004741",
+      "FullTime": true,
+      "JobCategoryName": "Advantix",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-10-12T20:34:50.877Z",
+      "BriefDescription": "We are looking for a Solutions Architect who thrives at the intersection of technology, sales and customer relationships. You will partner closely with Advantix teams and clients to uncover business challenges, actively listen to goals and translate those insights into thoughtful, innovative solution options. You'll play a key part in pre sales engineering helping guide customers through complex situations with calm expertise. Success in this role comes from curiosity, creativity and the ability to think beyond immediate circumstances. You'll build strong connections with partners and continuously exchange knowledge to elevate the overall client experience. If you enjoy collaborating, problem solving, and crafting solutions that make a difference, then this is a place where you can shine.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "b3f10b38-9c96-4d8f-8e97-e19e4e39745e",
+      "Featured": false,
+      "Title": "2nd Shift - Truck Loader/Stacker",
+      "RequisitionNumber": "2NDSH004846",
+      "FullTime": true,
+      "JobCategoryName": "Distribution Center",
+      "Locations": [
+        {
+          "Id": "19166197-c0ee-5fbb-9577-30cf11e0a3e6",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "MS-Southaven",
+          "Address": {
+            "Line1": "8650 Commerce Drive",
+            "Line2": "STE 100",
+            "City": "Southaven",
+            "PostalCode": "38671",
+            "State": {
+              "Code": "MS",
+              "Name": "Mississippi"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.986630558321934,
+            "Longitude": -89.9665468252402
+          }
+        }
+      ],
+      "PostedDate": "2026-10-12T15:16:54.84Z",
+      "BriefDescription": "As a Truck Loader/Stacker you will operate forklift equipment to properly wrap product to ensure proper weight, wrap, stage and load of pallets unto trailer. You will also be required to manually stack boxes on pallets, following specific stacking patterns and safety guidelines. This position is full-time, Monday through Friday, from 1:30 PM to 10PM, with the expectation to work extended hours when necessary to meet business needs",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "2e7affdf-bbe5-472e-ac33-6d1986377b57",
+      "Featured": false,
+      "Title": "2nd Shift - Scanner",
+      "RequisitionNumber": "2NDSH004847",
+      "FullTime": true,
+      "JobCategoryName": "Distribution Center",
+      "Locations": [
+        {
+          "Id": "19166197-c0ee-5fbb-9577-30cf11e0a3e6",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "MS-Southaven",
+          "Address": {
+            "Line1": "8650 Commerce Drive",
+            "Line2": "STE 100",
+            "City": "Southaven",
+            "PostalCode": "38671",
+            "State": {
+              "Code": "MS",
+              "Name": "Mississippi"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.986630558321934,
+            "Longitude": -89.9665468252402
+          }
+        }
+      ],
+      "PostedDate": "2026-10-12T15:16:30.063Z",
+      "BriefDescription": "Responsible for accurately invoicing and processing outgoing orders in a timely manner. This position is full-time, Monday through Friday, from 1:30PM to 10:00 PM, with the expectation to work extended hours when necessary to meet business needs",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "8954d06a-8234-468a-9c64-8aaf563da368",
+      "Featured": false,
+      "Title": "2nd Shift - Truck Loader",
+      "RequisitionNumber": "2NDSH004848",
+      "FullTime": true,
+      "JobCategoryName": "Distribution Center",
+      "Locations": [
+        {
+          "Id": "19166197-c0ee-5fbb-9577-30cf11e0a3e6",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "MS-Southaven",
+          "Address": {
+            "Line1": "8650 Commerce Drive",
+            "Line2": "STE 100",
+            "City": "Southaven",
+            "PostalCode": "38671",
+            "State": {
+              "Code": "MS",
+              "Name": "Mississippi"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.986630558321934,
+            "Longitude": -89.9665468252402
+          }
+        }
+      ],
+      "PostedDate": "2026-10-12T15:16:05.649Z",
+      "BriefDescription": "As a Truck Loader you will operate forklift equipment to properly wrap product to ensure proper weight, wrap, stage and load of pallets unto trailer.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "1b801dff-4afd-4b4d-bca2-c57f1d5e4886",
+      "Featured": false,
+      "Title": "Intelisys:  Escalation Specialist",
+      "RequisitionNumber": "INTEL004845",
+      "FullTime": true,
+      "JobCategoryName": "Intelisys",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-10-12T12:48:10.767Z",
+      "BriefDescription": "The Escalation Specialist reviews and validates incoming escalations, determines the best path for resolution, and coordinates resolution efforts across partners, suppliers, and internal teams. This role is responsible for timely communication, accurate documentation, issue tracking, partner updates, and reporting insights that support continuous improvement.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "340e2142-b497-4644-9a9f-db721076b574",
+      "Featured": false,
+      "Title": "Intelisys:  Partner Success Representative - West",
+      "RequisitionNumber": "INTEL004844",
+      "FullTime": true,
+      "JobCategoryName": "Intelisys",
+      "Locations": [
+        {
+          "Id": "c65c2d5d-ea3f-5d14-86bc-364239cf5daf",
+          "LocalizedName": null,
+          "LocalizedLocationId": "AZPHX",
+          "LocalizedDescription": "AZ Phoenix",
+          "Address": {
+            "Line1": "1241 West Warner Rd",
+            "Line2": "STE 108",
+            "City": "Tempe",
+            "PostalCode": "85284",
+            "State": {
+              "Code": "AZ",
+              "Name": "Arizona"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 33.33451331554846,
+            "Longitude": -111.95986044668402
+          }
+        }
+      ],
+      "PostedDate": "2026-10-09T19:42:30.206Z",
+      "BriefDescription": "The Partner Success Representative role is responsible for managing and supporting the lifecycle of supplier quotes and related actions by reviewing inbound communications, processing assigned tasks, and ensuring timely follow-up with suppliers, partners, and internal stakeholders. It involves maintaining accurate records, documenting progress, and leveraging systems to track activity and outcomes. The position also plays a key role in coordinating pricing-related actions, responding to requests, and monitoring ongoing workflows to ensure nothing is missed. Additionally, the role requires collaboration and flexibility, including providing backup support to team members to maintain operational continuity and efficiency.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "e21016e8-bf28-49b2-8730-8935fdeb29a0",
+      "Featured": true,
+      "Title": "Account Manager LIC - Continuous Posting",
+      "RequisitionNumber": "ACCOU004669",
+      "FullTime": true,
+      "JobCategoryName": "Sales",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-10-09T13:14:15.339Z",
+      "BriefDescription": "*This posting is a continuous posting for sales opportunities opening in the immediate future.  While there may already be sales opportunities currently posted, our advisement is to submit for both this posting and the individual sales opportunities.\n\nThe Account Manager is responsible for driving sales with both new and existing customers. Account Managers are responsible for managing the inbound interactions from customers within a specific segment and includes generating quotes, fielding and responding to inquiries, driving deals to closure, processing orders, and overflow quotes and orders. This individual will navigate internal departments and resources to answer customer inquiries and effectively close deals.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "a6ce6cfb-d179-4872-9c42-7430e9f5e9c6",
+      "Featured": false,
+      "Title": "Account Manager TM - Comms",
+      "RequisitionNumber": "ACCOU004791",
+      "FullTime": true,
+      "JobCategoryName": "Sales",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-10-08T21:12:40.903Z",
+      "BriefDescription": "The Account Manager is responsible for driving sales with both new and existing customers. Account Managers are responsible for managing the inbound interactions from customers within a specific segment and includes generating quotes, fielding and responding to inquiries, driving deals to closure, processing orders, and overflow quotes and orders. This individual will navigate internal departments and resources to answer customer inquiries and effectively close deals. The ideal candidate for this role is a fast learner, hardworking, high energy, results driven individual.  This role will be responsible for achieving their defined SLA’s, KPI’s, and other goals.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "8fd30011-9e2c-4a36-973e-20ee1e183e2f",
+      "Featured": false,
+      "Title": "Design Engineer I - POSB",
+      "RequisitionNumber": "DESIG004824",
+      "FullTime": true,
+      "JobCategoryName": "Tech Support",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-10-08T18:13:38.566Z",
+      "BriefDescription": "The Design Engineer I provides a high level of technical expertise to internal and external customers in a variety of forms that include design assistance, delivering education, and enabling the customer to do business with ScanSource.  This role is expected to be an expert in Point of Sale, Barcoding and RFID Technologies and will act as a trusted advisor to the company's customers.  This individual will be able to guide a customer through designing the best overall solution to include hardware and software.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "e64813f8-e77e-4725-92df-217f97a2f80e",
+      "Featured": false,
+      "Title": "Outbound Team Leader, Picking 2nd Shift",
+      "RequisitionNumber": "OUTBO004842",
+      "FullTime": true,
+      "JobCategoryName": "Distribution Center",
+      "Locations": [
+        {
+          "Id": "19166197-c0ee-5fbb-9577-30cf11e0a3e6",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "MS-Southaven",
+          "Address": {
+            "Line1": "8650 Commerce Drive",
+            "Line2": "STE 100",
+            "City": "Southaven",
+            "PostalCode": "38671",
+            "State": {
+              "Code": "MS",
+              "Name": "Mississippi"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.986630558321934,
+            "Longitude": -89.9665468252402
+          }
+        }
+      ],
+      "PostedDate": "2026-10-07T20:48:56.335Z",
+      "BriefDescription": "Lead the daily operations within the Outbound Department to ensure accurate and timely processing of all orders with maximum efficiency. Provide coaching and support to team members while adhering to all company policies and procedures.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "0388ae07-9866-4164-a345-54beaa7b3608",
+      "Featured": false,
+      "Title": "Outbound Team Leader, Shipping 2nd Shift",
+      "RequisitionNumber": "OUTBO004843",
+      "FullTime": true,
+      "JobCategoryName": "Distribution Center",
+      "Locations": [
+        {
+          "Id": "19166197-c0ee-5fbb-9577-30cf11e0a3e6",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "MS-Southaven",
+          "Address": {
+            "Line1": "8650 Commerce Drive",
+            "Line2": "STE 100",
+            "City": "Southaven",
+            "PostalCode": "38671",
+            "State": {
+              "Code": "MS",
+              "Name": "Mississippi"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.986630558321934,
+            "Longitude": -89.9665468252402
+          }
+        }
+      ],
+      "PostedDate": "2026-10-07T20:48:41.177Z",
+      "BriefDescription": "Lead the daily operations within the Outbound Department to ensure accurate and timely processing of all orders with maximum efficiency. Provide coaching and support to team members while adhering to all company policies and procedures.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "9cb3edcf-58a3-4bbb-bcfe-3a125409cc97",
+      "Featured": false,
+      "Title": "CAM PSR I",
+      "RequisitionNumber": "CAMPS004757",
+      "FullTime": true,
+      "JobCategoryName": "Sales",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-10-05T20:14:47.015Z",
+      "BriefDescription": "The CAM Partner Support Representative (PSR) is responsible for the entry and management of orders and quotes as well as coordination with inside sales, merchandising, and customers to ensure an unrivaled customer experience.  The CAM PSR is also responsible for tactical communication with customers along with resolution of issues.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "a07995d0-0b9a-4cad-aa49-14758f6275d4",
+      "Featured": false,
+      "Title": "Supplier Business Manager II - Payments",
+      "RequisitionNumber": "SUPPL004839",
+      "FullTime": true,
+      "JobCategoryName": "Merchandising",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        },
+        {
+          "Id": "64ac226e-e664-5ffe-b1f9-7c01fde26c8e",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "CA-Sacramento",
+          "Address": {
+            "Line1": "3010 Lava Ridge Ct",
+            "Line2": "STE 110",
+            "City": "Roseville",
+            "PostalCode": "85661",
+            "State": {
+              "Code": "CA",
+              "Name": "California"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 38.745615062651,
+            "Longitude": -121.242307713834
+          }
+        }
+      ],
+      "PostedDate": "2026-10-01T14:09:08.23Z",
+      "BriefDescription": "The Supplier Business Manager II is responsible for developing and maintaining supplier relationships, along with increasing the financial growth for the assigned supplier(s). Maximizing revenue, profit, market share, sales support in addition to business planning are key parts of this position. This position is the face of ScanSource to our supplier and reseller partners and expected to be a role model of professionalism.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "3c077da8-d6d9-40dc-bbde-25a76ce2bccc",
+      "Featured": false,
+      "Title": "West:  Supplier BD Specialist II - Security",
+      "RequisitionNumber": "SUPPL004837",
+      "FullTime": true,
+      "JobCategoryName": "Merchandising",
+      "Locations": [
+        {
+          "Id": "c65c2d5d-ea3f-5d14-86bc-364239cf5daf",
+          "LocalizedName": null,
+          "LocalizedLocationId": "AZPHX",
+          "LocalizedDescription": "AZ Phoenix",
+          "Address": {
+            "Line1": "1241 West Warner Rd",
+            "Line2": "STE 108",
+            "City": "Tempe",
+            "PostalCode": "85284",
+            "State": {
+              "Code": "AZ",
+              "Name": "Arizona"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 33.33451331554846,
+            "Longitude": -111.95986044668402
+          }
+        },
+        {
+          "Id": "93cd28cc-a724-5ec6-a0be-c41f3a2ca06c",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "AZ MicroAge Phoenix",
+          "Address": {
+            "Line1": "15210 S 50th St",
+            "Line2": null,
+            "City": "Phoenix",
+            "PostalCode": "85044",
+            "State": {
+              "Code": "AZ",
+              "Name": "Arizona"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": false,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 33.308008473044,
+            "Longitude": -111.977137435217
+          }
+        },
+        {
+          "Id": "64ac226e-e664-5ffe-b1f9-7c01fde26c8e",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "CA-Sacramento",
+          "Address": {
+            "Line1": "3010 Lava Ridge Ct",
+            "Line2": "STE 110",
+            "City": "Roseville",
+            "PostalCode": "85661",
+            "State": {
+              "Code": "CA",
+              "Name": "California"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 38.745615062651,
+            "Longitude": -121.242307713834
+          }
+        }
+      ],
+      "PostedDate": "2026-10-01T13:20:10.182Z",
+      "BriefDescription": "The Supplier Business Development Specialist II is responsible for recruitment and enablement of new and current customers, internal sales support, supplier relationships and increasing financial growth for the assigned supplier(s). Maximizing revenue, recruitment and growth goals for strategic supplier(s) will also be a key part of this position. This position is the face of ScanSource to our suppliers and customers and expected to be a role model of professionalism. Travel required.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "e04532c3-6124-4a03-9004-8bcc550a8b3d",
+      "Featured": false,
+      "Title": "Intelisys:  Inside Sales Representative",
+      "RequisitionNumber": "INTEL004836",
+      "FullTime": true,
+      "JobCategoryName": "Intelisys",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-10-01T13:01:01.608Z",
+      "BriefDescription": "The Intelisys Inside Sales Representative (ISR) is responsible for managing and growing relationships with existing Intelisys partners and supporting their success across Intelisys solutions and supplier offerings. This role serves as a primary point of coordination for partner engagement, account planning, opportunity support, supplier alignment, and sales execution. The position is focused on account management, partner retention, enablement, pipeline follow-through, and share-of-wallet growth.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "eeaa8e93-ae50-41b9-8ddd-1cc2b21f9e64",
+      "Featured": false,
+      "Title": "Supplier BD Specialist - Ubiquiti",
+      "RequisitionNumber": "SUPPL004826",
+      "FullTime": true,
+      "JobCategoryName": "Supplier Services",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-30T21:41:01.534Z",
+      "BriefDescription": "The Supplier Business Development Specialist is responsible for recruitment and enablement of new and current customers, internal sales support, supplier relationships and increasing financial growth for the assigned supplier(s). Maximizing revenue, recruitment and growth goals will also be a key part of this position. This position is the face of ScanSource to our supplier and customers and expected to be a role model of professionalism. Travel required.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "f162abfc-f30a-4cfc-b178-a982e6461e35",
+      "Featured": false,
+      "Title": "Supplier BD Specialist II - POSB",
+      "RequisitionNumber": "SUPPL004832",
+      "FullTime": true,
+      "JobCategoryName": "Merchandising",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-28T15:55:17.774Z",
+      "BriefDescription": "The Supplier Business Development Specialist II is responsible for recruitment and enablement of new and current customers, internal sales support, supplier relationships and increasing financial growth for the assigned supplier(s). Maximizing revenue, recruitment and growth goals for strategic supplier(s) will also be a key part of this position. This position is the face of ScanSource to our suppliers and customers and expected to be a role model of professionalism. Travel required.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "f0f61817-055c-48ba-af6a-e1d8b7789d08",
+      "Featured": false,
+      "Title": "Account Manager LIC - Federal",
+      "RequisitionNumber": "ACCOU004764",
+      "FullTime": true,
+      "JobCategoryName": "Sales",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-23T18:41:15.153Z",
+      "BriefDescription": "The Account Manager is responsible for driving sales with both new and existing customers. Account Managers are responsible for managing the inbound interactions from customers within a specific segment and includes generating quotes, fielding and responding to inquiries, driving deals to closure, processing orders, and overflow quotes and orders. This individual will navigate internal departments and resources to answer customer inquiries and effectively close deals.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "5d690c1c-368c-4a61-8b3a-6a3567d192b8",
+      "Featured": false,
+      "Title": "Supplier Business Manager II - Ubiquiti",
+      "RequisitionNumber": "SUPPL004827",
+      "FullTime": true,
+      "JobCategoryName": "Merchandising",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-23T12:55:25.185Z",
+      "BriefDescription": "The Supplier Business Manager II is responsible for developing and maintaining supplier relationships, along with increasing the financial growth for the assigned supplier(s). Maximizing revenue, profit, market share, sales support in addition to business planning are key parts of this position. This position is the face of ScanSource to our supplier and reseller partners and expected to be a role model of professionalism.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "c17120a8-65e0-4a8f-8f92-1baf6bda46b3",
+      "Featured": false,
+      "Title": "SAP Business Analyst II",
+      "RequisitionNumber": "SAPBU004770",
+      "FullTime": true,
+      "JobCategoryName": "IT",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-22T15:36:22.55Z",
+      "BriefDescription": "An SAP Business Analyst Level II is responsible for supporting the design, configuration, testing, and implementation of solutions within their functional area of expertise (Finance, Sales, Merchandising, RFS, Customer Service & Returns Management). A Level II executes assigned project tasks within established timelines and works closely with senior analysts, managers, and business stakeholders to support business processes and system enhancements.\n\nThe Level II assists in identifying and resolving system issues, gathering business requirements, and supporting user adoption of new functionality. They work with the SAP Manager and Business Process Owners to help ensure systems meet business requirements and support operational objectives.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "71805aa6-1037-434c-8827-3c9a65b60385",
+      "Featured": false,
+      "Title": "Supply Chain Purchasing Specialist - Networking",
+      "RequisitionNumber": "SUPPL004825",
+      "FullTime": true,
+      "JobCategoryName": "Merchandising",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-18T19:09:47.207Z",
+      "BriefDescription": "The Supply Chain Purchasing Specialist is responsible for processing drop shipment Purchase Orders to meet SLA and accuracy guidelines, maintain updated ETAs on all open orders in SAP, and provide sales support as needed.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "bb7a3a3c-9c77-490b-9fc1-e8af6bab6c86",
+      "Featured": false,
+      "Title": "Supply Chain Purchasing Specialist - Comms",
+      "RequisitionNumber": "SUPPL004822",
+      "FullTime": true,
+      "JobCategoryName": "Merchandising",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-17T13:59:24.306Z",
+      "BriefDescription": "The Supply Chain Purchasing Specialist is responsible for processing drop shipment Purchase Orders to meet SLA and accuracy guidelines, maintain updated ETAs on all open orders in SAP, and provide sales support as needed.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "411d5fc7-5674-4fe6-8bfc-7ba1a84d86cf",
+      "Featured": false,
+      "Title": "Supply Chain Services Specialist II - POSB",
+      "RequisitionNumber": "SUPPL004821",
+      "FullTime": true,
+      "JobCategoryName": "Merchandising",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-17T13:53:24.122Z",
+      "BriefDescription": "The Supply Chain Services Specialist II is responsible for processing support Purchase Orders to meet SLA and accuracy guidelines, and provide sales support as needed.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "c9162597-23cd-4652-9062-6b56896283a8",
+      "Featured": false,
+      "Title": "Supply Chain Purchasing Specialist III - Comms",
+      "RequisitionNumber": "SUPPL004820",
+      "FullTime": true,
+      "JobCategoryName": "Merchandising",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-17T13:48:38.234Z",
+      "BriefDescription": "The Purchasing Specialist III is responsible for maintaining levels of inventory for assigned supplier line(s) consistent with the business plan that maximize sales, inventory turns and return on inventory.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "77e4e672-7501-4c4e-8e7b-1eb92a785971",
+      "Featured": false,
+      "Title": "Resourcive:  Senior Consultant",
+      "RequisitionNumber": "RESOU004799",
+      "FullTime": true,
+      "JobCategoryName": "Resourcive",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-16T13:45:12.239Z",
+      "BriefDescription": "The Senior Consultant owns assigned client relationships end to end, from initial scoping and kickoff through governance, delivery, and scope expansion. You will lead a team of consultants and an implementation manager, coordinate the technology practice leads engaged on your accounts, and act as the primary point of contact for client executives and their private equity owners. Beyond managing delivery, the Senior Consultant is expected to actively listen for and develop new workstreams that create value for the client and revenue for Resourcive, while holding the full extended team accountable to the process and timeline. Because a slipping schedule directly risks the client relationship, urgency and milestone discipline are central to the role.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "276d6802-a2c7-4488-8e8a-a487a90455b1",
+      "Featured": true,
+      "Title": "ScanSource Spark 2027 Summer Internship",
+      "RequisitionNumber": "SCANS004811",
+      "FullTime": true,
+      "JobCategoryName": "Administration",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-14T22:36:12.097Z",
+      "BriefDescription": "The ScanSource Spark Internship Program offers a way for students to prepare for their future after college. The ScanSource Spark Internship is a 10 week program only offered in the summer of 2027. Paid internship opportunities are available for undergraduates who are students graduating in August 2027, December 2027, or May 2028 in the areas of sales, merchandising, marketing, supply chain, people & culture, customer service, or technical support.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": 1,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "3e4496fa-b2c3-4b93-9465-477e83356c7d",
+      "Featured": false,
+      "Title": "2nd Shift - Invoicer (Shipping)",
+      "RequisitionNumber": "2NDSH004815",
+      "FullTime": true,
+      "JobCategoryName": "Distribution Center",
+      "Locations": [
+        {
+          "Id": "19166197-c0ee-5fbb-9577-30cf11e0a3e6",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "MS-Southaven",
+          "Address": {
+            "Line1": "8650 Commerce Drive",
+            "Line2": "STE 100",
+            "City": "Southaven",
+            "PostalCode": "38671",
+            "State": {
+              "Code": "MS",
+              "Name": "Mississippi"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.986630558321934,
+            "Longitude": -89.9665468252402
+          }
+        }
+      ],
+      "PostedDate": "2026-09-14T17:16:17.228Z",
+      "BriefDescription": "Responsible for accurately invoicing and processing outgoing orders in a timely manner. This position is full-time, Monday through Friday, from 1:00 PM to 9:30PM, with the expectation to work extended hours when necessary to meet business needs.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "43d90a84-0038-45e0-b8bc-c99be928dcf5",
+      "Featured": false,
+      "Title": "Design Engineer I - Comms",
+      "RequisitionNumber": "DESIG004779",
+      "FullTime": true,
+      "JobCategoryName": "Tech Support",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-14T15:39:11.196Z",
+      "BriefDescription": "The Design Engineer I represents a high level of technical expertise to internal and external customers in a variety of forms that include design assistance, delivering education, and enabling the customer to do business with ScanSource.  The focus of the position may be on specified technologies, or on a specific group of suppliers. This role is expected to be an expert in Network Technologies and will act as a trusted advisor to the company's customers.  This individual would have detailed knowledge of a multiple product lines, and able to guide a customer through designing the best overall solution which would include hardware, software, and licensing.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "b49ba62c-ac0b-448f-a204-57649603449b",
+      "Featured": false,
+      "Title": "Inventory/Receiving Lead",
+      "RequisitionNumber": "INVEN004812",
+      "FullTime": true,
+      "JobCategoryName": "POS Portal",
+      "Locations": [
+        {
+          "Id": "199e3b19-d3a5-5072-95e5-a41b98511581",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "CA-POS Warehouse West",
+          "Address": {
+            "Line1": "1627 Main Ave",
+            "Line2": "Suite 1",
+            "City": "Sacramento",
+            "PostalCode": "95834",
+            "State": {
+              "Code": "CA",
+              "Name": "California"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 38.65459781443326,
+            "Longitude": -121.426479182143
+          }
+        }
+      ],
+      "PostedDate": "2026-09-14T13:34:54.132Z",
+      "BriefDescription": "The Inventory & Receiving Lead serves as the subject matter expert (SME), trainer, and primary escalation point for the Inventory and Receiving team. This role provides day-to-day direction to receiving and inventory associates, ensures Inventory and Receiving accuracy and operational excellence. The Inventory & Receiving Lead is responsible for maintaining Inventory integrity, overseeing receiving processes, resolving complex inventory discrepancies, supporting continuous improvement initiatives, and driving efficiency, accuracy, and accountability across inventory and receiving operations.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "a198f291-76dc-454f-a036-f68d7c11799f",
+      "Featured": false,
+      "Title": "Accounts Receivable Analyst I",
+      "RequisitionNumber": "ACCOU004814",
+      "FullTime": true,
+      "JobCategoryName": "Finance & Accounting",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-11T22:01:55.595Z",
+      "BriefDescription": "The Accounts Receivable Analyst I (\"AR Analyst I\") supports the management of secured and unsecured customer accounts through account reconciliation, dispute research, deduction resolution, and customer account maintenance activities. This role contributes to the organization's cash flow objectives by assisting with the timely resolution of outstanding receivable balances while delivering a positive customer experience.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "bf2a28f5-2ebf-45c6-8146-1262e06d219f",
+      "Featured": false,
+      "Title": "Channel Exchange:  Microsoft Copilot Specialist",
+      "RequisitionNumber": "CHANN004813",
+      "FullTime": true,
+      "JobCategoryName": "Intelisys",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-11T21:28:59.44Z",
+      "BriefDescription": "The Microsoft Copilot Specialist plays an important role in the Channel Exchange sales process. The Copilot Specialist is part of a team of resources we provide our customers and sales partners to help them understand, position, adopt, and expand Microsoft Copilot solutions through Channel Exchange. Copilot Specialists have consistent involvement with our customers and partners, mostly related to their Microsoft Copilot requirements, readiness, use cases, licensing considerations, and adoption strategy. Copilot Specialists are subject matter experts supporting both our customers and the various sales resources within Channel Exchange.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "da52dcdf-9104-4b1b-9dbe-d0e18ecb0ac2",
+      "Featured": false,
+      "Title": "UI Developer III",
+      "RequisitionNumber": "UIDEV004810",
+      "FullTime": true,
+      "JobCategoryName": "IT",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-10T22:51:45.403Z",
+      "BriefDescription": "The UI Developer III role is primarily focused on leading the implementation and delivery of clean, usable, modern user interfaces that improve our platforms while setting a high standard for front-end engineering quality.\n\nThis position involves building new features in React, maintaining and modernizing existing platform features, and helping establish style guides, reusable patterns, modular components, and interface standards for modern UI development.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "7f812fd8-4c72-4169-a5c4-59a0c55bf78e",
+      "Featured": false,
+      "Title": "Sr. Tax Associate",
+      "RequisitionNumber": "SRTAX004806",
+      "FullTime": true,
+      "JobCategoryName": "Finance & Accounting",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-10T13:11:24.254Z",
+      "BriefDescription": "The Senior Tax Associate is an opportunity for a highly motivated tax professional to play an integral role within the corporate tax function to support income tax compliance, assist with tax provisions, and contribute to tax planning and strategy initiatives.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "5204e439-b683-4755-8612-4842808e3e32",
+      "Featured": false,
+      "Title": "Intelisys:  Regional Channel Manager",
+      "RequisitionNumber": "INTEL004808",
+      "FullTime": true,
+      "JobCategoryName": "Intelisys",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-09T21:09:10.858Z",
+      "BriefDescription": "The Regional Channel Manager is responsible for all aspects of sales of the Intelisys opportunity to assigned sales partners. The Regional Channel Manager will be responsible for growing assigned rising sales partners in a specific region as well as the recruitment of new partners. Responsibilities include creating a proactive sales function to optimize revenue opportunities and growth from assigned sales partners, on-boarding and stewarding of sales partners, sales of enhanced services, and other opportunities as identified. This assignment is a quota bearing sales position with complete responsibility for achieving 100% of annual targets for assigned sales partners their net billings, gross commissions, and gross profits.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "8c298c15-57bf-4e13-ab1c-a351bdbcaae0",
+      "Featured": false,
+      "Title": "2nd Shift - Picker Forklift Operator",
+      "RequisitionNumber": "2NDSH004807",
+      "FullTime": true,
+      "JobCategoryName": "Distribution Center",
+      "Locations": [
+        {
+          "Id": "19166197-c0ee-5fbb-9577-30cf11e0a3e6",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "MS-Southaven",
+          "Address": {
+            "Line1": "8650 Commerce Drive",
+            "Line2": "STE 100",
+            "City": "Southaven",
+            "PostalCode": "38671",
+            "State": {
+              "Code": "MS",
+              "Name": "Mississippi"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.986630558321934,
+            "Longitude": -89.9665468252402
+          }
+        }
+      ],
+      "PostedDate": "2026-09-09T20:58:12.261Z",
+      "BriefDescription": "Responsible for filling truck carrier orders with accuracy and speed. This position is full-time, Monday through Friday, from 12:00 PM to 8:30 PM, with the expectation to work extended hours when necessary to meet business needs",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "c129e526-bc57-423f-a773-998c380c42b4",
+      "Featured": false,
+      "Title": "Manager, Front-End Development (MANAG004805)",
+      "RequisitionNumber": "MANAG004805",
+      "FullTime": true,
+      "JobCategoryName": "IT",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-09T20:08:32.98Z",
+      "BriefDescription": "The Manager, Frontend Development role is responsible for leading the people, delivery, and technical direction of the frontend development function. This role focuses on building and supporting a high-performing team that delivers clean, usable, modern user interfaces while establishing strong front-end engineering practices across our platforms.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "9bc0bbd8-a6c1-4b86-a6ac-ce989fba5c39",
+      "Featured": false,
+      "Title": "Advantix:  Growth Operations & Revenue Technology Director",
+      "RequisitionNumber": "ADVAN004802",
+      "FullTime": true,
+      "JobCategoryName": "Advantix",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-09T18:28:03.023Z",
+      "BriefDescription": "The Growth Operations and Revenue Technology Director leads operational execution, systems governance, automation, measurement, and scalable processes for Advantix’s Sales and Marketing Operations. Reporting to the VP of Connectivity Experience & Sales Operations, this role connects Marketing, Sales, Channel, Product, Operations, RevOps, and Business Systems to turn approved go-to-market, partner, OEM, campaign, and enablement strategies into repeatable execution. The Director ensures systems, data, workflows, content deployment, partner programs, and reporting operate as an integrated revenue execution engine, while strategic ownership remains with the appropriate functional leaders.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "12aed8a9-8afd-4ea1-a79e-8b40d4dc12b5",
+      "Featured": false,
+      "Title": "Resourcive:  Cyber Advisor",
+      "RequisitionNumber": "RESOU004794",
+      "FullTime": true,
+      "JobCategoryName": "Resourcive",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-02T14:58:49.609Z",
+      "BriefDescription": "We are looking for a Cyber Security Advisor to join our Cyber Practice and deliver directly to clients. This is not a sales role, not a tools implementation role, and not an internal security role. It is a client-facing advisory position for someone who has already made the transition from practitioner to consultant and is ready to operate with significant autonomy.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "fcb6fa92-3af9-4d28-9db1-85731350722b",
+      "Featured": false,
+      "Title": "Intelisys:  Supplier Business Manager",
+      "RequisitionNumber": "INTEL004800",
+      "FullTime": true,
+      "JobCategoryName": "Intelisys",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-02T14:37:42.787Z",
+      "BriefDescription": "The Supplier Business Manager is responsible for managing the relationship and driving results with assigned new and strategic suppliers in the Intelisys portfolio. The Supplier Business Manager acts as a primary point of contact for assigned Supplier(s) to share information and works closely with Sales, Support, Marketing, and Supplier representatives to ensure positive working relationships and growth within assigned Supplier(s). The ideal candidate has at least 4 years of corporate work experience, ideally in telecom/technology fields and knowledgeable with SaaS and recurring revenue models.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "754d4deb-eb64-4191-82b9-a99c71200a07",
+      "Featured": false,
+      "Title": "Manager, Technical Solutions - Converged Communications",
+      "RequisitionNumber": "MGRTE004797",
+      "FullTime": true,
+      "JobCategoryName": "Tech Services",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-01T22:19:45.8Z",
+      "BriefDescription": "The Manager of Technical Solutions is responsible for leading a team of Design Engineers and Technicians focused on the architecture, design, validation, and support of enterprise video collaboration, unified communications (UC), contact center, and telecommunications solutions. This role oversees the development of technical solution designs, and pre-sale / post-sale technical serves as a key escalation point for complex customer requirements involving technologies from leading manufacturers and service providers related communications collaboration ecosystems.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "6232d619-8273-483f-82d0-594c7c09e40d",
+      "Featured": false,
+      "Title": "Tech Support Analyst - Cisco",
+      "RequisitionNumber": "TECHS004795",
+      "FullTime": true,
+      "JobCategoryName": "Tech Support",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-09-01T15:04:58.052Z",
+      "BriefDescription": "This position provides technical expertise to internal and external customers in the form of pre- and post-sales technical support (via telephone, e-mail, web and other channels) on specified technologies; tests products; provides or performs demonstrations of equipment or software as needed.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "4508f3db-75fb-497e-9f1c-3e56b5aab7c6",
+      "Featured": false,
+      "Title": "Intelisys:  Business Development Manager - Midwest (IL or Michigan)",
+      "RequisitionNumber": "INTEL004789",
+      "FullTime": true,
+      "JobCategoryName": "Intelisys",
+      "Locations": [
+        {
+          "Id": "c5b8af29-70be-57c0-8282-8775a86a1afd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "MIVO",
+          "LocalizedDescription": "VO Michigan",
+          "Address": {
+            "Line1": null,
+            "Line2": null,
+            "City": null,
+            "PostalCode": null,
+            "State": {
+              "Code": "MI",
+              "Name": "Michigan"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 43.48203531022856,
+            "Longitude": -84.62262538968845
+          }
+        },
+        {
+          "Id": "973cded1-f61c-553f-953a-c2ead5d45490",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "MI-GR Walker City",
+          "Address": {
+            "Line1": null,
+            "Line2": null,
+            "City": null,
+            "PostalCode": null,
+            "State": {
+              "Code": "MI",
+              "Name": "Michigan"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": false,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 43.48203531022856,
+            "Longitude": -84.62262538968845
+          }
+        },
+        {
+          "Id": "f0341a66-c746-566b-8839-634285b0e8f1",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "MI-Grand Rapids City",
+          "Address": {
+            "Line1": null,
+            "Line2": null,
+            "City": null,
+            "PostalCode": null,
+            "State": {
+              "Code": "MI",
+              "Name": "Michigan"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": false,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 43.48203531022856,
+            "Longitude": -84.62262538968845
+          }
+        },
+        {
+          "Id": "7ffa32c1-0eb7-5f76-a1f3-5b614c6027da",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "IL-Chicago",
+          "Address": {
+            "Line1": "550 W Adams St",
+            "Line2": "Suite 210",
+            "City": "Chicago",
+            "PostalCode": "60661",
+            "State": {
+              "Code": "IL",
+              "Name": "Illinois"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 41.879347562317314,
+            "Longitude": -87.64143059767154
+          }
+        },
+        {
+          "Id": "5869310b-901c-5b96-9aa5-cba29c239df5",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "VO Illinois",
+          "Address": {
+            "Line1": null,
+            "Line2": null,
+            "City": null,
+            "PostalCode": null,
+            "State": {
+              "Code": "IL",
+              "Name": "Illinois"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 40.218827727017064,
+            "Longitude": -90.50410084724095
+          }
+        }
+      ],
+      "PostedDate": "2026-08-28T13:17:58.202Z",
+      "BriefDescription": "Intelisys, a ScanSource company (NASDAQ: SCSC) located in the North Bay, is the industry's leading Technology Services Distributor and has been named as North Bay Business Journal's \"Best Places to Work\" for the fourth time. Intelisys is also recognized as an Entrepreneur Magazine winner of the “Best Entrepreneurial Companies in America Award”. \n\nWe are looking for a Business Development Manager to cover the Midwest Region.  This person would be responsible for all aspects of sales of the Intelisys opportunity to assigned Sales Partners. This position works closely with existing Business Development Managers/Directors to grow the sales for a specific assigned group of Sales Partners in a specific region.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "2f9129cc-b111-4475-9314-6da8b001614a",
+      "Featured": false,
+      "Title": "Supplier Business Manager",
+      "RequisitionNumber": "SUPPL004785",
+      "FullTime": true,
+      "JobCategoryName": "Merchandising",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-08-25T21:53:23.049Z",
+      "BriefDescription": "The Supplier Business Manager is responsible for developing and maintaining supplier relationships, along with increasing the financial growth for the assigned supplier(s). Maximizing revenue, market share and profit in addition to business planning are key parts of this position. This position is the face of ScanSource to our supplier and reseller partners and expected to be a role model of professionalism.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "e1bf6ebb-0342-4ce6-8f26-81334fc06c0c",
+      "Featured": false,
+      "Title": "Supply Chain Pricing Specialist",
+      "RequisitionNumber": "SUPPL004784",
+      "FullTime": true,
+      "JobCategoryName": "Merchandising",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-08-25T21:39:50.199Z",
+      "BriefDescription": "The Supply Chain Pricing Specialist creates supplier price exceptions and deal registrations in SAP and responds quickly and accurately to sales and supplier team requests.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "f6a26c96-e3f8-4512-8176-7c0ad97b6f62",
+      "Featured": false,
+      "Title": "Information Security Engineer II",
+      "RequisitionNumber": "INFOR004778",
+      "FullTime": true,
+      "JobCategoryName": "IT",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-08-19T15:42:59.999Z",
+      "BriefDescription": "Responsible for supporting the technical administration of information security tools and systems, including day-to-day configuration, patching, and monitoring. Provides hands-on engineering support to the security team, supporting core infrastructure, vulnerability management, and Identity and Access Management (IAM) work, while monitoring threat intelligence and supporting the security awareness program. Partners closely with the IAM team on access and licensing requests and contributes to team reporting and metrics.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "b7ffc221-2023-4199-b95c-dccffa80e71a",
+      "Featured": false,
+      "Title": "2nd Shift - Picker Forklift Operator (Shipping)",
+      "RequisitionNumber": "2NDSH004768",
+      "FullTime": true,
+      "JobCategoryName": "Distribution Center",
+      "Locations": [
+        {
+          "Id": "19166197-c0ee-5fbb-9577-30cf11e0a3e6",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "MS-Southaven",
+          "Address": {
+            "Line1": "8650 Commerce Drive",
+            "Line2": "STE 100",
+            "City": "Southaven",
+            "PostalCode": "38671",
+            "State": {
+              "Code": "MS",
+              "Name": "Mississippi"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.986630558321934,
+            "Longitude": -89.9665468252402
+          }
+        }
+      ],
+      "PostedDate": "2026-08-11T20:33:47.022Z",
+      "BriefDescription": "Responsible for filling truck carrier orders with accuracy and speed. This position is full-time, Monday through Friday, from 2:00 PM to 10:30 PM, with the expectation to work extended hours when necessary to meet business needs",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "ec479ce5-ac20-4043-a6f8-37b3d65fe247",
+      "Featured": false,
+      "Title": "Intelisys:  Business Development Manager - NYC",
+      "RequisitionNumber": "INTEL004758",
+      "FullTime": true,
+      "JobCategoryName": "Intelisys",
+      "Locations": [
+        {
+          "Id": "6354d15c-588d-52f6-97a5-826bcebbc444",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "NY New York City Local",
+          "Address": {
+            "Line1": null,
+            "Line2": null,
+            "City": null,
+            "PostalCode": null,
+            "State": {
+              "Code": "NY",
+              "Name": "New York"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 42.57956695970656,
+            "Longitude": -75.80910585672945
+          }
+        },
+        {
+          "Id": "13b290c3-2063-5b91-abd6-fe7d1c3b6786",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "NY New York 5 Boroughs",
+          "Address": {
+            "Line1": null,
+            "Line2": null,
+            "City": null,
+            "PostalCode": null,
+            "State": {
+              "Code": "NY",
+              "Name": "New York"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": false,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 42.57956695970656,
+            "Longitude": -75.80910585672945
+          }
+        }
+      ],
+      "PostedDate": "2026-07-27T21:45:06.756Z",
+      "BriefDescription": "Intelisys, a ScanSource company (NASDAQ: SCSC) located in the North Bay, is the industry's leading Technology Services Distributor and has been named as North Bay Business Journal's \"Best Places to Work\" for the fourth time. Intelisys is also recognized as an Entrepreneur Magazine winner of the “Best Entrepreneurial Companies in America Award”. \n\nWe are looking for a Business Development Manager to cover the New York Region.  This person would be responsible for all aspects of sales of the Intelisys opportunity to assigned Sales Partners. This position works closely with existing Business Development Managers/Directors to grow the sales for a specific assigned group of Sales Partners in a specific region.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "97b5b18b-a2e2-4d9e-9064-d15cd2dca6ab",
+      "Featured": false,
+      "Title": "Regional Vice President, Sales - West/Mountain",
+      "RequisitionNumber": "REGIO004744",
+      "FullTime": true,
+      "JobCategoryName": "Intelisys",
+      "Locations": [
+        {
+          "Id": "64ac226e-e664-5ffe-b1f9-7c01fde26c8e",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "CA-Sacramento",
+          "Address": {
+            "Line1": "3010 Lava Ridge Ct",
+            "Line2": "STE 110",
+            "City": "Roseville",
+            "PostalCode": "85661",
+            "State": {
+              "Code": "CA",
+              "Name": "California"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 38.745615062651,
+            "Longitude": -121.242307713834
+          }
+        },
+        {
+          "Id": "d73f682d-d46d-4c50-b792-1a13c696f978",
+          "LocalizedName": "Los Angeles, CA",
+          "LocalizedLocationId": null,
+          "LocalizedDescription": null,
+          "Address": {
+            "Line1": null,
+            "Line2": null,
+            "City": "Los Angeles",
+            "PostalCode": null,
+            "State": {
+              "Code": "CA",
+              "Name": "California"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": false,
+          "SourceOfTruth": 0,
+          "Coordinates": {
+            "Latitude": 34.05349148313956,
+            "Longitude": -118.24531979427144
+          }
+        },
+        {
+          "Id": "6b493b74-d3aa-49e4-b51c-54bba84602e2",
+          "LocalizedName": "San Diego, CA",
+          "LocalizedLocationId": null,
+          "LocalizedDescription": null,
+          "Address": {
+            "Line1": null,
+            "Line2": null,
+            "City": "San Diego",
+            "PostalCode": "92121",
+            "State": {
+              "Code": "CA",
+              "Name": "California"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": true,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": false,
+          "SourceOfTruth": 0,
+          "Coordinates": {
+            "Latitude": 32.88452500000005,
+            "Longitude": -117.16292999999996
+          }
+        },
+        {
+          "Id": "bb078a03-0180-4617-b279-9032f9626ed3",
+          "LocalizedName": "Petaluma, CA",
+          "LocalizedLocationId": null,
+          "LocalizedDescription": null,
+          "Address": {
+            "Line1": null,
+            "Line2": null,
+            "City": "Petaluma",
+            "PostalCode": null,
+            "State": {
+              "Code": "CA",
+              "Name": "California"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": true,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": false,
+          "SourceOfTruth": 0,
+          "Coordinates": {
+            "Latitude": 38.232474,
+            "Longitude": -122.636846
+          }
+        },
+        {
+          "Id": "df892fc0-58df-5f54-a3ab-6b2610e40807",
+          "LocalizedName": null,
+          "LocalizedLocationId": null,
+          "LocalizedDescription": "VO Nevada",
+          "Address": {
+            "Line1": null,
+            "Line2": null,
+            "City": null,
+            "PostalCode": null,
+            "State": {
+              "Code": "NV",
+              "Name": "Nevada"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 39.431824252649065,
+            "Longitude": -117.02288232059546
+          }
+        },
+        {
+          "Id": "8fd70d98-35a4-56bd-8a93-cc9f44f15fc1",
+          "LocalizedName": "CO-Denver City / Local",
+          "LocalizedLocationId": null,
+          "LocalizedDescription": null,
+          "Address": {
+            "Line1": null,
+            "Line2": null,
+            "City": "Denver",
+            "PostalCode": null,
+            "State": {
+              "Code": "CO",
+              "Name": "Colorado"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": false,
+          "SourceOfTruth": 0,
+          "Coordinates": {
+            "Latitude": 39.740012152878066,
+            "Longitude": -104.99201750468696
+          }
+        },
+        {
+          "Id": "5500dbb4-a297-4ca9-9671-eceba593bfc7",
+          "LocalizedName": "Portland, OR",
+          "LocalizedLocationId": null,
+          "LocalizedDescription": null,
+          "Address": {
+            "Line1": null,
+            "Line2": null,
+            "City": "Portland",
+            "PostalCode": null,
+            "State": {
+              "Code": "OR",
+              "Name": "Oregon"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": true,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": false,
+          "SourceOfTruth": 0,
+          "Coordinates": {
+            "Latitude": 45.511790000000076,
+            "Longitude": -122.67562999999996
+          }
+        },
+        {
+          "Id": "d019718b-2d27-498d-bf1b-e3655271a512",
+          "LocalizedName": "Seattle, WA",
+          "LocalizedLocationId": null,
+          "LocalizedDescription": null,
+          "Address": {
+            "Line1": null,
+            "Line2": null,
+            "City": "Seattle",
+            "PostalCode": "98101",
+            "State": {
+              "Code": "WA",
+              "Name": "Washington"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": true,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": false,
+          "SourceOfTruth": 0,
+          "Coordinates": {
+            "Latitude": 47.610790000000065,
+            "Longitude": -122.33534499999996
+          }
+        },
+        {
+          "Id": "c65c2d5d-ea3f-5d14-86bc-364239cf5daf",
+          "LocalizedName": null,
+          "LocalizedLocationId": "AZPHX",
+          "LocalizedDescription": "AZ Phoenix",
+          "Address": {
+            "Line1": "1241 West Warner Rd",
+            "Line2": "STE 108",
+            "City": "Tempe",
+            "PostalCode": "85284",
+            "State": {
+              "Code": "AZ",
+              "Name": "Arizona"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 33.33451331554846,
+            "Longitude": -111.95986044668402
+          }
+        }
+      ],
+      "PostedDate": "2026-07-16T18:50:12.863Z",
+      "BriefDescription": "We are looking for a Regional VP, Partner Sales, that would take responsibility as Leader of a regional sales team comprised of Sales Director(s) and Business Development Managers.  This role will report directly to the SVP of Sales and will include working with the leadership team to build strategy, sales plans, and overall team management. The ideal candidate will have experience establishing and building partner relationships, an aggressive sales strategy, and an ability to closely manage a large pipeline of opportunities. The RVP of Sales you will lead, motivate, challenge, and develop a regional sales team, and you creatively drive efforts to strategically prospect and develop new business partners.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    },
+    {
+      "Id": "c4b65185-66a0-499e-9584-10b833184018",
+      "Featured": false,
+      "Title": "Intelisys:  Senior UI Software Developer",
+      "RequisitionNumber": "INTEL004643",
+      "FullTime": true,
+      "JobCategoryName": "Intelisys",
+      "Locations": [
+        {
+          "Id": "35d209d1-5b72-53e3-89ef-435fa96c17cd",
+          "LocalizedName": null,
+          "LocalizedLocationId": "SCGVL",
+          "LocalizedDescription": "SC-Greenville",
+          "Address": {
+            "Line1": "6 Logue Court",
+            "Line2": null,
+            "City": "Greenville",
+            "PostalCode": "29615",
+            "State": {
+              "Code": "SC",
+              "Name": "South Carolina"
+            },
+            "Country": {
+              "Code": "USA",
+              "Name": "United States"
+            }
+          },
+          "DisplayName": false,
+          "DisplayLocationId": false,
+          "DisplayAddress": true,
+          "DisplayStreetAddress": false,
+          "DisplayDescription": true,
+          "SourceOfTruth": 1,
+          "Coordinates": {
+            "Latitude": 34.8563506955478,
+            "Longitude": -82.24728692059686
+          }
+        }
+      ],
+      "PostedDate": "2026-05-11T18:40:39.683Z",
+      "BriefDescription": "The Senior UI Developer’s primary responsibility is to implement and ship beautiful user interfaces that bring a modern touch to our platforms.\n\nThe role requires integrating with legacy application code, maintaining and modernizing existing features and tools, and contributing to the development of platform style guides and user interface standards.\n\nAs a liaison to several different groups — from designers and developers to project management and stakeholders — effective communication is important to the success of the role. As a senior position, being heavily involved in pushing design capabilities and improving user experience while mentoring and coaching less experienced team members is expected.",
+      "MatchScore": 1.0,
+      "MatchedLocations": [],
+      "Distance": null,
+      "JobLocationType": null,
+      "OpportunityType": 0
+    }
+  ],
+  "totalCount": 52,
+  "locations": []
+}

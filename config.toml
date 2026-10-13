@@ -1,0 +1,52 @@
+[profile]
+target_role = "software developer"
+mode = "adjacent"                      # "strict" | "adjacent"
+adjacent_examples = [
+  "IT support",
+  "data analyst",
+  "software QA/test",
+  "general internship programs",
+  "partner/customer escalation support",
+]
+exclude_examples = [
+  "product manager",
+  "project manager",
+  "manufacturing quality",
+  "mechanical/electrical engineering",
+  "PLC/controls technician",
+]
+levels = ["intern", "entry", "mid"]    # allowed: intern, entry, mid, senior, lead
+keywords = ["programming", "software", "developer"]
+
+[classifier]
+model = "claude-sonnet-5-5"
+
+[notifications]
+email = "justinwclemson@gmail.com"
+mode = "on_change"
+
+[[companies]]
+id = "arthrex"
+name = "Arthrex"
+about = "Medical device manufacturer"
+adapter = "successfactors"
+url = "https://careers.arthrex.com/go/Jobs-in-South-Carolina/7566200/"
+added = 2026-10-12
+
+[[companies]]
+id = "scansource"
+name = "ScanSource"
+about = "Technology distributor (IT, communications, POS hardware)"
+adapter = "ultipro"
+url = "https://recruiting.ultipro.com/SCA1004SCSO/JobBoard/220bcab6-cf46-46e3-8fd5-181b273b0628/"
+locations = ["SC"]
+added = 2026-10-12
+
+[[companies]]
+id = "michelin"
+name = "Michelin"
+about = "Tire manufacturer"
+adapter = "michelin"
+# Anderson, SC only
+url = "https://jobs.michelinman.com/job-offer-result-list?criteria=%7B%22jobLocation%22%3A%7B%22level0%22%3A%5B%5D%2C%22level1%22%3A%5B%22nc5qgihi3m3qhjy928mksl9f%22%5D%7D%7D&page=1"
+added = 2026-10-12

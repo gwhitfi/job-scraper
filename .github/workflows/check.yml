@@ -1,0 +1,52 @@
+name: Check jobs
+
+on:
+  schedule:
+    - cron: "17 */2 * * *" # every 2 hours, off the top of the hour when Actions is busiest
+  workflow_dispatch:
+
+permissions:
+  contents: write # push to the state branch
+
+concurrency:
+  group: check-jobs
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      # state/ is a worktree of the `state` branch so bot commits stay out of main.
+      - name: Check out state branch
+        run: |
+          if git ls-remote --exit-code --heads origin state > /dev/null; then
+            git fetch --depth=1 origin state
+            git worktree add state FETCH_HEAD
+          else
+            git worktree add --orphan -b state state
+          fi
+
+      - uses: astral-sh/setup-uv@v6
+
+      - run: uv sync --locked --no-dev
+
+      - name: Run
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
+        run: uv run jobscraper run
+
+      # Skipped if the run failed, so the next run re-detects the same changes and retries the email.
+      - name: Save state
+        working-directory: state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Update state $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push origin HEAD:state
