@@ -1,0 +1,121 @@
+import json
+import sys
+from datetime import UTC, datetime, timedelta
+
+import pytest
+
+from jobscraper import adapters, cli, notify, state, tracker
+from jobscraper.models import RawPosting
+from jobscraper.state import Posting, State
+
+CONFIG = """
+[profile]
+target_role = "software developer"
+levels = ["entry", "mid"]
+[notifications]
+email = "me@example.com"
+[[companies]]
+id = "acme"
+name = "Acme"
+adapter = "fake"
+url = "https://acme.example/jobs"
+added = 2026-01-01
+"""
+
+
+def closed_posting(key: str, days_ago: int) -> Posting:
+    now = datetime.now(UTC)
+    return Posting(
+        key=key,
+        company_id="acme",
+        source_id=key.split(":")[1],
+        title="Old job",
+        location="Greenville, SC",
+        url="https://acme.example/old",
+        posted_date=None,
+        first_seen=now - timedelta(days=days_ago + 30),
+        last_seen=now - timedelta(days=days_ago),
+        status="removed",
+        removed_at=now - timedelta(days=days_ago),
+    )
+
+
+@pytest.fixture
+def setup(tmp_path, monkeypatch):
+    """A config, existing state with two long-closed jobs (one I marked), and a fake site."""
+    (tmp_path / "config.toml").write_text(CONFIG)
+    old_days = tracker.ARCHIVE_AFTER_DAYS + 30
+    state.save(
+        State(
+            postings={
+                "acme:old": closed_posting("acme:old", old_days),
+                "acme:mine": closed_posting("acme:mine", old_days),
+            }
+        ),
+        tmp_path / "state",
+    )
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data" / "marks.json").write_text(json.dumps({"acme:mine": {"applied": True}}))
+
+    site = [RawPosting("1", "Software Developer I", "Greenville, SC", "https://acme.example/1")]
+    monkeypatch.setitem(adapters.ADAPTERS, "fake", lambda company, client: site)
+    monkeypatch.setattr(cli, "load_dotenv", lambda *a: None)  # keep the real .env out of tests
+    monkeypatch.setenv("SMTP_USER", "me@example.com")
+    sent = []
+    monkeypatch.setattr(notify, "send", sent.append)
+
+    def run_cli():
+        monkeypatch.setattr(
+            sys,
+            "argv",
+            [
+                "jobscraper",
+                "--config",
+                str(tmp_path / "config.toml"),
+                "--state-dir",
+                str(tmp_path / "state"),
+                "run",
+                "--no-llm",
+                "--data-dir",
+                str(tmp_path / "data"),
+            ],
+        )
+        cli.main()
+
+    return tmp_path / "state", sent, run_cli
+
+
+def test_full_run(setup):
+    state_dir, sent, run_cli = setup
+    run_cli()
+
+    saved = state.load(state_dir)
+    assert "acme:1" in saved.postings
+    assert "acme:mine" in saved.postings  # applied, so kept
+    assert "acme:old" not in saved.postings
+    assert "acme:old" in json.loads((state_dir / "archive.json").read_text())
+    assert (state_dir / "usage.json").exists()
+
+    assert [m["Subject"] for m in sent] == ["Job Scraper: 1 new exact match"]
+    assert notify.load_outbox(state_dir / "email.json")["pending"] == []
+
+
+def test_email_failure_still_saves_state(setup, monkeypatch):
+    state_dir, _, run_cli = setup
+
+    def broken(msg):
+        raise OSError("535 bad credentials")
+
+    monkeypatch.setattr(notify, "send", broken)
+    run_cli()  # doesn't raise, so the workflow goes on to save and publish
+
+    assert "acme:1" in state.load(state_dir).postings
+    outbox = notify.load_outbox(state_dir / "email.json")
+    assert len(outbox["pending"]) == 1 and "535" in outbox["last_error"]
+
+    # Next run: nothing new, but the waiting alert goes out once mail works.
+    sent = []
+    monkeypatch.setattr(notify, "send", sent.append)
+    run_cli()
+    assert len(sent) == 1
+    assert notify.load_outbox(state_dir / "email.json")["pending"] == []

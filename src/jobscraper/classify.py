@@ -113,9 +113,21 @@ def _prompt(postings: list[Posting], profile: Profile, companies: dict[str, Comp
     return "\n".join(lines)
 
 
+# Profile fields that go into the prompt. `levels` and `mode` only filter what's shown, so
+# changing them shouldn't pay for reclassifying everything.
+PROMPT_FIELDS = (
+    "target_role",
+    "core_examples",
+    "adjacent_examples",
+    "exclude_examples",
+    "keywords",
+)
+
+
 def rules_fingerprint(profile: Profile, model: str) -> str:
-    """Changes whenever the profile, prompt, or model changes, so stale results get redone."""
-    blob = json.dumps([asdict(profile), SYSTEM, model], sort_keys=True)
+    """Changes when anything Claude is told changes, so stale results get redone."""
+    seen = {k: v for k, v in asdict(profile).items() if k in PROMPT_FIELDS}
+    blob = json.dumps([seen, SYSTEM, model], sort_keys=True)
     return hashlib.sha256(blob.encode()).hexdigest()[:12]
 
 

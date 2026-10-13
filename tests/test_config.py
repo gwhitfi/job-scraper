@@ -38,3 +38,20 @@ def test_unknown_location_rejected(tmp_path):
     )
     with pytest.raises(ValueError, match="upstate"):
         config.load(p)
+
+
+@pytest.mark.parametrize(
+    ("section", "line", "message"),
+    [
+        ("profile", 'levels = ["Entry"]', "Unknown levels"),
+        ("profile", 'mode = "loose"', "Unknown mode"),
+        ("web", 'home = "Atlantis, SC"', "Unknown home"),
+    ],
+)
+def test_config_typos_rejected(tmp_path, section, line, message):
+    profile = 'target_role = "x"\n' + (line + "\n" if section == "profile" else "")
+    web = f"[web]\n{line}\n" if section == "web" else ""
+    p = tmp_path / "config.toml"
+    p.write_text(f'[profile]\n{profile}[notifications]\nemail = "a@b.c"\n{web}')
+    with pytest.raises(ValueError, match=message):
+        config.load(p)

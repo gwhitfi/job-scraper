@@ -191,3 +191,28 @@ def test_moveupstatesc_follows_pages(make_company):
         "/find-a-job/it-tech-development/page/5/",
     ]
     assert len(postings) == 60
+
+
+def test_moveupstatesc_retries_just_the_failed_page(make_company):
+    html = fixture_text("moveupstatesc_p1.html")
+    requested = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requested.append(request.url.path)
+        if request.url.path.endswith("/page/3/") and requested.count(request.url.path) == 1:
+            return httpx.Response(503)
+        return httpx.Response(200, text=html)
+
+    company = make_company("moveupstatesc", MUS_URL)
+    moveupstatesc.fetch(company, mock_client(handler), delay=0)
+    assert requested.count("/find-a-job/it-tech-development/") == 1  # page 1 not refetched
+    assert requested.count("/find-a-job/it-tech-development/page/3/") == 2
+
+
+def test_moveupstatesc_gives_up_after_repeated_failures(make_company):
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(503)
+
+    company = make_company("moveupstatesc", MUS_URL)
+    with pytest.raises(httpx.HTTPStatusError):
+        moveupstatesc.fetch(company, mock_client(handler), delay=0)

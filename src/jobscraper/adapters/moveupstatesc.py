@@ -10,6 +10,7 @@ from jobscraper.models import Company, RawPosting
 
 CRAWL_DELAY = 10.0  # from the site's robots.txt
 MAX_PAGES = 20
+PAGE_ATTEMPTS = 3  # retry one page instead of the whole board (5 pages at 10 s each)
 _AGO = re.compile(r"(\d+)\+?\s+(day|week|month)s?\s+ago", re.I)
 _DAYS = {"day": 1, "week": 7, "month": 30}
 
@@ -83,6 +84,19 @@ def _page_url(base: str, page: int) -> str:
     return f"{base}/" if page == 1 else f"{base}/page/{page}/"
 
 
+def _get_page(client: httpx.Client, url: str, delay: float) -> str:
+    for attempt in range(PAGE_ATTEMPTS):
+        try:
+            resp = client.get(url)
+            resp.raise_for_status()
+            return resp.text
+        except httpx.HTTPError:
+            if attempt == PAGE_ATTEMPTS - 1:
+                raise
+            time.sleep(delay)
+    raise AssertionError("unreachable")
+
+
 def fetch(company: Company, client: httpx.Client, delay: float = CRAWL_DELAY) -> list[RawPosting]:
     today = date.today()
     by_id: dict[str, RawPosting] = {}
@@ -90,9 +104,7 @@ def fetch(company: Company, client: httpx.Client, delay: float = CRAWL_DELAY) ->
     while page <= min(last_page, MAX_PAGES):
         if page > 1:
             time.sleep(delay)
-        resp = client.get(_page_url(company.url, page))
-        resp.raise_for_status()
-        postings, last_page = parse(resp.text, today)
+        postings, last_page = parse(_get_page(client, _page_url(company.url, page), delay), today)
         for p in postings:
             by_id.setdefault(p.source_id, p)
         page += 1

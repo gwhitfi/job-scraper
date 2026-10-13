@@ -45,6 +45,16 @@ jobs:
           SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
         run: uv run jobscraper run
 
+      # My stars/applied/notes and employer decisions only exist on this PC; keep a versioned
+      # copy on the state branch. Restore with: cp state/backup/*.json ~/.local/share/jobscraper/
+      - name: Back up my marks
+        run: |
+          mkdir -p state/backup
+          for f in marks.json employers.json; do
+            src="$HOME/.local/share/jobscraper/$f"
+            if [ -f "$src" ]; then cp "$src" "state/backup/$f"; fi
+          done
+
       # Skipped if the run failed, so the next run re-detects the same changes and retries the email.
       - name: Save state
         working-directory: state

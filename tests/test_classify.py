@@ -202,6 +202,8 @@ def test_rules_fingerprint_tracks_profile_and_model():
     assert base != classify.rules_fingerprint(PROFILE, "m2")
     changed = Profile(**{**PROFILE.__dict__, "core_examples": ("programmer",)})
     assert base != classify.rules_fingerprint(changed, "m1")
+    display_only = Profile(**{**PROFILE.__dict__, "levels": ("senior",), "mode": "strict"})
+    assert base == classify.rules_fingerprint(display_only, "m1")
 
 
 def test_prompt_lists_equivalent_titles():

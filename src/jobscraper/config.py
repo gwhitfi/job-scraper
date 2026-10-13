@@ -2,11 +2,13 @@ import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from jobscraper import locations
+from jobscraper import distance, locations
 from jobscraper.models import Company
 
 DEFAULT_PATH = Path("config.toml")
 DEFAULT_MODEL = "claude-sonnet-5-5"
+LEVELS = ("intern", "entry", "mid", "senior", "lead")
+MODES = ("strict", "adjacent")
 
 
 @dataclass(frozen=True)
@@ -67,12 +69,20 @@ def load(path: Path = DEFAULT_PATH) -> Config:
     locations.build_filter(extended, regions)  # fail at load on typos
     for c in companies:
         locations.build_filter(c.locations, regions)
+    profile = Profile(**_tuples(raw["profile"]))
+    bad_levels = [lvl for lvl in profile.levels if lvl not in LEVELS]
+    if bad_levels:
+        raise ValueError(f"Unknown levels {bad_levels} in [profile]; allowed: {list(LEVELS)}")
+    if profile.mode not in MODES:
+        raise ValueError(f"Unknown mode {profile.mode!r} in [profile]; allowed: {list(MODES)}")
+    web = Web(**raw.get("web", {}))
+    distance.home_coords(web.home)  # an unknown town would otherwise crash the page
     return Config(
-        profile=Profile(**_tuples(raw["profile"])),
+        profile=profile,
         notifications=Notifications(**raw["notifications"]),
         companies=companies,
         regions=regions,
-        web=Web(**raw.get("web", {})),
+        web=web,
         extended_locations=extended,
         **({"classifier_model": raw["classifier"]["model"]} if "classifier" in raw else {}),
     )
