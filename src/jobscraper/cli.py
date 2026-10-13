@@ -72,10 +72,11 @@ def cmd_run(args: argparse.Namespace) -> None:
         result = runner.run(cfg, st, c, _llm_client(not args.no_llm), decisions=decisions)
 
     names = {c.id: c.name for c in cfg.companies}
+    health_names = cfg.health_names()
     for company_id, count in result.fetched.items():
-        print(f"{names[company_id]}: {count} postings")
+        print(f"{health_names[company_id]}: {count} postings")
     for company_id, error in result.failed.items():
-        print(f"{names[company_id]}: FAILED ({error})")
+        print(f"{health_names[company_id]}: FAILED ({error})")
     if result.usage.calls:
         cost = result.usage.cost(cfg.classifier_model)
         print(
@@ -123,7 +124,9 @@ def cmd_status(args: argparse.Namespace) -> None:
     cfg = config.load(args.config)
     st = state.load(args.state_dir)
     now = datetime.now(UTC)
-    print(f"{'Company':<14}{'Active':>8}{'Relevant':>10}{'New 3d':>8}{'New 7d':>8}  Health")
+    names = cfg.health_names()
+    width = max(len(n) for n in names.values()) + 2
+    print(f"{'Company':<{width}}{'Active':>8}{'Relevant':>10}{'New 3d':>8}{'New 7d':>8}  Health")
     for c in cfg.companies:
         active = [p for p in st.postings.values() if p.company_id == c.id and p.status == "active"]
         relevant = [p for p in active if classify.posting_group(p, cfg.profile) is not None]
@@ -138,7 +141,9 @@ def cmd_status(args: argparse.Namespace) -> None:
             health = f"ok {h.last_success:%Y-%m-%d %H:%M} UTC"
         if not c.enabled:
             health += " [disabled]"
-        print(f"{c.name:<14}{len(active):>8}{len(relevant):>10}{new3:>8}{new7:>8}  {health}")
+        print(
+            f"{names[c.id]:<{width}}{len(active):>8}{len(relevant):>10}{new3:>8}{new7:>8}  {health}"
+        )
 
 
 def cmd_list(args: argparse.Namespace) -> None:

@@ -99,3 +99,34 @@ def test_board_copy_returns_when_company_listing_closes():
     company.status = "removed"
     dedupe.mark_duplicates(s, COMPANIES, {"board"})
     assert board.duplicate_of is None
+
+
+def test_matches_any_entry_sharing_the_company_name():
+    """Michelin has one entry per city; a board listing can match any of them."""
+    per_city = [
+        Company(
+            id="michelin", name="Michelin", adapter="michelin", url="u", added=date(2026, 1, 1)
+        ),
+        Company(
+            id="michelin_greenville",
+            name="Michelin",
+            adapter="michelin",
+            url="u",
+            added=date(2026, 1, 1),
+        ),
+        COMPANIES[2],
+    ]
+    s = State(
+        postings={
+            p.key: p
+            for p in [
+                posting("michelin:1", "IT Site Support Analyst"),
+                posting("michelin_greenville:2", "Site IT Engineer"),
+                posting("mus:a", "Site IT Engineer", employer="Michelin"),
+                posting("mus:b", "IT Site Support Analyst", employer="Michelin"),
+            ]
+        }
+    )
+    dedupe.mark_duplicates(s, per_city, {"board"})
+    assert s.postings["mus:a"].duplicate_of == "michelin_greenville:2"
+    assert s.postings["mus:b"].duplicate_of == "michelin:1"

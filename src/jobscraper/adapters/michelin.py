@@ -1,3 +1,4 @@
+import logging
 import re
 import time
 from datetime import date
@@ -7,6 +8,8 @@ import httpx
 from bs4 import BeautifulSoup
 
 from jobscraper.models import Company, RawPosting
+
+log = logging.getLogger(__name__)
 
 MAX_PAGES = 20
 _PUBLISHED = re.compile(r"(\d{4}-\d{2}-\d{2})")
@@ -52,6 +55,7 @@ def _with_page(url: str, page: int) -> str:
 
 def fetch(company: Company, client: httpx.Client, delay: float = 1.0) -> list[RawPosting]:
     by_id: dict[str, RawPosting] = {}
+    repeats = 0
     page, last_page = 1, 1
     while page <= min(last_page, MAX_PAGES):
         if page > 1:
@@ -59,8 +63,14 @@ def fetch(company: Company, client: httpx.Client, delay: float = 1.0) -> list[Ra
         resp = client.get(_with_page(company.url, page))
         resp.raise_for_status()
         postings, last_page = parse(resp.text, company.url)
-        # Ordering isn't stable across pages, so the same job can show up twice.
         for p in postings:
+            repeats += p.source_id in by_id
             by_id.setdefault(p.source_id, p)
         page += 1
+    if repeats:
+        # A job repeated at a page boundary usually means another was pushed off a page, and
+        # the site gives no total to check against. Splitting the search keeps it on one page.
+        log.warning(
+            "%s: %d job(s) repeated across pages; one may have been skipped", company.id, repeats
+        )
     return list(by_id.values())

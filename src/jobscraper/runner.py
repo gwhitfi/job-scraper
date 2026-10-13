@@ -139,7 +139,7 @@ def run(
     now = now or datetime.now(UTC)
     decisions = decisions or {}
     companies = {c.id: c for c in cfg.companies}
-    result = RunResult(digest=Digest())
+    result = RunResult(digest=Digest(health_names=cfg.health_names()))
     new_keys: list[str] = []
     removed_keys: list[str] = []
 

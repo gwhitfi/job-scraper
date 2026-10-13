@@ -29,6 +29,8 @@ class Digest:
     # Reminder only; doesn't trigger an email by itself.
     still_available: list[Posting] = field(default_factory=list)
     unverified: set[str] = field(default_factory=set)  # keys from employers I haven't vetted
+    # Names for health lines when several entries share a company name (Michelin per city).
+    health_names: dict[str, str] = field(default_factory=dict)
 
     def job_sections(self) -> list[tuple[str, list[Posting]]]:
         sections = [
@@ -118,7 +120,7 @@ def render_text(d: Digest, names: dict[str, str], show_reasons: bool = False) ->
         out.append("")
     if d.health:
         out.append("SITE HEALTH")
-        out.extend(f"  - {_health_line(e, names)}" for e in d.health)
+        out.extend(f"  - {_health_line(e, names | d.health_names)}" for e in d.health)
         out.append("")
     return "\n".join(out) or "Nothing to report."
 
@@ -147,7 +149,7 @@ def render_html(d: Digest, names: dict[str, str]) -> str:
         out.append("</ul>")
     if d.health:
         out.append("<h2>Site health</h2><ul>")
-        out.extend(f"<li>{escape(_health_line(e, names))}</li>" for e in d.health)
+        out.extend(f"<li>{escape(_health_line(e, names | d.health_names))}</li>" for e in d.health)
         out.append("</ul>")
     return "<html><body>" + "".join(out) + "</body></html>"
 
@@ -171,7 +173,12 @@ def alert_subject(d: Digest) -> str:
 
 def _alert_only(d: Digest) -> Digest:
     """Just what the alert email covers."""
-    return Digest(new_exact=d.new_exact, health=d.health, unverified=d.unverified)
+    return Digest(
+        new_exact=d.new_exact,
+        health=d.health,
+        unverified=d.unverified,
+        health_names=d.health_names,
+    )
 
 
 def render_alert_text(d: Digest, names: dict[str, str], page_url: str) -> str:

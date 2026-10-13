@@ -46,6 +46,15 @@ class Config:
     # Wider area for companies that use `locations`; only exact matches from it are shown.
     extended_locations: tuple[str, ...] = ()
 
+    def health_names(self) -> dict[str, str]:
+        """Company names for health and status messages; same-named entries get their id."""
+        counts: dict[str, int] = {}
+        for c in self.companies:
+            counts[c.name] = counts.get(c.name, 0) + 1
+        return {
+            c.id: c.name if counts[c.name] == 1 else f"{c.name} ({c.id})" for c in self.companies
+        }
+
     def company(self, company_id: str) -> Company:
         for c in self.companies:
             if c.id == company_id:

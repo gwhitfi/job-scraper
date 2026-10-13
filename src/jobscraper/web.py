@@ -286,9 +286,9 @@ def _banners(app: App, now: datetime) -> str:
     if last and now - last > timedelta(hours=STALE_HOURS):
         hours = int((now - last).total_seconds() // 3600)
         messages.append(f"No update in {hours} hours. Is the PC on and the GitHub runner running?")
+    names = app.cfg.health_names()
     failing = [
-        f"{app.companies[cid].name if cid in app.companies else cid}"
-        f" ({h.consecutive_failures} failed checks)"
+        f"{names.get(cid, cid)} ({h.consecutive_failures} failed checks)"
         for cid, h in health.items()
         if h.consecutive_failures >= 3
     ]

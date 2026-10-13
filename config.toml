@@ -154,6 +154,159 @@ id = "michelin"
 name = "Michelin"
 about = "Tire manufacturer"
 adapter = "michelin"
+# Michelin gets one entry per city so each search stays small: its multi-page results can
+# repeat a job at a page boundary and push another off, with no total count to catch it.
 # Anderson, SC only
 url = "https://jobs.michelinman.com/job-offer-result-list?criteria=%7B%22jobLocation%22%3A%7B%22level0%22%3A%5B%5D%2C%22level1%22%3A%5B%22nc5qgihi3m3qhjy928mksl9f%22%5D%7D%7D&page=1"
 added = 2026-10-12
+
+[[companies]]
+id = "michelin_greenville"
+name = "Michelin"
+about = "Tire manufacturer"
+adapter = "michelin"
+# Greenville, SC only
+url = "https://jobs.michelinman.com/job-offer-result-list?criteria=%7B%22jobLocation%22%3A%7B%22level0%22%3A%5B%5D%2C%22level1%22%3A%5B%22clef9npmp000y0hwi8qcrfyse%22%5D%7D%7D&page=1"
+added = 2026-10-13
+
+[[companies]]
+id = "michelin_sandy_springs"
+name = "Michelin"
+about = "Tire manufacturer"
+adapter = "michelin"
+# Sandy Springs, SC only
+url = "https://jobs.michelinman.com/job-offer-result-list?criteria=%7B%22jobLocation%22%3A%7B%22level0%22%3A%5B%5D%2C%22level1%22%3A%5B%22clef9npoj001g0hwi8zuj0hgt%22%5D%7D%7D&page=1"
+added = 2026-10-13
+
+[[companies]]
+id = "michelin_spartanburg"
+name = "Michelin"
+about = "Tire manufacturer"
+adapter = "michelin"
+# Spartanburg, SC only
+url = "https://jobs.michelinman.com/job-offer-result-list?criteria=%7B%22jobLocation%22%3A%7B%22level0%22%3A%5B%5D%2C%22level1%22%3A%5B%22jkfwqowg5l3d17g63rknz6yj%22%5D%7D%7D&page=1"
+added = 2026-10-13
+
+# --- Added from companies-to-add.md (2026-10-13) ---
+
+[[companies]]
+id = "vertiv"
+name = "Vertiv"
+about = "Digital infrastructure: power management and cooling for data centers"
+adapter = "oracle_hcm"
+url = "https://egup.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX/jobs"
+options = {site = "CX", location_id = "300000004340041"}  # "SC, United States"
+locations = ["upstate_sc"]
+added = 2026-10-13
+
+[[companies]]
+id = "keymark"
+name = "Keymark"
+about = "Automation software (OnBase, intelligent automation), Liberty, SC"
+adapter = "paylocity"
+url = "https://recruiting.paylocity.com/recruiting/jobs/All/1866753a-da13-42a4-b70e-d72ad3dffafb"
+locations = ["upstate_sc"]
+added = 2026-10-13
+
+[[companies]]
+id = "kopis"
+name = "Kopis"
+about = "Custom software development consultancy, Greenville, SC"
+adapter = "bamboohr"
+url = "https://thapremierclientkp.bamboohr.com/careers"
+locations = ["upstate_sc"]
+added = 2026-10-13
+
+[[companies]]
+id = "worthwhile"
+name = "Worthwhile"
+about = "Custom software and digital product firm, Greenville, SC"
+adapter = "bamboohr"
+url = "https://worthwhile.bamboohr.com/careers"
+locations = ["upstate_sc"]
+added = 2026-10-13
+
+[[companies]]
+id = "robojuice"
+name = "Robojuice"
+about = "Web and custom software development agency, Greenville, SC"
+adapter = "html_list"
+url = "https://www.robojuice.com/careers"
+options = {item = ".w-dyn-item:has(a[href*='/job-postings/'])", title = "h4", link = "a[href*='/job-postings/']", summary = ".plain-text-component"}
+locations = ["upstate_sc"]
+added = 2026-10-13
+
+[[companies]]
+id = "externalsoftware"
+name = "External Software"
+about = "Software development consultancy; contract roles"
+adapter = "html_list"
+url = "https://www.externalsoftware.com/contract-opportunities/"
+options = {item = "h3"}
+locations = ["upstate_sc"]
+added = 2026-10-13
+
+[[companies]]
+id = "simpledu"
+name = "Simpledu"
+about = "K-12 school software, Greenville, SC"
+adapter = "html_list"
+url = "https://www.simpledu.com/careers/"
+# No openings when added; until a real job appears, the item selector is a guess and
+# none_text catches the page changing.
+options = {item = "a[href*='/careers/']:not([href$='/careers/'])", none_text = "no open opportunities"}
+locations = ["upstate_sc"]
+added = 2026-10-13
+
+[[companies]]
+id = "orangebees"
+name = "Orange Bees"
+about = "Software development consultancy, Greenville, SC"
+adapter = "html_list"
+url = "https://orangebees.easyapply.co/"
+# No openings when added; same approach as Simpledu.
+options = {item = "a[href*='/job/']", none_text = "currently no open jobs"}
+locations = ["upstate_sc"]
+added = 2026-10-13
+
+[[companies]]
+id = "prisma"
+name = "Prisma Health"
+about = "Hospital and health system, Greenville/Columbia, SC"
+adapter = "prisma"
+url = "https://careers.prismahealth.org/jobs/?subteam=Management&subteam=Tech-IT%2FTechnology&subteam=Tech-Other"
+locations = ["upstate_sc"]
+added = 2026-10-13
+
+[[companies]]
+id = "anmed"
+name = "AnMed"
+about = "Hospital and health system, Anderson, SC"
+adapter = "healthcaresource"
+url = "https://pm.healthcaresource.com/cs/anmed"
+# No IT category exists; IT roles fall under these.
+options = {categories = ["Professional - Non-Clinical", "Support", "Clerical"]}
+locations = ["upstate_sc"]
+added = 2026-10-13
+
+[[companies]]
+id = "bonsecours"
+name = "Bon Secours"
+about = "Hospital and health system (St. Francis), Greenville, SC"
+adapter = "phenom"
+url = "https://careers.bonsecours.com/us/en/search-results"
+# 171 SC jobs when added, all clinical/admin. The site matches keywords anywhere in the text,
+# so title_only keeps just jobs with a keyword in the title (none when added).
+options = {keywords = ["analyst", "developer", "software", "data", "systems", "information technology"], states = ["South Carolina"], title_only = true}
+locations = ["upstate_sc"]
+added = 2026-10-13
+
+[[companies]]
+id = "bmw"
+name = "BMW"
+about = "Car manufacturer; Plant Spartanburg (Greer) and Woodruff"
+adapter = "bmw"
+url = "https://www.bmwgroup.jobs/us/en/_jcr_content/main/layoutcontainer_5337/jobfinder30.jobfinder_table.content.html"
+options = {filters = ["location_US/Greer", "location_US/Spartanburg", "location_US/Greenville", "location_US/Woodruff"]}
+locations = ["upstate_sc"]
+added = 2026-10-13

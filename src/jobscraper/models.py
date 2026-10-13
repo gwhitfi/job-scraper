@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date
 
 
@@ -30,3 +30,4 @@ class Company:
     remote: bool = True  # keep remote jobs even outside `locations`
     about: str = ""  # one line of context for the classifier, e.g. "Medical device maker"
     aliases: tuple[str, ...] = ()  # other names it posts under on job boards, e.g. brands
+    options: dict = field(default_factory=dict, hash=False)  # adapter-specific settings

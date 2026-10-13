@@ -36,14 +36,33 @@ def test_successfactors_parses_tiles():
     )
 
 
-def test_successfactors_fails_when_tiles_missing(make_company):
-    html = fixture_text("arthrex.html").replace("of 18 Jobs", "of 40 Jobs")
-    client = mock_client(lambda request: httpx.Response(200, text=html))
-    with pytest.raises(ValueError, match="40 jobs"):
-        successfactors.fetch(make_company("successfactors", ARTHREX_URL), client)
+def test_successfactors_pages_through_more_results(make_company):
+    page = fixture_text("arthrex.html").replace("of 18 Jobs", "of 20 Jobs")
+    extra = fixture_text("arthrex_tiles.html")
+    # The tiles endpoint returns two jobs the first page didn't have.
+    extra = extra.replace("1358704157", "9000000001").replace("1372720257", "9000000002")
+    requested = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requested.append(str(request.url))
+        return httpx.Response(
+            200, text=extra if "tile-search-results" in request.url.path else page
+        )
+
+    postings = successfactors.fetch(
+        make_company("successfactors", ARTHREX_URL), mock_client(handler), delay=0
+    )
+    assert len(postings) == 20
+    assert requested[1] == (
+        "https://careers.arthrex.com/tile-search-results/category/7566200/?startrow=18"
+    )
 
 
-# --- Michelin ---
+def test_successfactors_fails_when_paging_stalls(make_company):
+    page = fixture_text("arthrex.html").replace("of 18 Jobs", "of 40 Jobs")
+    client = mock_client(lambda request: httpx.Response(200, text=page))
+    with pytest.raises(ValueError, match="paging stopped at 18"):
+        successfactors.fetch(make_company("successfactors", ARTHREX_URL), client, delay=0)
 
 
 def test_michelin_parses_cards_and_pager():
@@ -59,7 +78,7 @@ def test_michelin_parses_cards_and_pager():
     assert first.category == "IS&Digital"
 
 
-def test_michelin_follows_pages_and_dedupes(make_company):
+def test_michelin_follows_pages_and_dedupes(make_company, caplog):
     pages = {
         "1": fixture_text("michelin_multi_p1.html"),
         "2": fixture_text("michelin_multi_p2.html"),
@@ -80,6 +99,7 @@ def test_michelin_follows_pages_and_dedupes(make_company):
     assert len(ids) == len(set(ids))
     assert "industry-4-0-manager" in ids  # on both pages, kept once
     assert len(ids) == 17
+    assert "repeated across pages" in caplog.text
 
 
 # --- UltiPro (ScanSource) ---

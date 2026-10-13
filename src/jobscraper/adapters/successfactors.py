@@ -1,4 +1,5 @@
 import re
+import time
 from urllib.parse import urljoin
 
 import httpx
@@ -48,11 +49,28 @@ def parse(html: str, base_url: str) -> tuple[list[RawPosting], int]:
     return postings, int(m.group(1)) if m else len(postings)
 
 
-def fetch(company: Company, client: httpx.Client) -> list[RawPosting]:
+def _tiles_url(page_url: str, start: int) -> str:
+    """The endpoint behind the page's "More Search Results" button, e.g.
+    /tile-search-results/category/7566200/?startrow=25 for /go/Jobs-in-South-Carolina/7566200/.
+    """
+    category = _JOB_ID.search(page_url.split("?")[0])
+    if not category:
+        raise ValueError(f"No category id in {page_url!r}")
+    return urljoin(page_url, f"/tile-search-results/category/{category.group(1)}/?startrow={start}")
+
+
+def fetch(company: Company, client: httpx.Client, delay: float = 1.0) -> list[RawPosting]:
     resp = client.get(company.url)
     resp.raise_for_status()
-    postings, total = parse(resp.text, company.url)
-    if len(postings) < total:
-        # Haven't seen a category with more than one page yet; fail loudly so it gets noticed.
-        raise ValueError(f"Page lists {total} jobs but only {len(postings)} tiles were parsed")
-    return postings
+    first, total = parse(resp.text, company.url)
+    by_id = {p.source_id: p for p in first}
+    while len(by_id) < total:
+        time.sleep(delay)
+        resp = client.get(_tiles_url(company.url, len(by_id)))
+        resp.raise_for_status()
+        more, _ = parse(resp.text, company.url)
+        new = [p for p in more if p.source_id not in by_id]
+        if not new:
+            raise ValueError(f"Page lists {total} jobs but paging stopped at {len(by_id)}")
+        by_id.update((p.source_id, p) for p in new)
+    return list(by_id.values())

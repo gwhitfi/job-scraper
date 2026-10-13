@@ -55,3 +55,10 @@ def test_config_typos_rejected(tmp_path, section, line, message):
     p.write_text(f'[profile]\n{profile}[notifications]\nemail = "a@b.c"\n{web}')
     with pytest.raises(ValueError, match=message):
         config.load(p)
+
+
+def test_health_names_tell_same_named_entries_apart():
+    cfg = config.load(ROOT / "config.toml")
+    names = cfg.health_names()
+    assert names["michelin_greenville"] == "Michelin (michelin_greenville)"
+    assert names["arthrex"] == "Arthrex"

@@ -38,7 +38,10 @@ def mark_duplicates(state: State, companies: list[Company], boards: set[str]) ->
         for c in companies
         if c.adapter not in boards
     }
-    company_for_brand = {b: cid for cid, brands in brands_by_company.items() for b in brands}
+    companies_for_brand: dict[str, list[str]] = {}
+    for cid, brands in brands_by_company.items():
+        for b in brands:
+            companies_for_brand.setdefault(b, []).append(cid)
     active = [p for p in state.postings.values() if p.status == "active"]
     by_company: dict[str, list[Posting]] = {}
     for p in active:
@@ -48,9 +51,10 @@ def mark_duplicates(state: State, companies: list[Company], boards: set[str]) ->
     for p in active:
         if p.company_id not in board_ids:
             continue
-        cid = company_for_brand.get(normalize_name(p.employer))
-        brands = brands_by_company.get(cid, set())
-        match = next(
-            (o for o in by_company.get(cid, []) if same_job(p.title, o.title, brands)), None
-        )
+        candidates = [
+            (o, brands_by_company[cid])
+            for cid in companies_for_brand.get(normalize_name(p.employer), [])
+            for o in by_company.get(cid, [])
+        ]
+        match = next((o for o, brands in candidates if same_job(p.title, o.title, brands)), None)
         p.duplicate_of = match.key if match else None
