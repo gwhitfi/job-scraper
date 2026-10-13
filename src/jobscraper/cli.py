@@ -17,7 +17,9 @@ from jobscraper import (
     notify,
     runner,
     state,
+    tracker,
     usage,
+    userdata,
     web,
 )
 
@@ -88,6 +90,13 @@ def cmd_run(args: argparse.Namespace) -> None:
     if args.dry_run:
         print("\n(dry run: state not saved, no email sent)")
         return
+    marks = userdata.load(args.data_dir / "marks.json")
+    archived = tracker.archive_closed(st, set(marks), datetime.now(UTC))
+    if archived:
+        state.append_archive(archived, args.state_dir)
+        print(
+            f"Archived {len(archived)} postings closed over {tracker.ARCHIVE_AFTER_DAYS} days ago"
+        )
     state.save(st, args.state_dir)
     usage.record(
         args.state_dir / "usage.json", result.usage, cfg.classifier_model, datetime.now(UTC)
@@ -150,7 +159,12 @@ def cmd_list(args: argparse.Namespace) -> None:
 
 
 def cmd_serve(args: argparse.Namespace) -> None:
-    cfg = config.load(args.config)
+    # Prefer the config the last scheduled run used (published next to its state), so the page
+    # groups jobs the same way the alerts did. Falls back to the repo's config.toml.
+    published = args.data_dir / "config.toml"
+    config_path = args.config if args.config != config.DEFAULT_PATH else None
+    config_path = config_path or (published if published.exists() else config.DEFAULT_PATH)
+    cfg = config.load(config_path)
     host = args.host or cfg.web.host
     port = args.port or cfg.web.port
     app = web.App(
@@ -158,9 +172,10 @@ def cmd_serve(args: argparse.Namespace) -> None:
         args.data_dir / "state",
         args.data_dir / "marks.json",
         args.data_dir / "employers.json",
+        config_path,
     )
     server = web.make_server(app, host, port)
-    logging.info("Serving on http://%s:%d (data in %s)", host, port, args.data_dir)
+    logging.info("Serving on http://%s:%d using %s", host, port, config_path)
     with contextlib.suppress(KeyboardInterrupt):
         server.serve_forever()
 
@@ -179,7 +194,9 @@ def main() -> None:
     run.add_argument("--dry-run", action="store_true", help="Don't save state or send email")
     run.add_argument("--no-email", action="store_true", help="Save state but don't send email")
     run.add_argument("--no-llm", action="store_true", help="Classify with keywords only")
-    run.add_argument("--data-dir", type=Path, default=DATA_DIR, help="Where employers.json lives")
+    run.add_argument(
+        "--data-dir", type=Path, default=DATA_DIR, help="Where marks.json and employers.json live"
+    )
     run.set_defaults(func=cmd_run)
 
     status = sub.add_parser("status", help="Per-company counts and health")

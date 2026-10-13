@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from jobscraper.models import RawPosting
 from jobscraper.state import Health, Posting, State
@@ -7,6 +7,7 @@ from jobscraper.state import Health, Posting, State
 MISSES_BEFORE_REMOVAL = 2
 FAILURES_BEFORE_ALERT = 3
 EMPTY_RUNS_TO_ACCEPT = 6  # ~12 hours of empty results means the company really has no jobs
+ARCHIVE_AFTER_DAYS = 90
 
 
 @dataclass
@@ -69,7 +70,9 @@ def apply_results(
         existing.summary = raw.summary
         existing.employer = raw.employer
         existing.area = raw.area
-        existing.last_seen = now
+        # Updating this every run would rewrite every posting in each state commit.
+        if existing.last_seen.date() != now.date():
+            existing.last_seen = now
         existing.missed_runs = 0
 
     for key, posting in state.postings.items():
@@ -120,3 +123,17 @@ def record_failure(state: State, company_id: str, error: str, now: datetime) -> 
         health.alerted = True
         return HealthEvent(company_id, "failing", health)
     return None
+
+
+def archive_closed(state: State, keep: set[str], now: datetime) -> dict[str, Posting]:
+    """Move postings closed for ARCHIVE_AFTER_DAYS out of state, except ones in `keep`.
+
+    `keep` is the keys I've starred, applied to, hidden, or noted, so my history stays.
+    """
+    cutoff = now - timedelta(days=ARCHIVE_AFTER_DAYS)
+    old = [
+        key
+        for key, p in state.postings.items()
+        if p.status == "removed" and p.removed_at and p.removed_at < cutoff and key not in keep
+    ]
+    return {key: state.postings.pop(key) for key in old}

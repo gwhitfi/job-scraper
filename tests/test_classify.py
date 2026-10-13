@@ -173,6 +173,9 @@ def test_llm_stops_when_claude_is_unavailable(monkeypatch):
         ("Summer 2027 Internship: Engineering and/or Sciences, IT/IS", "none", "intern"),
         ("Lead Data Analyst", "adjacent", "lead"),
         ("CNC Machine Operator", "none", "unknown"),
+        ("Medical Device Technician", "none", "unknown"),  # "dev" mustn't match "Device"
+        ("Development Program Coordinator", "none", "unknown"),
+        ("Web Developers - Contract", "core", "unknown"),  # plurals still match
     ],
 )
 def test_keyword_fallback(title, relevance, level):
@@ -225,3 +228,14 @@ def test_match_group(mode, relevance, level, expected):
     profile = Profile(target_role="dev", mode=mode, levels=("intern", "entry", "mid"))
     c = {"relevance": relevance, "level": level}
     assert classify.match_group(c, profile) == expected
+
+
+def test_keyword_short_terms_match_whole_words_only():
+    profile = Profile(target_role="software developer", core_examples=("dev", "SWE"))
+    titles = {"a:1": "Sr. Dev (Python)", "a:2": "Medical Device Tech", "a:3": "SWE II"}
+    out = classify.classify_keywords([posting(k, t) for k, t in titles.items()], profile)
+    assert {k: v["relevance"] for k, v in out.items()} == {
+        "a:1": "core",
+        "a:2": "none",
+        "a:3": "core",
+    }

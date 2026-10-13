@@ -17,7 +17,7 @@ class Posting:
     url: str
     posted_date: date | None
     first_seen: datetime
-    last_seen: datetime
+    last_seen: datetime  # updated at most once a day
     status: str = "active"  # "active" | "removed"
     removed_at: datetime | None = None
     # Consecutive successful runs this posting was missing from; removal happens at 2.
@@ -82,6 +82,16 @@ def load(state_dir: Path = DEFAULT_DIR) -> State:
         postings={k: _decode(Posting, v) for k, v in postings.items()},
         health={k: _decode(Health, v) for k, v in health.items()},
     )
+
+
+def append_archive(postings: dict[str, Posting], state_dir: Path = DEFAULT_DIR) -> None:
+    """Add archived postings to archive.json, which the page and runs never load."""
+    if not postings:
+        return
+    path = state_dir / "archive.json"
+    archive = jsonfile.read(path)
+    archive.update({k: asdict(v) for k, v in postings.items()})
+    jsonfile.write(path, archive, default=_encode)
 
 
 def save(state: State, state_dir: Path = DEFAULT_DIR) -> None:

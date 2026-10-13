@@ -39,6 +39,11 @@ class Digest:
         return [(title, postings) for title, postings in sections if postings]
 
 
+def safe_url(url: str) -> str:
+    """Scraped links are only used if they're http(s); a "javascript:" link would run code."""
+    return url if url.lower().startswith(("https://", "http://")) else "#"
+
+
 def _posted(p: Posting) -> str:
     if p.posted_date:
         return f"posted {p.posted_date.isoformat()}"
@@ -125,7 +130,7 @@ def render_html(d: Digest, names: dict[str, str]) -> str:
             out.append(f"<h3>{escape(source)}</h3><ul>")
             for p in group:
                 out.append(
-                    f'<li><a href="{escape(p.url)}">{escape(p.title)}</a> '
+                    f'<li><a href="{escape(safe_url(p.url))}">{escape(p.title)}</a> '
                     f"&middot; {escape(p.location)} &middot; {escape(_level(p))} "
                     f"&middot; {escape(_posted(p))}"
                     + (" &middot; <b>unverified employer</b>" if p.key in d.unverified else "")

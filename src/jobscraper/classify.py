@@ -224,17 +224,22 @@ _LEVEL_PATTERNS: list[tuple[str, re.Pattern]] = [
 ]
 
 
+def _words_pattern(terms: tuple[str, ...]) -> re.Pattern:
+    """Matches any term as whole words (plural allowed), so "dev" doesn't match "Device"."""
+    alternatives = "|".join(re.escape(t.lower()) for t in terms if t.strip())
+    return re.compile(rf"\b(?:{alternatives})s?\b" if alternatives else r"(?!)", re.I)
+
+
 def classify_keywords(postings: list[Posting], profile: Profile) -> dict[str, dict]:
     """Rough title-only fallback for when the LLM is unavailable."""
-    core = [k.lower() for k in (profile.target_role, *profile.core_examples, *profile.keywords)]
-    adjacent = [k.lower() for k in profile.adjacent_examples]
+    core = _words_pattern((profile.target_role, *profile.core_examples, *profile.keywords))
+    adjacent = _words_pattern(profile.adjacent_examples)
     now = datetime.now(UTC).isoformat()
     out = {}
     for p in postings:
-        title = p.title.lower()
-        if any(k in title for k in core):
+        if core.search(p.title):
             relevance = "core"
-        elif any(k in title for k in adjacent):
+        elif adjacent.search(p.title):
             relevance = "adjacent"
         else:
             relevance = "none"

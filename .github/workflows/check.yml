@@ -66,3 +66,6 @@ jobs:
             cp "state/$f" "$dest/$f.tmp"
             mv "$dest/$f.tmp" "$dest/$f"
           done
+          # The page uses the same config this run used, so its groups match the alerts.
+          cp config.toml "$dest/../config.toml.tmp"
+          mv "$dest/../config.toml.tmp" "$dest/../config.toml"

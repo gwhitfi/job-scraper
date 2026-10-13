@@ -1,6 +1,8 @@
 from datetime import UTC, date, datetime
 from pathlib import Path
 
+import pytest
+
 from jobscraper import notify
 from jobscraper.state import Health, Posting
 from jobscraper.tracker import HealthEvent
@@ -176,3 +178,23 @@ def test_outbox_caps_pending():
         notify.queue(outbox, {"subject": str(i), "text": "", "html": ""})
     assert len(outbox["pending"]) == notify.MAX_PENDING
     assert outbox["pending"][0]["subject"] == "5"
+
+
+@pytest.mark.parametrize(
+    ("url", "expected"),
+    [
+        ("https://jobs.example.com/1", "https://jobs.example.com/1"),
+        ("HTTP://example.com", "HTTP://example.com"),
+        ("javascript:alert(1)", "#"),
+        ("  javascript:alert(1)", "#"),
+        ("data:text/html,<script>", "#"),
+        ("/relative/path", "#"),
+    ],
+)
+def test_safe_url(url, expected):
+    assert notify.safe_url(url) == expected
+
+
+def test_email_drops_unsafe_links():
+    d = notify.Digest(new_exact=[posting(url="javascript:alert(1)")])
+    assert 'href="#"' in notify.render_html(d, NAMES)

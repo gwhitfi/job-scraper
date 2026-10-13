@@ -320,3 +320,50 @@ def test_footer_shows_claude_cost(app, tmp_path):
     run = usage.Usage(calls=1, input_tokens=100_000, output_tokens=10_000)
     usage.record(tmp_path / "state" / "usage.json", run, "claude-sonnet-5-5", NOW)
     assert "Claude: $0.30 this month" in app.index({})
+
+
+def test_page_drops_unsafe_links(app):
+    app.state().postings["acme:1"].url = "javascript:alert(document.cookie)"
+    html = app.index({"view": "exact"})
+    assert "javascript:alert" not in html
+    assert '<h2><a href="#"' in html
+
+
+def test_reloads_config_when_it_changes(tmp_path):
+    from jobscraper import config
+
+    base = """
+[profile]
+target_role = "dev"
+levels = ["entry", "mid"]
+[notifications]
+email = "a@b.c"
+[[companies]]
+id = "acme"
+name = "{name}"
+adapter = "ultipro"
+url = "u"
+added = 2026-01-01
+"""
+    cfg_path = tmp_path / "config.toml"
+    cfg_path.write_text(base.format(name="Acme"))
+    state.save(State(postings={"acme:1": posting("acme:1", "Web Developer")}), tmp_path / "state")
+    app = web.App(
+        config.load(cfg_path),
+        tmp_path / "state",
+        tmp_path / "marks.json",
+        tmp_path / "employers.json",
+        cfg_path,
+    )
+    assert '<p class="company">Acme</p>' in app.index({})
+
+    def rewrite(text: str, bump: int) -> None:
+        cfg_path.write_text(text)
+        stat = cfg_path.stat()
+        os.utime(cfg_path, (stat.st_atime, stat.st_mtime + bump))
+
+    rewrite(base.format(name="Acme Renamed"), 5)
+    assert '<p class="company">Acme Renamed</p>' in app.index({})
+
+    rewrite("not = [valid toml", 10)  # a broken edit keeps the last good config
+    assert '<p class="company">Acme Renamed</p>' in app.index({})

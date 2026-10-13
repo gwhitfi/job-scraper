@@ -22,13 +22,14 @@ def test_first_run_marks_everything_new():
     assert s.postings["co:1"].first_seen == T0
 
 
-def test_unchanged_run_reports_nothing_and_updates_last_seen():
+def test_unchanged_run_reports_nothing_and_updates_last_seen_daily():
     s = State()
-    run(s, ["1"])
-    changes = run(s, ["1"], hours=1)
-    assert changes == tracker.Changes()
+    run(s, ["1"])  # T0 is noon
+    assert run(s, ["1"], hours=2) == tracker.Changes()
     assert s.postings["co:1"].first_seen == T0
-    assert s.postings["co:1"].last_seen == T0 + timedelta(hours=1)
+    assert s.postings["co:1"].last_seen == T0  # same day: unchanged, so state isn't rewritten
+    run(s, ["1"], hours=14)  # next day
+    assert s.postings["co:1"].last_seen == T0 + timedelta(hours=14)
 
 
 def test_removal_needs_two_consecutive_misses():
@@ -145,3 +146,15 @@ def test_jobs_returning_resets_empty_streak():
     assert not tracker.is_suspicious_empty(s, "co", [raw("1")])
     assert s.health["co"].empty_streak == 0
     assert tracker.is_suspicious_empty(s, "co", [])  # counting starts over
+
+
+def test_archive_closed_keeps_recent_and_marked():
+    s = State()
+    run(s, ["old", "marked", "recent", "open"])
+    run(s, ["open"], hours=1)
+    run(s, ["open"], hours=2)  # the other three are removed at T0 + 2h
+    later = T0 + timedelta(days=tracker.ARCHIVE_AFTER_DAYS, hours=3)
+    s.postings["co:recent"].removed_at = later - timedelta(days=5)
+    archived = tracker.archive_closed(s, keep={"co:marked"}, now=later)
+    assert set(archived) == {"co:old"}
+    assert set(s.postings) == {"co:marked", "co:recent", "co:open"}

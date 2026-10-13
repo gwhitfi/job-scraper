@@ -10,6 +10,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, quote_plus, urlencode, urlparse
 
 from jobscraper import classify, distance, employers, jsonfile, notify, state, usage, userdata
+from jobscraper import config as config_file
 from jobscraper.config import Config
 from jobscraper.state import Posting, State
 
@@ -51,15 +52,40 @@ class Row:
 
 
 class App:
-    def __init__(self, cfg: Config, state_dir: Path, marks_path: Path, employers_path: Path):
-        self.cfg = cfg
+    def __init__(
+        self,
+        cfg: Config,
+        state_dir: Path,
+        marks_path: Path,
+        employers_path: Path,
+        config_path: Path | None = None,
+    ):
         self.state_dir = state_dir
         self.marks_path = marks_path
         self.employers_path = employers_path
+        self.config_path = config_path  # reloaded when it changes, if given
+        self._config_mtime = config_path.stat().st_mtime if config_path else None
         self.lock = threading.Lock()
         self._cache: tuple[float, State] | None = None
+        self._use_config(cfg)
+
+    def _use_config(self, cfg: Config) -> None:
+        self.cfg = cfg
         self.companies = {c.id: c for c in cfg.companies}
         self.home = distance.home_coords(cfg.web.home)
+
+    def reload_config(self) -> None:
+        """Pick up a new config.toml (e.g. the copy each run publishes) without a restart."""
+        if self.config_path is None or not self.config_path.exists():
+            return
+        mtime = self.config_path.stat().st_mtime
+        if mtime == self._config_mtime:
+            return
+        try:
+            self._use_config(config_file.load(self.config_path))
+        except Exception:
+            log.exception("Couldn't reload %s; keeping the previous config", self.config_path)
+        self._config_mtime = mtime
 
     # --- data ---
 
@@ -171,6 +197,7 @@ class App:
     # --- pages ---
 
     def index(self, query: dict[str, str]) -> str:
+        self.reload_config()
         view = query.get("view") if query.get("view") in VIEWS else "exact"
         source = query.get("source") if query.get("source") in SOURCES else "all"
         sort = query.get("sort") if query.get("sort") in SORTS else "newest"
@@ -314,6 +341,7 @@ def _card(r: Row, today: date) -> str:
     reason = escape(c.get("reason", ""))
     note = escape(r.marks.get("note", ""))
     key = escape(p.key)
+    href = escape(notify.safe_url(p.url))
 
     def toggle(field: str, on: str, off: str) -> str:
         active = r.marks.get(field, False)
@@ -327,7 +355,7 @@ def _card(r: Row, today: date) -> str:
 <article class="card" data-key="{key}">
   <div class="badges">{"".join(badges)}</div>
   <p class="company">{escape(r.source)}</p>
-  <h2><a href="{escape(p.url)}" target="_blank" rel="noopener">{escape(p.title)}</a></h2>
+  <h2><a href="{href}" target="_blank" rel="noopener">{escape(p.title)}</a></h2>
   <p class="meta">{meta}</p>
   {_also_on(r)}
   {f'<p class="reason">{reason}</p>' if reason else ""}
@@ -349,7 +377,8 @@ def _also_on(r: Row) -> str:
     if not r.also_on:
         return ""
     links = ", ".join(
-        f'<a href="{escape(url)}" target="_blank" rel="noopener">{escape(name)}</a>'
+        f'<a href="{escape(notify.safe_url(url))}" target="_blank" rel="noopener">'
+        f"{escape(name)}</a>"
         for name, url in r.also_on
     )
     return f'<p class="also-on">Also listed on {links}</p>'
