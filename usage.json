@@ -1,10 +1,10 @@
 {
   "months": {
     "2026-10": {
-      "calls": 20,
-      "cost_usd": 1.1162,
-      "input_tokens": 151775,
-      "output_tokens": 81259
+      "calls": 21,
+      "cost_usd": 1.1261,
+      "input_tokens": 154238,
+      "output_tokens": 81752
     }
   },
   "since": "2026-10-13"
