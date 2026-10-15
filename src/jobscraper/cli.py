@@ -8,21 +8,13 @@ from pathlib import Path
 import anthropic
 from dotenv import find_dotenv, load_dotenv
 
-from jobscraper import (
-    activity,
-    classify,
-    company_store,
-    config,
-    http,
-    jsonfile,
-    locations,
-    notify,
-    runner,
-    state,
-    tracker,
-    usage,
-    web,
-)
+from jobscraper import activity, config
+from jobscraper.classification import classification_cache, classify, usage
+from jobscraper.geography import locations
+from jobscraper.presentation import web
+from jobscraper.scraping import http
+from jobscraper.storage import company_store, jsonfile, state
+from jobscraper.workflow import notify, runner, scheduling, tracker
 
 # Where the scheduled run publishes state for the web page, and where my marks live.
 DATA_DIR = Path.home() / ".local" / "share" / "jobscraper"
@@ -59,24 +51,71 @@ def _llm_client(enabled: bool) -> anthropic.Anthropic | None:
     if not enabled:
         return None
     try:
-        return anthropic.Anthropic()
+        return anthropic.Anthropic(timeout=120.0, max_retries=1)
     except anthropic.AnthropicError as e:
         logging.warning("No Anthropic credentials, using keywords: %s", e)
         return None
 
 
 def cmd_run(args: argparse.Namespace) -> None:
+    lock = contextlib.nullcontext() if args.dry_run else scheduling.run_lock(args.data_dir)
+    with lock:
+        _traced_run(args)
+
+
+def _traced_run(args: argparse.Namespace) -> None:
     path = None if args.dry_run else args.state_dir / "crawl-history.json"
     with activity.Trace(path, "crawl") as trace:
         _run(args, trace)
+
+
+def cmd_scheduled_run(args: argparse.Namespace) -> None:
+    missing = [
+        key
+        for key in ("ANTHROPIC_API_KEY", "SMTP_USER", "SMTP_APP_PASSWORD")
+        if not os.environ.get(key)
+    ]
+    if missing:
+        raise ValueError("Local scheduler credentials are missing: " + ", ".join(missing))
+    if args.check:
+        scheduling.validate(args.config, args.data_dir)
+        company_store.merge(config.load(args.config), args.data_dir / "companies.json")
+        print("Local scheduler ready: config, existing state, and required credentials present.")
+        return
+
+    def crawl(config_path: Path, state_dir: Path) -> None:
+        _traced_run(
+            argparse.Namespace(
+                config=config_path,
+                state_dir=state_dir,
+                data_dir=args.data_dir,
+                dry_run=False,
+                no_llm=False,
+                no_email=False,
+            )
+        )
+
+    scheduling.run(args.config, args.data_dir, crawl)
 
 
 def _run(args: argparse.Namespace, trace: activity.Trace) -> None:
     cfg = company_store.merge(config.load(args.config), args.data_dir / "companies.json")
     st = state.load(args.state_dir)
     decisions = jsonfile.read(args.data_dir / "employers.json")
+    checkpoint = (
+        None
+        if args.dry_run
+        else classification_cache.Checkpoint(
+            args.state_dir / "classification-cache.json",
+            trace.record["id"],
+            cfg.classifier_model,
+            datetime.fromisoformat(trace.record["started"]),
+        )
+    )
     with http.client() as c:
-        result = runner.run(cfg, st, c, _llm_client(not args.no_llm), decisions=decisions)
+        result = runner.run(
+            cfg, st, c, _llm_client(not args.no_llm), decisions=decisions, checkpoint=checkpoint
+        )
 
     trace.record["status"] = "partial_failure" if result.failed else "completed"
     activity.emit(
@@ -115,10 +154,15 @@ def _run(args: argparse.Namespace, trace: activity.Trace) -> None:
     state.save(st, args.state_dir)
     activity.emit("state_saved", archived=len(archived))
     usage.record(
-        args.state_dir / "usage.json", result.usage, cfg.classifier_model, datetime.now(UTC)
+        args.state_dir / "usage.json",
+        result.usage,
+        cfg.classifier_model,
+        datetime.fromisoformat(trace.record["started"]),
+        trace.record["id"],
     )
     if not args.no_email:
         _send_alerts(cfg, result.digest, names, args.state_dir / "email.json")
+    checkpoint.finish(st.postings)
 
 
 def _send_alerts(cfg: config.Config, digest: notify.Digest, names: dict, outbox_path: Path) -> None:
@@ -212,7 +256,7 @@ def main() -> None:
     logging.getLogger("httpx").setLevel(logging.WARNING)
     parser = argparse.ArgumentParser(prog="jobscraper")
     parser.add_argument("--config", type=Path, default=config.DEFAULT_PATH)
-    parser.add_argument("--state-dir", type=Path, default=state.DEFAULT_DIR)
+    parser.add_argument("--state-dir", type=Path, default=None)
     sub = parser.add_subparsers(required=True)
 
     run = sub.add_parser("run", help="Fetch all companies, diff, classify, notify")
@@ -223,6 +267,11 @@ def main() -> None:
         "--data-dir", type=Path, default=DATA_DIR, help="Where marks.json and employers.json live"
     )
     run.set_defaults(func=cmd_run)
+
+    scheduled = sub.add_parser("scheduled-run", help="Run locally with locking and backups")
+    scheduled.add_argument("--data-dir", type=Path, default=DATA_DIR)
+    scheduled.add_argument("--check", action="store_true", help="Validate setup without crawling")
+    scheduled.set_defaults(func=cmd_scheduled_run)
 
     status = sub.add_parser("status", help="Per-company counts and health")
     status.add_argument("--data-dir", type=Path, default=DATA_DIR)
@@ -246,4 +295,6 @@ def main() -> None:
     test.set_defaults(func=cmd_test)
 
     args = parser.parse_args()
+    if args.state_dir is None:
+        args.state_dir = args.data_dir / "state"
     args.func(args)

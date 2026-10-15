@@ -8,9 +8,9 @@ from email.message import EmailMessage
 from html import escape
 from pathlib import Path
 
-from jobscraper import jsonfile
-from jobscraper.state import Posting
-from jobscraper.tracker import HealthEvent
+from jobscraper.storage import jsonfile
+from jobscraper.storage.state import Posting
+from jobscraper.workflow.tracker import HealthEvent
 
 log = logging.getLogger(__name__)
 

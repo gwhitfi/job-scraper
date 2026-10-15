@@ -5,7 +5,7 @@ import httpx
 from conftest import fixture_text, mock_client
 from test_discovery import client_for
 
-from jobscraper import crawl, discovery, navigation
+from jobscraper.scraping import crawl, discovery, navigation
 
 
 def test_new_results_candidate_outranks_old_marketing_queue():

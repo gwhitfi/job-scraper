@@ -1,7 +1,7 @@
 from datetime import UTC, date, datetime
 
-from jobscraper import state
-from jobscraper.state import Health, Posting, State
+from jobscraper.storage import state
+from jobscraper.storage.state import Health, Posting, State
 
 NOW = datetime(2026, 10, 12, 15, 0, tzinfo=UTC)
 

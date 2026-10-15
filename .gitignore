@@ -1,11 +1,46 @@
+# Local documentation and planning (kept private)
 docs/
+learn/
+companies-to-add.md
+/updates.md
+/deploy/README.md
+# Python environments, bytecode, and build output
 __pycache__/
-*.pyc
+*.py[cod]
 .venv/
+venv/
+build/
+dist/
+*.egg-info/
+.tox/
+.nox/
+
+# Test, lint, and coverage output
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Credentials and per-machine environment overrides
 .env
+.env.*
+!.env.example
+
+# Local runtime data and generated logs/backups
 state/
-companies-to-add.md
-learn/
-/updates.md
+/marks.json
+/employers.json
+/companies.json
+/backups/
+/logs/
+/tmp/
+*.log
+
+# Editor and OS metadata
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

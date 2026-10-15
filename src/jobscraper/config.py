@@ -2,7 +2,7 @@ import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from jobscraper import distance, locations
+from jobscraper.geography import distance, locations
 from jobscraper.models import Company
 
 DEFAULT_PATH = Path("config.toml")

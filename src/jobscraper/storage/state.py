@@ -2,9 +2,9 @@ from dataclasses import asdict, dataclass, field, fields
 from datetime import date, datetime
 from pathlib import Path
 
-from jobscraper import jsonfile
+from jobscraper.storage import jsonfile
 
-DEFAULT_DIR = Path("state")
+DEFAULT_DIR = Path.home() / ".local" / "share" / "jobscraper" / "state"
 
 
 @dataclass
@@ -27,7 +27,9 @@ class Posting:
     summary: str = ""
     employer: str = ""
     area: str = "primary"
+    salary: dict | None = None  # Salary-only backfill; classification may supply a newer estimate.
     duplicate_of: str | None = None  # key of the same job on a company's own site
+    countries: tuple[str, ...] = ()
 
     def source_label(self, company_name: str) -> str:
         """e.g. "AFL (via Move Upstate SC)" for job boards, else just the company name."""
@@ -66,6 +68,8 @@ def _decode(cls, raw: dict):
             v = datetime.fromisoformat(v)
         elif v is not None and k == "posted_date":
             v = date.fromisoformat(v)
+        elif k == "countries":
+            v = tuple(v)
         values[k] = v
     return cls(**values)
 

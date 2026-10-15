@@ -2,7 +2,7 @@ from urllib.parse import urlparse
 
 import httpx
 
-from jobscraper.locations import STATE_CODES
+from jobscraper.geography.locations import STATE_CODES
 from jobscraper.models import Company, RawPosting
 
 

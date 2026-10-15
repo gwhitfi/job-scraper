@@ -10,9 +10,10 @@ from urllib.parse import parse_qs, urljoin, urlsplit
 import httpx
 from bs4 import BeautifulSoup
 
-from jobscraper import activity, adapters, crawl, navigation
+from jobscraper import activity, adapters
 from jobscraper.adapters import generic, workday
 from jobscraper.models import Company, RawPosting
+from jobscraper.scraping import crawl, navigation
 
 
 @dataclass

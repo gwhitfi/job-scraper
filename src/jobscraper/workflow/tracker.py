@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 
 from jobscraper.models import RawPosting
-from jobscraper.state import Health, Posting, State
+from jobscraper.storage.state import Health, Posting, State
 
 MISSES_BEFORE_REMOVAL = 2
 FAILURES_BEFORE_ALERT = 3
@@ -51,6 +51,7 @@ def apply_results(
                 summary=raw.summary,
                 employer=raw.employer,
                 area=raw.area,
+                countries=raw.countries,
                 first_seen=now,
                 last_seen=now,
             )
@@ -70,6 +71,7 @@ def apply_results(
         existing.summary = raw.summary
         existing.employer = raw.employer
         existing.area = raw.area
+        existing.countries = raw.countries
         # Updating this every run would rewrite every posting in each state commit.
         if existing.last_seen.date() != now.date():
             existing.last_seen = now
@@ -88,7 +90,7 @@ def apply_results(
 
 
 def is_suspicious_empty(state: State, company_id: str, results: list[RawPosting]) -> bool:
-    """Zero results after a non-empty run is more likely a broken page than every job closing.
+    """Check unfiltered results: an empty source may mean a broken page, not closed jobs.
 
     Counts consecutive empty runs and stops treating them as suspicious once they've
     persisted long enough to be believable.
@@ -140,3 +142,14 @@ def archive_closed(state: State, keep: set[str], now: datetime) -> dict[str, Pos
         if p.status == "removed" and p.removed_at and p.removed_at < cutoff and key not in keep
     ]
     return {key: state.postings.pop(key) for key in old}
+
+
+def refresh_locations(state: State, company_id: str, results: list[RawPosting]) -> int:
+    """Refresh known jobs, including excluded ones, without changing lifecycle or judgments."""
+    changed = 0
+    for raw in results:
+        posting = state.postings.get(posting_key(company_id, raw.source_id))
+        if posting and (posting.location, posting.countries) != (raw.location, raw.countries):
+            posting.location, posting.countries = raw.location, raw.countries
+            changed += 1
+    return changed

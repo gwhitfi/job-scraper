@@ -1,6 +1,6 @@
 import pytest
 
-from jobscraper import jsonfile, userdata
+from jobscraper.storage import jsonfile, userdata
 
 
 def test_round_trip_and_fields(tmp_path):

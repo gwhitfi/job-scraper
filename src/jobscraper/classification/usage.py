@@ -2,7 +2,7 @@ from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 
-from jobscraper import jsonfile
+from jobscraper.storage import jsonfile
 
 # USD per million tokens (input, output), from Anthropic's published API pricing.
 PRICES = {
@@ -30,17 +30,25 @@ class Usage:
         return (self.input_tokens * price_in + self.output_tokens * price_out) / 1_000_000
 
 
-def record(path: Path, run: Usage, model: str, now: datetime) -> dict:
+def record(path: Path, run: Usage, model: str, now: datetime, record_id: str = "") -> dict:
     """Add one run's usage to the monthly totals in usage.json and return the ledger."""
     ledger = jsonfile.read(path) or {"since": now.date().isoformat(), "months": {}}
-    if run.calls:
+    previous = ledger.get("recorded_runs", {}).get(record_id, {}) if record_id else {}
+    delta = Usage(**{k: max(0, v - previous.get(k, 0)) for k, v in asdict(run).items()})
+    if delta.calls:
         month = ledger["months"].setdefault(
             now.strftime("%Y-%m"),
             {"calls": 0, "input_tokens": 0, "output_tokens": 0, "cost_usd": 0.0},
         )
-        for k, v in asdict(run).items():
+        for k, v in asdict(delta).items():
             month[k] += v
-        month["cost_usd"] = round(month["cost_usd"] + (run.cost(model) or 0.0), 4)
+        month["cost_usd"] = round(month["cost_usd"] + (delta.cost(model) or 0.0), 4)
+    if record_id:
+        recorded = ledger.setdefault("recorded_runs", {})
+        recorded[record_id] = asdict(run)
+        # Only the current/most recent checkpoint can be replayed.
+        while len(recorded) > 100:
+            del recorded[next(key for key in recorded if key != record_id)]
     jsonfile.write(path, ledger)
     return ledger
 

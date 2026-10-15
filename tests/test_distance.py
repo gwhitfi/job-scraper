@@ -1,6 +1,6 @@
 import pytest
 
-from jobscraper import distance
+from jobscraper.geography import distance
 
 HOME = distance.home_coords("Anderson, SC")
 

@@ -7,7 +7,7 @@ import httpx
 
 from jobscraper import activity
 from jobscraper.adapters.generic import text
-from jobscraper.locations import STATE_CODES
+from jobscraper.geography.locations import STATE_CODES, places, us_country
 from jobscraper.models import Company, RawPosting
 
 FACETS = {
@@ -24,6 +24,16 @@ FACETS = {
     "Location_Region_State_Province",
     "primaryLocation",
 }
+
+
+def facets_in(data: dict) -> list[dict]:
+    found = []
+    pending = list(data.get("facets", []))
+    while pending:
+        facet = pending.pop(0)
+        found.append(facet)
+        pending.extend(v for v in facet.get("values", []) if "facetParameter" in v)
+    return found
 
 
 def site_url(url: str) -> str | None:
@@ -60,15 +70,34 @@ def fetch(company: Company, client: httpx.Client) -> list[RawPosting]:
         "limit": 20,
     }
     by_id = {}
+    details = {}
     first = client.post(endpoint, json=body | {"offset": 0})
     first.raise_for_status()
     first_data = first.json()
     scopes = [(body, first_data, False)]
     states = set(company.options.get("states", []))
+    facets = facets_in(first_data)
+    country_facet = next(
+        (f for f in facets if f.get("facetParameter") in ("locationCountry", "Location_Country")),
+        None,
+    )
+    us_ids = [
+        v["id"]
+        for v in (country_facet or {}).get("values", [])
+        if us_country(v.get("descriptor", ""))
+    ]
+    if (
+        states
+        and us_ids
+        and not any(k in body["appliedFacets"] for k in ("locationCountry", "Location_Country"))
+    ):
+        body = body | {
+            "appliedFacets": body["appliedFacets"] | {country_facet["facetParameter"]: us_ids}
+        }
+        scopes = [(body, None, False)]
     if states and not any(
         k in body["appliedFacets"] for k in ("State", "Location_Region_State_Province")
     ):
-        facets = first_data.get("facets", [])
         state_facet = next(
             (
                 f
@@ -78,11 +107,14 @@ def fetch(company: Company, client: httpx.Client) -> list[RawPosting]:
             None,
         )
         remote_facet = next((f for f in facets if f.get("facetParameter") == "remoteType"), None)
+        if state_facet is None and "locations" not in body["appliedFacets"]:
+            state_facet = next((f for f in facets if f.get("facetParameter") == "locations"), None)
         if state_facet and remote_facet:
             ids = [
                 v["id"]
                 for v in state_facet.get("values", [])
                 if STATE_CODES.get(v.get("descriptor"), v.get("descriptor")) in states
+                or any(state in states for _, state in places(v.get("descriptor", "")))
             ]
             remote_ids = [
                 v["id"]
@@ -152,11 +184,38 @@ def fetch(company: Company, client: httpx.Client) -> list[RawPosting]:
                 if "/" in sid or not sid:
                     raise ValueError("Workday job is missing its requisition identifier.")
                 location = text(job.get("locationsText"))
-                if remote_scope or re.search(
-                    r"remote|virtual|telecommut|home", text(job.get("remoteType")), re.I
-                ):
+                remote_type = text(job.get("remoteType"))
+                if re.fullmatch(r"\d+\s+locations?", location, re.I):
+                    if sid not in details:
+                        response = client.get(endpoint.removesuffix("/jobs") + path)
+                        response.raise_for_status()
+                        details[sid] = response.json().get("jobPostingInfo")
+                    info = details[sid]
+                    if not isinstance(info, dict) or not info.get("location"):
+                        raise ValueError("Workday multi-location detail is missing its locations.")
+                    location = "; ".join(
+                        [
+                            text(info["location"]),
+                            *[text(v) for v in info.get("additionalLocations", [])],
+                        ]
+                    )
+                    remote_type = text(info.get("remoteType")) or remote_type
+                    activity.emit("workday_locations_resolved", source_id=sid, location=location)
+                if remote_type:
+                    if re.search(r"remote", remote_type, re.I):
+                        location += "; " + remote_type
+                    elif re.search(r"virtual|telecommut|work from home", remote_type, re.I):
+                        location += "; Remote"
+                elif remote_scope:
                     location += "; Remote"
-                posting = RawPosting(sid, title, location, f"{origin}/{site}{path}")
+                countries = ()
+                if country_facet and us_ids:
+                    selected = search["appliedFacets"].get(country_facet["facetParameter"], [])
+                    if selected and set(selected) <= set(us_ids):
+                        countries = ("US",)
+                posting = RawPosting(
+                    sid, title, location, f"{origin}/{site}{path}", countries=countries
+                )
                 if sid in by_id and by_id[sid].url != posting.url:
                     raise ValueError("Workday returned conflicting requisition identifiers.")
                 by_id[sid] = posting

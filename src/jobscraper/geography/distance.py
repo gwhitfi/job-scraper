@@ -3,7 +3,7 @@ import math
 from functools import cache
 from importlib.resources import files
 
-from jobscraper import locations
+from jobscraper.geography import locations
 
 EARTH_RADIUS_MILES = 3958.8
 

@@ -2,9 +2,9 @@ from datetime import UTC, date, datetime
 
 import pytest
 
-from jobscraper import employers, jsonfile
 from jobscraper.models import Company
-from jobscraper.state import Posting
+from jobscraper.storage import employers, jsonfile
+from jobscraper.storage.state import Posting
 
 NOW = datetime(2026, 10, 13, tzinfo=UTC)
 COMPANIES = {

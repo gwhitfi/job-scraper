@@ -3,11 +3,13 @@
 from datetime import UTC, datetime, timedelta
 from html import escape
 
-from jobscraper import activity, notify
+from jobscraper import activity
 from jobscraper.config import Config
 from jobscraper.models import Company
-from jobscraper.state import Health, State
-from jobscraper.tracker import FAILURES_BEFORE_ALERT
+from jobscraper.storage.state import Health, State
+from jobscraper.timezone import EASTERN
+from jobscraper.workflow import notify
+from jobscraper.workflow.tracker import FAILURES_BEFORE_ALERT
 
 
 def status(
@@ -47,7 +49,7 @@ def page(cfg: Config, state: State, *, stale_hours: int, now: datetime | None = 
         counts[kind] += 1
         symbol = {"good": "✓", "warning": "⚠", "bad": "✕", "muted": "○"}[kind]
         last = (
-            health.last_success.astimezone(UTC).strftime("%b %d, %Y %H:%M UTC")
+            health.last_success.astimezone(EASTERN).strftime("%b %d, %Y %-I:%M %p %Z")
             if health and health.last_success
             else "Never"
         )

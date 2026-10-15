@@ -1,5 +1,6 @@
 import json
 import logging
+import shlex
 import threading
 from dataclasses import dataclass, field, replace
 from datetime import UTC, datetime, timedelta
@@ -11,28 +12,18 @@ from urllib.parse import parse_qs, quote_plus, urlencode, urlparse
 
 import httpx
 
-from jobscraper import (
-    activity,
-    classify,
-    company_store,
-    crawl,
-    discovery,
-    distance,
-    employers,
-    http,
-    jsonfile,
-    locations,
-    notify,
-    onboarding,
-    state,
-    tracked,
-    usage,
-    userdata,
-)
+from jobscraper import activity, adapters
 from jobscraper import config as config_file
+from jobscraper.classification import classify, salaries, usage
 from jobscraper.config import Config
-from jobscraper.state import Posting, State
-from jobscraper.tracker import FAILURES_BEFORE_ALERT
+from jobscraper.geography import distance, locations
+from jobscraper.presentation import onboarding, tracked
+from jobscraper.scraping import crawl, discovery, http
+from jobscraper.storage import company_store, employers, jsonfile, state, userdata
+from jobscraper.storage.state import Posting, State
+from jobscraper.timezone import EASTERN
+from jobscraper.workflow import notify
+from jobscraper.workflow.tracker import FAILURES_BEFORE_ALERT
 
 log = logging.getLogger(__name__)
 
@@ -43,8 +34,8 @@ RECENT_HOURS = 96
 # Last check before the colored badges started; postings already loaded by then get none.
 BADGES_SINCE = datetime(2026, 10, 13, 17, 37, 26, 111779, tzinfo=UTC)
 STALE_HOURS = 6  # no successful check for this long means the runner (or my PC) is probably off
-# Matches the cron in .github/workflows/check.yml ("17 */2 * * *", UTC); a test keeps them in sync.
-SCHEDULE_MINUTE = 17
+# Matches deploy/jobscraper-crawl.timer (US Eastern); a test keeps them in sync.
+SCHEDULE_MINUTE = 0
 SCHEDULE_EVERY_HOURS = 2
 
 VIEWS = {
@@ -57,9 +48,36 @@ VIEWS = {
     "applied": "Applied",
     "hidden": "Hidden",
     "blocked": "Blocked",
+    "companies": "Companies",
 }
 SOURCES = {"all": "All sources", "companies": "Company sites", "boards": "Job boards"}
-SORTS = {"newest": "Newest", "relevant": "Most relevant", "nearest": "Nearest"}
+SORTS = {
+    "newest": "Newest",
+    "oldest": "Oldest",
+    "relevant": "Most relevant",
+    "least_relevant": "Least relevant",
+    "nearest": "Nearest",
+    "farthest": "Farthest",
+    "salary": "Highest salary",
+    "salary_lowest": "Lowest salary",
+}
+REVERSE_SORT = dict(
+    zip(
+        SORTS,
+        (
+            "oldest",
+            "newest",
+            "least_relevant",
+            "relevant",
+            "farthest",
+            "nearest",
+            "salary_lowest",
+            "salary",
+        ),
+        strict=True,
+    )
+)
+MOVE_DESTINATIONS = frozenset(("exact", "near", "maybe", "starred", "applied", "hidden"))
 EMPLOYER_ACTIONS = {"approve": "approved", "block": "blocked", "clear": None}
 
 
@@ -101,6 +119,7 @@ class App:
     def _use_config(self, cfg: Config) -> None:
         cfg = company_store.merge(cfg, self.companies_path)
         self.cfg = cfg
+        self.scopes = locations.scopes(cfg)
         self.companies = {c.id: c for c in cfg.companies}
         self.home = distance.home_coords(cfg.web.home)
 
@@ -209,10 +228,19 @@ class App:
         out = []
         for p in st.postings.values():
             company = self.companies.get(p.company_id)
+            personal = marks.get(p.key, {})
+            scope = self.scopes.get(p.company_id)
+            group = classify.posting_group(p, self.cfg.profile, scope)
+            if (
+                personal.get("group")
+                and not p.duplicate_of
+                and (scope is None or scope.area(p) is not None)
+            ):
+                group = personal["group"]
             out.append(
                 Row(
                     posting=p,
-                    group=classify.posting_group(p, self.cfg.profile),
+                    group=group,
                     marks=marks.get(p.key, {}),
                     source=p.source_label(company.name if company else p.company_id),
                     is_board=employers.is_board(p, self.companies),
@@ -250,6 +278,50 @@ class App:
             jsonfile.write(self.marks_path, marks)
         return entry
 
+    def move(self, keys: list[str], destination: str) -> int:
+        """Save a whole selection atomically; a bad key never leaves a partial move."""
+        if (
+            not isinstance(keys, list)
+            or not 1 <= len(keys) <= 500
+            or any(not isinstance(k, str) for k in keys)
+        ):
+            raise ValueError("Select between 1 and 500 postings")
+        if destination not in MOVE_DESTINATIONS:
+            raise ValueError("Choose Exact, Close, Probably not, Starred, Applied, or Hidden")
+        self.reload_config()
+        keys = list(dict.fromkeys(keys))
+        rows = {r.posting.key: r for r in self.rows()}
+        for key in keys:
+            if key not in rows:
+                raise KeyError(key)
+            if destination in ("exact", "near", "maybe"):
+                row = rows[key]
+                p = row.posting
+                scope = self.scopes.get(p.company_id)
+                if (
+                    p.status != "active"
+                    or p.duplicate_of
+                    or (scope and scope.area(p) is None)
+                    or row.employer_status in ("blocked", "unverified")
+                ):
+                    raise ValueError(
+                        "Some selected jobs are closed, outside your area, duplicated, "
+                        "or need employer approval. They cannot move to a match tab."
+                    )
+        with self.lock:
+            marks = jsonfile.read(self.marks_path)
+            for key in keys:
+                if destination in ("exact", "near", "maybe"):
+                    userdata.update(marks, key, "group", destination)
+                    for field in ("hidden", "starred", "applied"):
+                        userdata.update(marks, key, field, False)
+                else:
+                    if destination != "hidden":
+                        userdata.update(marks, key, "hidden", False)
+                    userdata.update(marks, key, destination, True)
+            jsonfile.write(self.marks_path, marks)
+        return len(keys)
+
     # --- filtering ---
 
     @staticmethod
@@ -258,6 +330,8 @@ class App:
         hidden = r.marks.get("hidden", False)
         applied = r.marks.get("applied", False)
         starred = r.marks.get("starred", False)
+        if view == "companies":
+            return False
         if view == "hidden":
             return hidden
         if view == "starred":
@@ -285,7 +359,7 @@ class App:
         if not q:
             return True
         hay = f"{r.posting.title} {r.source} {r.posting.location}".lower()
-        return all(word in hay for word in q.lower().split())
+        return matches_text(hay, q)
 
     @staticmethod
     def sort_key(r: Row, sort: str = "newest"):
@@ -293,14 +367,68 @@ class App:
         # Newest means newest to me: job boards can pick up a posting days after it went up.
         added = -p.first_seen.timestamp()
         posted = -(p.posted_date.toordinal() if p.posted_date else 0)
-        if sort == "relevant":
-            # Keyword-only results have no score yet; they sort last.
-            score = (p.classification or {}).get("score") or 0
-            return (-score, added, posted, p.title.lower())
-        if sort == "nearest":
-            # Remote and unknown places sort last.
-            return (r.miles is None, r.miles or 0, added, posted, p.title.lower())
-        return (added, posted, p.title.lower())
+        title = p.title.casefold()
+        if sort in ("relevant", "least_relevant"):
+            score = (p.classification or {}).get("score")
+            return (
+                score is None,
+                (score or 0) * (1 if sort == "least_relevant" else -1),
+                added,
+                title,
+            )
+        if sort in ("nearest", "farthest"):
+            return (
+                r.miles is None,
+                (r.miles or 0) * (-1 if sort == "farthest" else 1),
+                added,
+                title,
+            )
+        if sort in ("salary", "salary_lowest"):
+            salary = (
+                salaries.annual_floor(p)
+                if (r.group and not r.marks.get("hidden") and r.employer_status != "blocked")
+                else None
+            )
+            return (
+                salary is None,
+                (salary or 0) * (1 if sort == "salary_lowest" else -1),
+                added,
+                title,
+            )
+        return (-added if sort == "oldest" else added, posted, title)
+
+    def current_company_job(self, r: Row) -> bool:
+        p = r.posting
+        scope = self.scopes.get(p.company_id)
+        return (
+            p.status == "active"
+            and r.group is not None
+            and not r.marks.get("hidden")
+            and r.employer_status != "blocked"
+            and not p.duplicate_of
+            and (scope is None or scope.area(p) is not None)
+        )
+
+    def directory_companies(self, source: str, q: str, rows: list[Row]):
+        names = self.cfg.health_names()
+        return [
+            c
+            for c in self.cfg.companies
+            if (
+                source == "all"
+                or (source == "boards") == (adapters.platform(c) in adapters.BOARD_ADAPTERS)
+            )
+            and (
+                not q
+                or matches_text(names[c.id], q)
+                or any(
+                    r.posting.company_id == c.id
+                    and self.current_company_job(r)
+                    and self.matches_query(r, q)
+                    for r in rows
+                )
+            )
+        ]
 
     # --- pages ---
 
@@ -312,6 +440,13 @@ class App:
         q = query.get("q", "").strip()
         scoped = [r for r in self.rows() if self.in_source(r, source) and self.matches_query(r, q)]
         counts = {v: sum(self.in_view(r, v) for r in scoped) for v in VIEWS}
+        counts["companies"] = len(self.directory_companies(source, q, scoped))
+        if view == "companies":
+            return [
+                r
+                for r in scoped
+                if self.current_company_job(r) and r.posting.company_id == query.get("company")
+            ], counts
         return [r for r in scoped if self.in_view(r, view)], counts
 
     def index(self, query: dict[str, str]) -> str:
@@ -321,7 +456,21 @@ class App:
         q = query.get("q", "").strip()
         shown, counts = self.select(query)
         shown.sort(key=lambda r: self.sort_key(r, sort))
-        return render_page(self, view, source, q, sort, counts, shown)
+        return render_page(self, view, source, q, sort, counts, shown, query.get("company", ""))
+
+
+def matches_text(hay: str, query: str) -> bool:
+    try:
+        terms = shlex.split(query.casefold())
+    except ValueError:
+        terms = query.casefold().split()
+    for term in terms:
+        if term.startswith("!") and len(term) > 1:
+            if term[1:] in hay.casefold():
+                return False
+        elif term != "!" and term not in hay.casefold():
+            return False
+    return True
 
 
 # --- rendering ---
@@ -377,8 +526,10 @@ def _font_select(slot: str, label: str) -> str:
     )
 
 
-def _link(view: str, source: str, q: str, sort: str) -> str:
+def _link(view: str, source: str, q: str, sort: str, company: str = "") -> str:
     params = {"view": view, "source": source, "sort": sort}
+    if company:
+        params["company"] = company
     if q:
         params["q"] = q
     return "/?" + urlencode(params)
@@ -396,7 +547,9 @@ def _banners(app: App, now: datetime) -> str:
     last = _last_update(app)
     if last and now - last > timedelta(hours=STALE_HOURS):
         hours = int((now - last).total_seconds() // 3600)
-        messages.append(f"No update in {hours} hours. Is the PC on and the GitHub runner running?")
+        messages.append(
+            f"No update in {hours} hours. Is the PC on and the WSL crawl timer running?"
+        )
     names = app.cfg.health_names()
     failing = [
         f"{names.get(cid, cid)} ({h.consecutive_failures} failed checks)"
@@ -414,22 +567,23 @@ def _banners(app: App, now: datetime) -> str:
 
 
 def next_run(now: datetime) -> datetime:
-    """Next scheduled check after `now` (UTC cron times; GitHub often starts a few minutes late)."""
+    """Next even-hour Eastern check, accounting for daylight-saving transitions."""
     now = now.astimezone(UTC)
     candidate = now.replace(minute=SCHEDULE_MINUTE, second=0, microsecond=0)
-    candidate -= timedelta(hours=candidate.hour % SCHEDULE_EVERY_HOURS)
-    while candidate <= now:
-        candidate += timedelta(hours=SCHEDULE_EVERY_HOURS)
-    return candidate
+    if candidate <= now:
+        candidate += timedelta(hours=1)
+    while candidate.astimezone(EASTERN).hour % SCHEDULE_EVERY_HOURS:
+        candidate += timedelta(hours=1)
+    return candidate.astimezone(EASTERN)
 
 
 def _updated(app: App) -> str:
-    upcoming = next_run(datetime.now(UTC)).astimezone()
-    next_text = f"next ~{upcoming:%-I:%M %p}"
+    upcoming = next_run(datetime.now(UTC))
+    next_text = f"next {upcoming:%-I:%M %p %Z}"
     last = _last_update(app)
     if last is None:
         return f"never updated · {next_text}"
-    return f"updated {last.astimezone():%b %-d, %-I:%M %p} · {next_text}"
+    return f"updated {last.astimezone(EASTERN):%b %-d, %-I:%M %p %Z} · {next_text}"
 
 
 def score_tier(score: int | None) -> str:
@@ -455,6 +609,17 @@ def new_tier(p: Posting, latest_check: datetime | None, now: datetime) -> str:
     if age <= timedelta(hours=RECENT_HOURS):
         return "older"
     return ""
+
+
+def added_label(first_seen: datetime, now: datetime) -> str:
+    age = max(0, (now - first_seen).total_seconds())
+    if age > 24 * 3600:
+        return f"added {first_seen.astimezone(EASTERN):%b %-d}"
+    if age < 60:
+        return "added just now"
+    amount = int(age // (3600 if age >= 3600 else 60))
+    unit = "hour" if age >= 3600 else "minute"
+    return f"added {amount} {unit}{'' if amount == 1 else 's'} ago"
 
 
 def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
@@ -496,22 +661,33 @@ def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
 
     return f"""
 <article class="card{f" tier-{tier}" if tier else ""}" data-key="{key}">
+  <label class="card-selector">
+    <input class="card-check" type="checkbox" aria-label="Select {escape(p.title, quote=True)}">
+  </label>
   <div class="company-row">
     <p class="company">{escape(r.source)}</p>
-    <span class="added">added {p.first_seen.astimezone():%b %-d}</span>
+    <time class="added" datetime="{p.first_seen.isoformat()}"
+      data-date="added {p.first_seen.astimezone(EASTERN):%b %-d}"
+      title="Added {p.first_seen.astimezone(EASTERN):%b %-d, %Y, %-I:%M %p %Z}">
+      {added_label(p.first_seen, now)}</time>
   </div>
   <div class="title-row">
     <h2><a href="{href}" target="_blank" rel="noopener">{escape(p.title)}</a></h2>
     {score_html}
   </div>
   <p class="meta">{meta}</p>
+  {
+        salaries.card(p)
+        if r.group and not r.marks.get("hidden") and r.employer_status != "blocked"
+        else ""
+    }
   {f'<div class="badges">{"".join(badges)}</div>' if badges else ""}
   {_also_on(r)}
   {f'<p class="reason">{reason}</p>' if reason else ""}
   {_employer_panel(r)}
   <div class="actions">
     {toggle("starred", "★ Starred", "☆ Star")}
-    {toggle("applied", "✓ Applied", "Applied?")}
+    {toggle("applied", "✓ Applied", "Applied")}
     {toggle("hidden", "Unhide", "Hide")}
   </div>
   <details{" open" if note else ""}>
@@ -582,11 +758,14 @@ def render_page(
     sort: str,
     counts: dict[str, int],
     shown: list[Row],
+    company: str = "",
 ) -> str:
     now = datetime.now(UTC)
     latest_check = _last_update(app)
     tabs = "".join(
         f'<a class="tab{" active" if v == view else ""}" data-view="{v}" '
+        f"{'aria-current=page ' if v == view else ''}"
+        f'data-move-target="{v if v in MOVE_DESTINATIONS else ""}" '
         f'href="{escape(_link(v, source, q, sort))}">{label} <span>{counts[v]}</span></a>'
         for v, label in VIEWS.items()
     )
@@ -599,6 +778,17 @@ def render_page(
         for k, label in SORTS.items()
     )
     cards = "".join(_card(r, now, latest_check) for r in shown)
+    if view == "companies":
+        if company in app.companies:
+            name = app.cfg.health_names()[company]
+            cards = (
+                f'<div class="company-heading"><a href="{escape(_link(view, source, q, sort))}">'
+                f"← All companies</a><h2>{escape(name)}</h2><p>{len(shown)} current postings "
+                "matching your filters</p></div>"
+                f'<div class="compact-jobs">{cards or "<p>No current postings match.</p>"}</div>'
+            )
+        else:
+            cards = company_directory(app, source, q, sort)
     cards = cards or '<p class="empty">Nothing here.</p>'
     return PAGE.format(
         head_script=HEAD_SCRIPT,
@@ -618,12 +808,65 @@ def render_page(
         banner=_banners(app, now),
         tabs=tabs,
         view=escape(view),
+        view_label=escape(VIEWS[view]),
         source_opts=source_opts,
         sort_opts=sort_opts,
         q=escape(q),
         cards=cards,
+        move_toolbar=(
+            '<div class="move-toolbar"><button type="button" class="btn" id="move-mode" '
+            'aria-pressed="false">Move</button><div id="move-controls" hidden>'
+            '<span id="move-count" aria-live="polite">0 selected</span>'
+            '<button type="button" class="btn" id="select-all">Select all</button></div>'
+            '<p id="move-status" role="status" hidden></p></div>'
+            if shown
+            else ""
+        ),
+        company_input=(
+            f'<input type="hidden" name="company" value="{escape(company, quote=True)}">'
+            if view == "companies" and company in app.companies
+            else ""
+        ),
+        reverse_link=escape(
+            _link(view, source, q, REVERSE_SORT[sort], company if view == "companies" else "")
+        ),
+        reverse_label=escape(SORTS[REVERSE_SORT[sort]]),
         footer=escape(usage.summary(jsonfile.read(app.state_dir / "usage.json"), now)),
     )
+
+
+def company_directory(app: App, source: str, q: str, sort: str) -> str:
+    rows = app.rows()
+    names = app.cfg.health_names()
+    cards = []
+    for company in sorted(
+        app.directory_companies(source, q, rows), key=lambda c: names[c.id].casefold()
+    ):
+        owned = [r for r in rows if r.posting.company_id == company.id]
+        current = [r for r in owned if app.current_company_job(r)]
+        if (
+            q
+            and not matches_text(names[company.id], q)
+            and not any(app.matches_query(r, q) for r in current)
+        ):
+            continue
+        kind, label, detail = tracked.status(
+            company, app.state().health.get(company.id), datetime.now(UTC), STALE_HOURS
+        )
+        symbols = {"good": "✓", "warning": "⚠", "bad": "✕", "muted": "○"}
+        applied = sum(bool(r.marks.get("applied")) for r in owned)
+        starred = sum(bool(r.marks.get("starred")) for r in owned)
+        href = escape(_link("companies", source, q, sort, company.id))
+        cards.append(
+            f'<a class="company-card" href="{href}"><h2>{escape(names[company.id])}</h2>'
+            f'<div class="company-status {kind}" title="{escape(detail, quote=True)}">'
+            f'{symbols[kind]} {escape(label)}</div><div class="company-counts">'
+            f"<div><strong>{len(current)}</strong><span>Matching current jobs</span></div>"
+            f"<div><strong>{applied}</strong><span>Applied · all time</span></div>"
+            f"<div><strong>{starred}</strong><span>Starred · all time</span></div>"
+            "</div></a>"
+        )
+    return '<div class="company-grid">' + "".join(cards) + "</div>"
 
 
 PAGE = """<!doctype html>
@@ -661,36 +904,146 @@ a {{ color: var(--accent); }}
 :focus-visible {{ outline: 2px solid var(--accent); outline-offset: 2px; }}
 
 /* Header */
-header {{ position: sticky; top: 0; z-index: 1; background: var(--bg);
-  border-bottom: 1px solid var(--line); padding: 12px 16px 0; }}
-.header-inner {{ max-width: 760px; margin: 0 auto; }}
-.top {{ display: flex; flex-wrap: wrap; justify-content: space-between;
-  align-items: center; gap: 12px; }}
-h1 {{ font-size: 1.1rem; font-weight: 700; letter-spacing: -.01em; margin: 0;
+header {{ position: relative; z-index: 10; background: var(--bg);
+  border-bottom: 1px solid var(--line); padding: 0 16px;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }}
+.header-inner {{ max-width: 960px; margin: 0 auto; }}
+.top {{ display: flex; justify-content: space-between; align-items: center;
+  gap: 16px; min-height: 72px; }}
+.brand {{ min-width: 0; }}
+.top-controls {{ display: flex; align-items: center; gap: 8px; }}
+h1 {{ font-size: 1.1rem; font-weight: 700; letter-spacing: -.03em; margin: 0;
   white-space: nowrap; }}
-.top-right {{ display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; }}
-.updated {{ color: var(--muted); font-size: .78rem; text-align: right; line-height: 1.3; }}
-.cog {{ flex: none; width: 40px; height: 40px; font-size: 1.15rem; line-height: 1; cursor: pointer;
+.updated {{ display: block; color: var(--muted); font-size: .72rem; margin-top: 3px; }}
+.current-view {{ display: none; color: var(--muted); font-size: .75rem; }}
+.header-actions {{ display: flex; align-items: center; gap: 8px; padding: 4px 0 12px; }}
+.header-actions .btn {{ display: inline-flex; align-items: center; justify-content: center;
+  text-decoration: none; white-space: nowrap; font-size: .78rem;
+  min-height: 36px; padding: 0 10px; }}
+.header-actions a {{ border-color: transparent; color: var(--muted); }}
+.header-actions a:hover {{ color: var(--text); background: var(--card); }}
+.cog {{ flex: none; width: 36px; height: 36px; font-size: 1.1rem; cursor: pointer;
   border: 1px solid var(--line); border-radius: 8px; background: var(--card); }}
-form.filters {{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0 4px; }}
+.menu-toggle {{ display: none; align-items: center; gap: 8px; min-height: 40px;
+  border: 1px solid var(--line); background: var(--card); border-radius: 8px;
+  padding: 0 12px; font-size: .8rem; cursor: pointer; }}
+.menu-toggle svg {{ width: 16px; height: 16px; }}
+form.filters {{ display: grid; grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr);
+  gap: 8px; margin: 0 0 12px; }}
 form.filters input, form.filters select {{ width: 100%; min-width: 0; height: 42px; padding: 0 12px;
-  border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--text); }}
+  border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--text);
+  font-size: 16px; }}
 form.filters input {{ grid-column: 1 / -1; }}
-nav.tabs {{ display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px;
-  padding: 0 16px; -webkit-overflow-scrolling: touch; }}
+nav.tabs {{ display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none;
+  padding: 0 0 10px; -webkit-overflow-scrolling: touch; }}
 nav.tabs::-webkit-scrollbar {{ display: none; }}
-/* Fade at the right edge hints that the tab row scrolls. */
-nav.tabs {{ mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }}
-.tab {{ white-space: nowrap; padding: 10px 10px 9px; color: var(--muted); text-decoration: none;
-  border-bottom: 2px solid transparent; font-size: .9rem; font-weight: 500; }}
-.tab span {{ display: inline-block; min-width: 1.5em; margin-left: 2px; padding: 0 5px;
-  border-radius: 999px; background: var(--line); font-size: .74rem; text-align: center; }}
-.tab.active {{ color: var(--text); border-color: var(--accent); font-weight: 600; }}
+nav.tabs.can-drag {{ cursor: grab; user-select: none; }}
+nav.tabs.can-drag .tab {{ cursor: pointer; -webkit-user-drag: none; }}
+nav.tabs.dragging, nav.tabs.dragging .tab {{ cursor: grabbing; }}
+:root {{
+  --tab-green: #1c5b39; --tab-amber: #6e4e14; --tab-blue: #42577a;
+  --tab-gold: #6d512a; --tab-teal: #20585d; --tab-rose: #83424e;
+  --tab-neutral: #525a66; --tab-slate: #4a566c;
+}}
+@media (prefers-color-scheme: dark) {{
+  :root {{
+    --tab-green: #91baa0; --tab-amber: #c6ad7c; --tab-blue: #9aaed0;
+    --tab-gold: #cab77d; --tab-teal: #80b7b1; --tab-rose: #bf8f9a;
+    --tab-neutral: #98a2b0; --tab-slate: #a2aec5;
+  }}
+}}
+.tab {{ --tab-tone: var(--tab-neutral); white-space: nowrap; padding: 8px 10px;
+  color: var(--tab-tone); text-decoration: none; border: 1px solid transparent;
+  background: color-mix(in srgb, var(--tab-tone) 5%, transparent);
+  border-radius: 7px; font-size: .78rem; font-weight: 500; }}
+.tab[data-view="exact"] {{ --tab-tone: var(--tab-green); }}
+.tab[data-view="near"], .tab[data-view="unverified"] {{ --tab-tone: var(--tab-amber); }}
+.tab[data-view="relevant"] {{ --tab-tone: var(--tab-blue); }}
+.tab[data-view="starred"] {{ --tab-tone: var(--tab-gold); }}
+.tab[data-view="applied"] {{ --tab-tone: var(--tab-teal); }}
+.tab[data-view="blocked"] {{ --tab-tone: var(--tab-rose); }}
+.tab[data-view="companies"] {{ --tab-tone: var(--tab-slate); }}
+.tab:hover {{ background: color-mix(in srgb, var(--tab-tone) 11%, transparent);
+  border-color: color-mix(in srgb, var(--tab-tone) 26%, transparent); }}
+.tab span {{ display: inline-block; min-width: 1.5em; margin-left: 4px; padding: 0 5px;
+  border-radius: 5px; background: color-mix(in srgb, var(--tab-tone) 6%, transparent);
+  font-size: .7rem; text-align: center; font-variant-numeric: tabular-nums; }}
+.tab.active {{ background: color-mix(in srgb, var(--tab-tone) 16%, transparent);
+  border-color: color-mix(in srgb, var(--tab-tone) 45%, transparent);
+  box-shadow: inset 0 -2px 0 var(--tab-tone); font-weight: 650; }}
+.header-space {{ display: none; }}
+@media (max-width: 639px) {{
+  .js-header header {{ position: sticky;
+    top: min(0px, calc(100dvh - var(--header-visible-height)));
+    box-shadow: var(--shadow); }}
+  .js-header .header-space {{ display: block;
+    height: max(0px, calc(var(--header-height) - var(--header-visible-height))); }}
+  .js-header .menu-toggle {{ display: inline-flex; }}
+  .header-actions {{ flex-wrap: wrap; gap: 4px; }}
+  header.compact .header-content {{ display: none; }}
+  header.compact .top {{ min-height: 60px; }}
+  header.compact .updated {{ display: none; }}
+  header.compact .current-view {{ display: block; }}
+}}
 .banner {{ background: var(--warn); color: #fff; padding: 8px 12px; border-radius: 8px;
   margin-top: 10px; font-size: .88rem; }}
 
+.sort-control {{ display: flex; gap: 6px; min-width: 0; }}
+.reverse-sort {{ display: grid; place-items: center; flex: none; width: 42px;
+  border: 1px solid var(--line); border-radius: 8px; color: var(--text);
+  background: var(--card); text-decoration: none; font-size: 1.2rem; }}
+.search-help {{ font-size: .7rem; color: var(--muted); margin: -4px 0 10px; }}
+/* Bulk move */
+.move-toolbar {{ display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 14px; font-size: .82rem; }}
+#move-controls {{ display: flex; align-items: center; gap: 12px; }}
+#move-status {{ flex-basis: 100%; margin: 0; color: var(--muted); font-size: .78rem; }}
+#move-status.error {{ color: var(--warn); }}
+.move-toolbar [hidden] {{ display: none !important; }}
+.card {{ position: relative; }}
+.card-selector {{ display: none; }}
+body.move-mode .card {{ padding-left: 52px; }}
+body.move-mode .card-selector {{ display: block; position: absolute;
+  left: 8px; top: 10px; padding: 8px; }}
+.card-check {{ appearance: none; -webkit-appearance: none; display: grid; place-content: center;
+  width: 22px; height: 22px; margin: 0; border: 1.5px solid var(--muted);
+  border-radius: 6px; background: var(--bg); cursor: pointer; }}
+.card-check:checked {{ background: var(--accent); border-color: var(--accent); }}
+.card-check::before {{ content: ""; width: 5px; height: 10px; border: solid var(--accent-text);
+  border-width: 0 2px 2px 0; transform: translateY(-1px) rotate(45deg); opacity: 0; }}
+.card-check:checked::before {{ opacity: 1; }}
+.card.selected {{ outline: 1px solid var(--accent); outline-offset: 1px; }}
+body.move-mode .tab[aria-disabled="true"] {{ opacity: .45; cursor: not-allowed; }}
+body.move-mode .tab[data-move-target]:not([data-move-target=""]):hover {{
+  outline: 1px solid var(--tab-tone); outline-offset: -1px; }}
+.company-grid {{ display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 12px; }}
+.company-card {{ display: block; color: var(--text); background: var(--card); padding: 18px;
+  border: 1px solid var(--line); border-radius: 10px; text-decoration: none; }}
+.company-card:hover {{ border-color: var(--accent); }}
+.company-card h2 {{ font-size: 1rem; margin: 0 0 8px; }}
+.company-status {{ color: var(--muted); font-size: .75rem; }}
+.company-status.good {{ color: var(--high); }}
+.company-status.warning {{ color: var(--mid); }}
+.company-status.bad {{ color: var(--low); }}
+.company-counts {{ display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin-top: 14px; }}
+.company-counts > div:first-child {{ grid-column: 1 / -1; }}
+.company-counts strong {{ display: block; font-size: 1.1rem; }}
+.company-counts span {{ font-size: .72rem; color: var(--muted); }}
+.company-heading {{ margin-bottom: 16px; }}
+.company-heading h2 {{ margin: 8px 0 4px; }}
+.company-heading p {{ font-size: .8rem; color: var(--muted); }}
+.compact-jobs .card {{ padding: 12px 14px; margin-bottom: 8px; }}
+.compact-jobs .card h2 {{ font-size: .95rem; }}
+.compact-jobs .company,.compact-jobs .meta,.compact-jobs .reason {{ font-size: .76rem; }}
+.compact-jobs .salary {{ font-size: .74rem; }}
+.compact-jobs .actions {{ margin-top: 8px; }}
+.compact-jobs .toggle {{ min-height: 34px; font-size: .75rem; }}
+@media(max-width:360px) {{ .company-grid {{ grid-template-columns: 1fr; }} }}
+
 /* Cards */
-main {{ max-width: 792px; margin: 0 auto; padding: 12px 16px 48px; }}
+main {{ max-width: 992px; margin: 0 auto; padding: 12px 16px 48px; }}
 .card {{ background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--line);
   border-radius: var(--radius); padding: 14px 14px 12px; margin-bottom: 10px;
   box-shadow: var(--shadow); --tier: var(--unscored); }}
@@ -711,6 +1064,9 @@ main {{ max-width: 792px; margin: 0 auto; padding: 12px 16px 48px; }}
   font-weight: 700; font-variant-numeric: tabular-nums; color: var(--tier);
   background: color-mix(in srgb, var(--tier) 14%, transparent); }}
 .meta {{ color: var(--muted); font-size: .88rem; margin: 0; }}
+.salary {{ font-size: .82rem; color: var(--muted); margin: 8px 0 0; }}
+.salary span {{ display: block; font-size: .72rem; letter-spacing: .02em; }}
+.salary strong {{ color: var(--text); font-weight: 600; }}
 .posted {{ white-space: nowrap; }}
 .badges {{ display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }}
 .badge {{ font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
@@ -761,15 +1117,21 @@ dialog input, dialog select {{ display: block; width: 100%; height: 42px;
   border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--text); }}
 .dialog-actions {{ display: flex; justify-content: space-between; gap: 8px; }}
 
+@media (min-width: 900px) {{
+  .header-actions {{ position: absolute; right: 48px; top: 26px; padding: 0; }}
+}}
+
 /* Wider screens */
 @media (min-width: 640px) {{
-  header {{ padding: 16px 24px 0; }}
-  nav.tabs {{ margin: 0; padding: 0; flex-wrap: wrap; overflow: visible; mask-image: none; }}
+  header {{ padding: 0 24px; }}
+  .header-inner {{ position: relative; }}
+  .top {{ min-height: 88px; }}
+
   h1 {{ font-size: 1.25rem; }}
-  .updated {{ font-size: .85rem; }}
+  .updated {{ font-size: .72rem; }}
   form.filters {{ grid-template-columns: 1fr 170px 170px; }}
   form.filters input {{ grid-column: auto; }}
-  main {{ max-width: 808px; padding: 16px 24px 56px; }}
+  main {{ max-width: 1008px; padding: 16px 24px 56px; }}
   .card {{ padding: 16px 20px 14px; margin-bottom: 12px; }}
   .card h2 {{ font-size: 1.15rem; }}
   .toggle {{ flex: none; }}
@@ -780,26 +1142,48 @@ dialog input, dialog select {{ display: block; width: 100%; height: 42px;
 <header>
   <div class="header-inner">
   <div class="top">
-    <h1>Job Scraper</h1>
-    <div class="top-right">
+    <div class="brand">
+      <h1>Job Scraper</h1>
       <span class="updated">{updated}</span>
-      <a class="btn" href="/companies">Tracked companies</a>
-      <a class="btn" href="/logs">Crawl logs</a>
-      <button type="button" class="btn" id="open-company">Add company to track</button>
-      <button type="button" class="cog" id="open-settings" aria-label="Settings">⚙</button>
+      <span class="current-view">{view_label}</span>
+    </div>
+    <div class="top-controls">
+    <button type="button" class="cog" id="open-settings" aria-label="Settings">⚙</button>
+    <button type="button" class="menu-toggle" id="header-toggle"
+      aria-controls="header-content" aria-expanded="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+        aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <span>Menu</span>
+    </button>
     </div>
   </div>
+  <div class="header-content" id="header-content">
+    <nav class="header-actions" aria-label="Manage job search">
+      <a class="btn" href="/companies">Tracked companies</a>
+      <a class="btn" href="/logs">Crawl logs</a>
+      <button type="button" class="btn primary" id="open-company">Add company</button>
+    </nav>
   {banner}
   <form class="filters" method="get">
     <input type="hidden" name="view" value="{view}">
-    <input type="search" name="q" value="{q}" placeholder="Search title, employer, place">
-    <select name="source" onchange="this.form.submit()">{source_opts}</select>
-    <select name="sort" onchange="this.form.submit()">{sort_opts}</select>
+    {company_input}
+    <input type="search" name="q" value="{q}" aria-label="Search jobs"
+      aria-describedby="search-help"
+      placeholder="Search title, employer, place">
+    <select aria-label="Source" name="source" onchange="this.form.submit()">{source_opts}</select>
+    <div class="sort-control"><select aria-label="Sort jobs" name="sort"
+      onchange="this.form.submit()">{sort_opts}</select>
+      <a class="reverse-sort" href="{reverse_link}" aria-label="Reverse sort: {reverse_label}"
+         title="{reverse_label}">↕</a></div>
   </form>
-  <nav class="tabs">{tabs}</nav>
+  <p class="search-help" id="search-help">Exclude with !desktop or !"help desk".
+    Salary sorts use the lower estimate; hourly rates × 2,080 for comparison.</p>
+  <nav class="tabs" aria-label="Job views" tabindex="0">{tabs}</nav>
+  </div>
   </div>
 </header>
-<main>{cards}</main>
+<div class="header-space" aria-hidden="true"></div>
+<main>{move_toolbar}{cards}</main>
 <footer>{footer}</footer>
 {onboarding_form}
 <dialog id="settings">
@@ -813,6 +1197,122 @@ dialog input, dialog select {{ display: block; width: 100%; height: 42px;
 </dialog>
 <script>
 {onboarding_script}
+const header = document.querySelector("header");
+function updateAddedTimes() {{
+  const now = Date.now();
+  document.querySelectorAll("time.added").forEach((label) => {{
+    const age = Math.max(0, (now - Date.parse(label.dateTime)) / 1000);
+    if (!Number.isFinite(age)) return;
+    if (age > 86400) label.textContent = label.dataset.date;
+    else if (age < 60) label.textContent = "added just now";
+    else {{
+      const hours = age >= 3600;
+      const amount = Math.floor(age / (hours ? 3600 : 60));
+      const unit = hours ? "hour" : "minute";
+      label.textContent = `added ${{amount}} ${{unit}}${{amount === 1 ? "" : "s"}} ago`;
+    }}
+  }});
+}}
+updateAddedTimes();
+setInterval(updateAddedTimes, 30000);
+document.addEventListener("visibilitychange", () => {{
+  if (!document.hidden) updateAddedTimes();
+}});
+const headerToggle = document.getElementById("header-toggle");
+const mobileHeader = matchMedia("(max-width: 639px)");
+let menuPinned = false;
+function setHeaderCompact(compact) {{
+  header.classList.toggle("compact", compact);
+  headerToggle.setAttribute("aria-expanded", String(!compact));
+  // Keep the cards in place as the in-flow header changes height.
+  document.documentElement.style.setProperty("--header-visible-height", header.offsetHeight + "px");
+}}
+function syncHeader() {{
+  if (!mobileHeader.matches) {{
+    setHeaderCompact(false);
+    return;
+  }}
+  if (window.scrollY < 40) menuPinned = false;
+  const editing = header.querySelector(".header-content").contains(document.activeElement);
+  setHeaderCompact(window.scrollY > 100 && !menuPinned && !editing);
+}}
+function measureHeader() {{
+  const compact = header.classList.contains("compact");
+  setHeaderCompact(false);
+  document.documentElement.style.setProperty("--header-height", header.offsetHeight + "px");
+  setHeaderCompact(compact);
+  syncHeader();
+  const selectedTab = header.querySelector(".tab.active");
+  const tabBar = header.querySelector("nav.tabs");
+  tabBar.classList.toggle("can-drag", tabBar.scrollWidth > tabBar.clientWidth);
+  if (selectedTab) {{
+    const barRect = tabBar.getBoundingClientRect();
+    const tabRect = selectedTab.getBoundingClientRect();
+    if (tabRect.left < barRect.left) tabBar.scrollLeft -= barRect.left - tabRect.left + 8;
+    else if (tabRect.right > barRect.right) tabBar.scrollLeft += tabRect.right - barRect.right + 8;
+  }}
+}}
+document.documentElement.classList.add("js-header");
+measureHeader();
+window.addEventListener("resize", measureHeader);
+window.addEventListener("scroll", syncHeader, {{passive: true}});
+header.addEventListener("focusout", () => setTimeout(syncHeader, 0));
+headerToggle.addEventListener("click", () => {{
+  const opening = header.classList.contains("compact");
+  menuPinned = opening;
+  setHeaderCompact(!opening);
+}});
+document.addEventListener("keydown", (event) => {{
+  if (event.key === "Escape" && mobileHeader.matches && !document.querySelector("dialog[open]")) {{
+    menuPinned = false;
+    headerToggle.focus();
+    setHeaderCompact(true);
+  }}
+}});
+const tabBar = document.querySelector("nav.tabs");
+let tabDrag = null;
+let suppressTabClick = false;
+tabBar.addEventListener("pointerdown", (event) => {{
+  // Touch keeps the browser's native swipe and vertical-page scrolling.
+  if (event.isPrimary) suppressTabClick = false;
+  if (event.pointerType === "touch" || event.button !== 0 || !event.isPrimary
+      || tabBar.scrollWidth <= tabBar.clientWidth) return;
+  tabDrag = {{id: event.pointerId, x: event.clientX, scroll: tabBar.scrollLeft, moved: false}};
+}});
+tabBar.addEventListener("pointermove", (event) => {{
+  if (!tabDrag || event.pointerId !== tabDrag.id) return;
+  const delta = event.clientX - tabDrag.x;
+  if (!tabDrag.moved && Math.abs(delta) < 6) return;
+  if (!tabDrag.moved) {{
+    tabDrag.moved = true;
+    tabBar.setPointerCapture(event.pointerId);
+    tabBar.classList.add("dragging");
+  }}
+  event.preventDefault();
+  tabBar.scrollLeft = tabDrag.scroll - delta;
+}});
+function finishTabDrag(event) {{
+  if (!tabDrag || event.pointerId !== tabDrag.id) return;
+  suppressTabClick = tabDrag.moved;
+  tabDrag = null;
+  tabBar.classList.remove("dragging");
+  if (tabBar.hasPointerCapture(event.pointerId)) tabBar.releasePointerCapture(event.pointerId);
+}}
+tabBar.addEventListener("pointerup", finishTabDrag);
+tabBar.addEventListener("pointercancel", finishTabDrag);
+tabBar.addEventListener("lostpointercapture", finishTabDrag);
+tabBar.addEventListener("dragstart", (event) => event.preventDefault());
+tabBar.addEventListener("click", (event) => {{
+  if (!suppressTabClick || event.detail === 0) return;
+  event.preventDefault();
+  event.stopPropagation();
+  suppressTabClick = false;
+}}, true);
+tabBar.addEventListener("keydown", (event) => {{
+  if (event.target !== tabBar || !["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+  event.preventDefault();
+  tabBar.scrollLeft += event.key === "ArrowRight" ? 150 : -150;
+}});
 async function post(path, body) {{
   const res = await fetch(path + location.search, {{
     method: "POST",
@@ -845,11 +1345,85 @@ document.addEventListener("click", async (e) => {{
     btn.disabled = false;
   }}
 }});
+const moveButton = document.getElementById("move-mode");
+let moveMode = false;
+let moveBusy = false;
+const selectedCards = () => [...document.querySelectorAll(".card-check:checked")];
+function updateMoveSelection() {{
+  const checked = selectedCards();
+  document.getElementById("move-count").textContent = `${{checked.length}} selected`;
+  document.querySelectorAll(".card").forEach(card =>
+    card.classList.toggle("selected", card.querySelector(".card-check").checked));
+  document.querySelectorAll(".tab").forEach(tab => {{
+    if (moveMode && checked.length && !tab.dataset.moveTarget)
+      tab.setAttribute("aria-disabled", "true");
+    else tab.removeAttribute("aria-disabled");
+  }});
+  document.getElementById("select-all").textContent =
+    checked.length === document.querySelectorAll(".card-check").length
+      ? "Clear selection" : "Select all";
+}}
+if (moveButton) {{
+  moveButton.addEventListener("click", () => {{
+    if (moveBusy) return;
+    moveMode = !moveMode;
+    document.body.classList.toggle("move-mode", moveMode);
+    moveButton.setAttribute("aria-pressed", String(moveMode));
+    moveButton.textContent = moveMode ? "Cancel move" : "Move";
+    document.getElementById("move-controls").hidden = !moveMode;
+    const status = document.getElementById("move-status");
+    status.hidden = !moveMode;
+    status.classList.remove("error");
+    status.textContent = "Select cards, then click Exact, Close, Probably not, " +
+      "Starred, Applied, or Hidden.";
+    document.querySelectorAll(".card-check").forEach(box => box.checked = false);
+    updateMoveSelection();
+  }});
+  document.getElementById("select-all").addEventListener("click", () => {{
+    if (moveBusy) return;
+    const select = selectedCards().length !== document.querySelectorAll(".card-check").length;
+    document.querySelectorAll(".card-check").forEach(box => box.checked = select);
+    updateMoveSelection();
+  }});
+  document.addEventListener("change", event => {{
+    if (event.target.matches(".card-check")) updateMoveSelection();
+  }});
+  tabBar.addEventListener("click", async event => {{
+    const tab = event.target.closest(".tab");
+    if (!moveMode || !tab || !selectedCards().length || event.defaultPrevented) return;
+    event.preventDefault();
+    if (moveBusy) return;
+    const status = document.getElementById("move-status");
+    status.classList.remove("error");
+    if (!tab.dataset.moveTarget) {{
+      status.textContent = "Choose a rating tab, Starred, Applied, or Hidden as the destination.";
+      return;
+    }}
+    moveBusy = true;
+    moveButton.disabled = true;
+    document.querySelectorAll(".card-check, #select-all, .card .toggle")
+      .forEach(el => el.disabled = true);
+    status.textContent = "Moving selected postings…";
+    try {{
+      await post("/api/move", {{keys: selectedCards().map(box => box.closest(".card").dataset.key),
+                                destination: tab.dataset.moveTarget}});
+      location.assign(tab.href);
+    }} catch (err) {{
+      status.classList.add("error");
+      status.textContent = "Couldn't move postings: " + err.message;
+      moveBusy = false;
+      moveButton.disabled = false;
+      document.querySelectorAll(".card-check, #select-all, .card .toggle")
+        .forEach(el => el.disabled = false);
+    }}
+  }});
+}}
 function dropCard(card) {{
   const main = card.closest("main");
   card.classList.add("leaving");
   setTimeout(() => {{
     card.remove();
+    if (moveButton && moveMode) updateMoveSelection();
     if (!main.querySelector(".card")) main.innerHTML = '<p class="empty">Nothing here.</p>';
   }}, 200);
 }}
@@ -951,7 +1525,7 @@ def make_server(app: App, host: str, port: int) -> ThreadingHTTPServer:
         def do_POST(self) -> None:
             url = urlparse(self.path)
             path = url.path
-            if path not in ("/api/mark", "/api/employer", "/api/companies"):
+            if path not in ("/api/mark", "/api/move", "/api/employer", "/api/companies"):
                 self._send(HTTPStatus.NOT_FOUND, "Not found", "text/plain")
                 return
             # A custom header can't be sent cross-site without a CORS preflight, which this
@@ -968,6 +1542,8 @@ def make_server(app: App, host: str, port: int) -> ThreadingHTTPServer:
                     raise ValueError("Expected a JSON object")
                 if path == "/api/companies":
                     entry = app.add_company(body)
+                elif path == "/api/move":
+                    entry = {"moved": app.move(body["keys"], body["destination"])}
                 elif path == "/api/employer":
                     app.decide_employer(body["employer"], body["action"])
                     entry = {"ok": True}

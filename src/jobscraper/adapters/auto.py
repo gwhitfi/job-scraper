@@ -4,8 +4,8 @@ from dataclasses import replace
 
 import httpx
 
-from jobscraper import crawl
 from jobscraper.models import Company, RawPosting
+from jobscraper.scraping import crawl
 
 
 def fetch(company: Company, client: httpx.Client) -> list[RawPosting]:

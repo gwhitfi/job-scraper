@@ -1,8 +1,8 @@
 from datetime import UTC, date, datetime, timedelta
 
-from jobscraper import tracker
 from jobscraper.models import RawPosting
-from jobscraper.state import State
+from jobscraper.storage.state import State
+from jobscraper.workflow import tracker
 
 T0 = datetime(2026, 10, 12, 12, 0, tzinfo=UTC)
 

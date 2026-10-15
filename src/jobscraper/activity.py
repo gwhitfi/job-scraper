@@ -1,20 +1,19 @@
 """Bounded, persistent crawl and discovery traces; no response bodies or headers."""
 
-import json
 import logging
 import re
 import time
 import uuid
 from contextvars import ContextVar
 from datetime import UTC, datetime
-from html import escape
 from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import httpx
 
-from jobscraper import jsonfile
+from jobscraper.presentation import activity_view
+from jobscraper.storage import jsonfile
 
 _current: ContextVar["Trace | None"] = ContextVar("activity", default=None)
 SECRET = re.compile(r"token|key|secret|password|signature|auth|cookie", re.I)
@@ -165,62 +164,16 @@ def page(paths: list[Path], selected: str = "") -> str:
     records.sort(key=lambda r: r["started"], reverse=True)
     selected = selected or (records[0]["id"] if records else "")
     parts = [
-        '<!doctype html><html><head><meta charset="utf-8">',
+        '<!doctype html><html lang="en"><head><meta charset="utf-8">',
         '<meta name="viewport" content="width=device-width,initial-scale=1">',
-        "<title>Crawl logs</title><style>body{font:16px system-ui;max-width:1100px;",
-        "margin:2rem auto;padding:0 1rem;background:#fafafa;color:#222}",
-        "details{padding:1rem;border:1px solid #ccc;margin:1rem 0;background:white}",
-        "pre{white-space:pre-wrap;overflow-wrap:anywhere}summary{cursor:pointer}"
-        "td,th{text-align:left;padding:.5rem;border-bottom:1px solid #ddd}"
-        "table{border-collapse:collapse}",
-        '</style></head><body><a href="/">← Jobs</a><h1>Crawl logs</h1>',
-        "<p>Latest 50 crawls and 50 add-company attempts. Times are UTC. Refresh to see ",
-        "progress. A running entry without new events may have been interrupted.</p>",
+        "<title>Crawl logs</title><style>",
+        activity_view.STYLE,
+        '</style></head><body><main><div class="page-top"><a href="/">← Jobs</a>',
+        '<button class="button" onclick="location.reload()">Refresh logs</button></div>',
+        '<h1>Crawl logs</h1><p class="hint">Crawl outcomes, source health, and progress. '
+        "Latest 50 crawls and 50 add-company attempts. Times shown in US Eastern (EST/EDT).</p>",
     ]
     if not records:
         parts.append("<p>No logs yet. Logs appear after the next crawl or add-company attempt.</p>")
-    for r in records:
-        rid = escape(r["id"], quote=True)
-        opened = " open" if r["id"] == selected else ""
-        label = f"{r['started']} · {r['kind']} · {r['status']}"
-        parts.append(f'<details id="{rid}"{opened}><summary>{escape(label)}</summary>')
-        events = r["events"]
-        requests = sum(e["stage"] == "request" for e in events)
-        errors = sum(e["stage"] == "response" and e.get("status_code", 0) >= 400 for e in events)
-        parts.append(
-            f"<p>{r.get('seconds', 'In progress')} seconds · "
-            f"{requests} requests · {errors} HTTP errors</p>"
-        )
-        if r.get("omitted_events"):
-            parts.append(f"<p>{r['omitted_events']} older events omitted by the size limit.</p>")
-        companies = [e for e in events if e["stage"] in ("company_completed", "company_failed")]
-        if companies:
-            parts.append(
-                '<div style="overflow:auto"><table><tr><th>Company</th><th>Result</th>'
-                "<th>Fetched</th><th>Kept</th><th>Filtered out</th>"
-                "<th>New</th><th>Removed</th></tr>"
-            )
-            for c in companies:
-                values = [c["company"], c.get("error", "Success")]
-                values += [c.get(k, "—") for k in ("fetched", "kept", "dropped", "new", "removed")]
-                parts.append(
-                    "<tr>" + "".join("<td>" + escape(str(v)) + "</td>" for v in values) + "</tr>"
-                )
-            parts.append("</table></div>")
-        if r["id"] != selected:
-            parts.append(f'<p><a href="/logs?id={rid}">View full trace</a></p></details>')
-            continue
-        parts.append("<ol>")
-        for event in events:
-            details = {k: v for k, v in event.items() if k not in ("time", "stage")}
-            parts.append(
-                "<li><strong>"
-                + escape(event["stage"].replace("_", " "))
-                + "</strong> · "
-                + escape(event["time"])
-                + "<pre>"
-                + escape(json.dumps(details, ensure_ascii=False, indent=2))
-                + "</pre></li>"
-            )
-        parts.append("</ol></details>")
-    return "".join(parts) + "</body></html>"
+    parts.extend(activity_view.render_record(r, selected) for r in records)
+    return "".join(parts) + "</main><script>" + activity_view.SCRIPT + "</script></body></html>"

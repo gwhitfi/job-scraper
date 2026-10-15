@@ -2,9 +2,9 @@ from datetime import UTC, date, datetime
 
 import pytest
 
-from jobscraper import dedupe
 from jobscraper.models import Company
-from jobscraper.state import Posting, State
+from jobscraper.storage.state import Posting, State
+from jobscraper.workflow import dedupe
 
 NOW = datetime(2026, 10, 13, tzinfo=UTC)
 BRANDS = {"scansource", "intelisys"}

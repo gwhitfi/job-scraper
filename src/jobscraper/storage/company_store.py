@@ -4,9 +4,9 @@ from dataclasses import asdict, replace
 from datetime import date
 from pathlib import Path
 
-from jobscraper import jsonfile
 from jobscraper.config import Config
 from jobscraper.models import Company
+from jobscraper.storage import jsonfile
 
 
 def load(path: Path) -> list[Company]:

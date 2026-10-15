@@ -1,0 +1,14 @@
+[Unit]
+Description=Job Scraper local crawl, classification, and alerts
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/dev/projects/job-scraper
+ExecStart=%h/dev/projects/job-scraper/.venv/bin/jobscraper scheduled-run
+Environment=PYTHONUNBUFFERED=1
+UMask=0077
+# Large boards and initial classification can exceed fifteen minutes.
+TimeoutStartSec=infinity
+TimeoutStopSec=60
+Nice=5

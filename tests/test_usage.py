@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from types import SimpleNamespace
 
-from jobscraper import usage
+from jobscraper.classification import usage
 
 NOW = datetime(2026, 10, 13, 12, tzinfo=UTC)
 

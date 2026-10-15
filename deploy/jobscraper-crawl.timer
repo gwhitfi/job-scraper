@@ -1,0 +1,12 @@
+[Unit]
+Description=Check jobs every two hours
+
+[Timer]
+OnCalendar=*-*-* 00/2:00:00 America/New_York
+Persistent=true
+AccuracySec=1us
+RandomizedDelaySec=0
+Unit=jobscraper-crawl.service
+
+[Install]
+WantedBy=timers.target

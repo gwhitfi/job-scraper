@@ -7,12 +7,18 @@ from datetime import UTC, datetime
 import anthropic
 import httpx
 
-from jobscraper import activity, adapters, classify, dedupe, employers, locations, tracker
+from jobscraper import activity, adapters
+from jobscraper.classification import classify
+from jobscraper.classification.classification_cache import Checkpoint
+from jobscraper.classification.usage import Usage
 from jobscraper.config import Config
+from jobscraper.geography import locations
 from jobscraper.models import Company, RawPosting
-from jobscraper.notify import Digest
-from jobscraper.state import Posting, State
-from jobscraper.usage import Usage
+from jobscraper.scraping import crawl
+from jobscraper.storage import employers
+from jobscraper.storage.state import Posting, State
+from jobscraper.workflow import dedupe, tracker
+from jobscraper.workflow.notify import Digest
 
 log = logging.getLogger(__name__)
 
@@ -47,7 +53,7 @@ def fetch_with_retry(
                 attempt=attempt + 1,
                 error=f"{type(e).__name__}: {e}",
             )
-            if attempt == len(RETRY_DELAYS):
+            if attempt == len(RETRY_DELAYS) or isinstance(e, crawl.Blocked | crawl.LimitExceeded):
                 raise
             log.warning("%s attempt %d failed: %s", company.id, attempt + 1, e)
             activity.emit("retry", company=company.id, delay_seconds=RETRY_DELAYS[attempt])
@@ -77,6 +83,19 @@ def fetch_company(
         wider = locations.build_filter(extended, regions, remote=False)
         in_wider, dropped = locations.apply(outside, wider)
         kept += [replace(p, area="extended") for p in in_wider]
+    activity.emit(
+        "location_filter",
+        company=company.id,
+        kept=len(kept),
+        dropped=len(dropped),
+        unknown_kept=sum(
+            not locations.places(p.location) and not locations.is_remote(p) for p in kept
+        ),
+        foreign_dropped=sum(
+            bool(p.countries) and not any(locations.us_country(c) for c in p.countries)
+            for p in dropped
+        ),
+    )
     for p in locations.possible_gaps(outside, primary):
         log.info(
             "%s: %r in %s is outside `locations` (add the town to a region if it's local)",
@@ -92,32 +111,44 @@ def _has_llm_result(p: Posting) -> bool:
 
 
 def _classify_pending(
-    state: State, cfg: Config, llm: anthropic.Anthropic | None, usage: Usage
+    state: State,
+    cfg: Config,
+    llm: anthropic.Anthropic | None,
+    usage: Usage,
+    checkpoint: Checkpoint | None = None,
 ) -> list[str]:
     """Classify postings that need it; return keys that just became relevant on an LLM retry.
 
     Postings redone because the rules changed aren't returned: they aren't new jobs.
     """
+    scopes = locations.scopes(cfg)
     rules = classify.rules_fingerprint(cfg.profile, cfg.classifier_model)
     pending = [
         p
         for p in state.postings.values()
-        if not p.duplicate_of and classify.needs_classification(p, rules)
+        if not p.duplicate_of
+        and classify.needs_classification(p, rules)
+        and (p.company_id not in scopes or scopes[p.company_id].area(p) is not None)
     ]
     if llm is None:
         # Without the LLM, keep stale LLM results rather than downgrading them to keywords.
         pending = [p for p in pending if not _has_llm_result(p)]
     if not pending:
         return []
-    was_relevant = {p.key: classify.posting_group(p, cfg.profile) is not None for p in pending}
+    was_relevant = {
+        p.key: classify.posting_group(p, cfg.profile, scopes.get(p.company_id)) is not None
+        for p in pending
+    }
     companies = {c.id: c for c in cfg.companies}
 
     results: dict[str, dict] = {}
     if llm is not None:
         try:
             results = classify.classify_llm(
-                pending, cfg.profile, companies, llm, cfg.classifier_model, usage
+                pending, cfg.profile, companies, llm, cfg.classifier_model, usage, checkpoint
             )
+        except OSError:
+            raise  # Do not replace paid results with keyword fallback on a checkpoint failure.
         except Exception:
             log.exception("LLM classification failed, using keywords")
             activity.emit("classification_fallback", reason="LLM failed; using keywords")
@@ -134,7 +165,7 @@ def _classify_pending(
         if (
             retried
             and not was_relevant[p.key]
-            and classify.posting_group(p, cfg.profile) is not None
+            and classify.posting_group(p, cfg.profile, scopes.get(p.company_id)) is not None
         ):
             upgraded.append(p.key)
     return upgraded
@@ -148,11 +179,13 @@ def run(
     now: datetime | None = None,
     sleep: Callable[[float], None] = time.sleep,
     decisions: dict[str, dict] | None = None,
+    checkpoint: Checkpoint | None = None,
 ) -> RunResult:
     """`decisions` are my approve/block calls on job-board employers (employers.json)."""
     now = now or datetime.now(UTC)
     decisions = decisions or {}
     companies = {c.id: c for c in cfg.companies}
+    scopes = locations.scopes(cfg)
     result = RunResult(digest=Digest(health_names=cfg.health_names()))
     new_keys: list[str] = []
     removed_keys: list[str] = []
@@ -173,7 +206,9 @@ def run(
             postings, dropped = fetch_company(
                 company, http, cfg.regions, sleep, cfg.extended_locations, retry_errors
             )
-            if tracker.is_suspicious_empty(state, company.id, postings):
+            tracker.refresh_locations(state, company.id, dropped)
+            # Filtering every fetched job is a valid success, not an empty source.
+            if tracker.is_suspicious_empty(state, company.id, postings or dropped):
                 raise ValueError("returned 0 postings after a non-empty run")
         except Exception as e:  # one site breaking (e.g. a redesign) mustn't stop the others
             if not isinstance(e, httpx.HTTPError | ValueError):
@@ -214,7 +249,7 @@ def run(
 
     dedupe.mark_duplicates(state, cfg.companies, adapters.BOARD_ADAPTERS)
     activity.emit("classification_started", mode="llm" if llm else "keywords")
-    upgraded = _classify_pending(state, cfg, llm, result.usage)
+    upgraded = _classify_pending(state, cfg, llm, result.usage, checkpoint)
 
     activity.emit("classification_completed", calls=result.usage.calls, upgraded=len(upgraded))
 
@@ -222,7 +257,7 @@ def run(
         p = state.postings[key]
         if employers.status(p, companies, decisions) == "blocked":
             return None
-        return classify.posting_group(p, cfg.profile)
+        return classify.posting_group(p, cfg.profile, scopes.get(p.company_id))
 
     digest = result.digest
     for key in dict.fromkeys(new_keys + upgraded):

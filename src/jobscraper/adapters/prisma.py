@@ -6,8 +6,8 @@ from urllib.parse import urljoin
 import httpx
 from bs4 import BeautifulSoup
 
-from jobscraper.http import with_page
 from jobscraper.models import Company, RawPosting
+from jobscraper.scraping.http import with_page
 
 PER_PAGE = 12
 MAX_PAGES = 30

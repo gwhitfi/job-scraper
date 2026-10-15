@@ -5,10 +5,11 @@ import httpx
 import pytest
 from conftest import fixture_text, mock_client
 
-from jobscraper import company_store, crawl, discovery
 from jobscraper.adapters import generic
 from jobscraper.config import Config, Notifications, Profile
 from jobscraper.models import Company
+from jobscraper.scraping import crawl, discovery
+from jobscraper.storage import company_store
 
 
 def client_for(pages):

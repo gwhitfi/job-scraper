@@ -2,17 +2,22 @@ import hashlib
 import json
 import logging
 import re
-from dataclasses import asdict
+import time
+from dataclasses import asdict, replace
 from datetime import UTC, datetime
 from typing import Literal
 
 import anthropic
 from pydantic import BaseModel
 
+from jobscraper import activity
+from jobscraper.classification import salaries
+from jobscraper.classification.classification_cache import Checkpoint
+from jobscraper.classification.usage import Usage
 from jobscraper.config import DEFAULT_MODEL, Profile
+from jobscraper.geography import locations
 from jobscraper.models import Company
-from jobscraper.state import Posting
-from jobscraper.usage import Usage
+from jobscraper.storage.state import Posting
 
 log = logging.getLogger(__name__)
 
@@ -34,6 +39,7 @@ class Result(BaseModel):
     level: Level
     employer_note: str
     employer_check: EmployerCheck
+    salary: salaries.Salary | None = None
 
 
 class Results(BaseModel):
@@ -105,6 +111,7 @@ def _prompt(postings: list[Posting], profile: Profile, companies: dict[str, Comp
     ]
     for p in postings:
         line = f"- id={p.key} | {p.title} | {company_label(p, companies)} | {p.location}"
+        line += f" | area: {p.area}"
         if p.category:
             line += f" | category: {p.category}"
         if p.summary:
@@ -125,6 +132,7 @@ PROMPT_FIELDS = (
 
 
 def rules_fingerprint(profile: Profile, model: str) -> str:
+    # Salary instructions are separate so enrichment does not invalidate relevance reviews.
     """Changes when anything Claude is told changes, so stale results get redone."""
     seen = {k: v for k, v in asdict(profile).items() if k in PROMPT_FIELDS}
     blob = json.dumps([seen, SYSTEM, model], sort_keys=True)
@@ -138,14 +146,53 @@ def classify_llm(
     client: anthropic.Anthropic,
     model: str = DEFAULT_MODEL,
     usage: Usage | None = None,
+    checkpoint: Checkpoint | None = None,
 ) -> dict[str, dict]:
     """Classify in batches; postings that can't be classified are left out for a retry."""
 
+    usage = usage if usage is not None else Usage()
+    rules = rules_fingerprint(profile, model)
+    signatures = {
+        p.key: Checkpoint.signature(_prompt([p], profile, companies), rules) for p in postings
+    }
+    results = {
+        p.key: cached
+        for p in postings
+        if checkpoint and (cached := checkpoint.get(p.key, signatures[p.key])) is not None
+    }
+    pending = [p for p in postings if p.key not in results]
+    total, completed = len(postings), len(results)
+    activity.emit(
+        "classification_plan",
+        total=total,
+        reused=completed,
+        pending=len(pending),
+        batches=(len(pending) + BATCH_SIZE - 1) // BATCH_SIZE,
+    )
+    log.info(
+        "Classification: %d jobs, %d restored from checkpoint, %d pending",
+        total,
+        completed,
+        len(pending),
+    )
+
     def attempt(batch: list[Posting]) -> dict[str, dict]:
         """If a batch's content breaks the reply, split it to isolate the bad posting."""
+        nonlocal completed
+        started = time.monotonic()
+        activity.emit(
+            "classification_batch_started", jobs=len(batch), completed=completed, total=total
+        )
         try:
-            return classify_batch(batch, profile, companies, client, model, usage)
+            out = classify_batch(batch, profile, companies, client, model, usage)
         except Exception as e:
+            # Even unusable responses may have billed usage. Never retry a disk failure as
+            # if it were bad classifier output.
+            if checkpoint:
+                checkpoint.save({}, signatures, usage)
+            activity.emit(
+                "classification_batch_failed", jobs=len(batch), error=f"{type(e).__name__}: {e}"
+            )
             if _unavailable(e):
                 raise
             if len(batch) == 1:
@@ -154,16 +201,30 @@ def classify_llm(
             log.warning("Batch of %d failed (%s: %s); splitting", len(batch), type(e).__name__, e)
             mid = len(batch) // 2
             return attempt(batch[:mid]) | attempt(batch[mid:])
+        if checkpoint:
+            checkpoint.save(out, signatures, usage)
+        results.update(out)  # Keep successful split batches even if a later half is unavailable.
+        completed += len(out)
+        activity.emit(
+            "classification_progress",
+            completed=completed,
+            total=total,
+            calls=usage.calls,
+            seconds=round(time.monotonic() - started, 2),
+        )
+        log.info(
+            "Classification: %d/%d jobs complete (%d API calls)", completed, total, usage.calls
+        )
+        return out
 
-    results: dict[str, dict] = {}
-    for start in range(0, len(postings), BATCH_SIZE):
+    for start in range(0, len(pending), BATCH_SIZE):
         try:
-            results |= attempt(postings[start : start + BATCH_SIZE])
+            results |= attempt(pending[start : start + BATCH_SIZE])
         except Exception as e:
             if not _unavailable(e):
                 raise
             # Claude itself is down or refusing us; more calls this run would fail too.
-            log.warning("Claude unavailable, skipping %d postings: %s", len(postings) - start, e)
+            log.warning("Claude unavailable, skipping %d postings: %s", len(pending) - start, e)
             break
     return results
 
@@ -189,7 +250,14 @@ def classify_batch(
     response = client.messages.parse(
         model=model,
         max_tokens=16000,
-        system=SYSTEM,
+        system=SYSTEM
+        + salaries.INSTRUCTIONS
+        + (
+            f"\nPay eligibility: relevance must be "
+            f"{'core only' if profile.mode == 'strict' else 'core, adjacent, or maybe'}; "
+            f"level must be unknown or one of {', '.join(profile.levels)}. "
+            "For area=extended only core relevance qualifies. All other jobs need salary=null."
+        ),
         messages=[{"role": "user", "content": _prompt(postings, profile, companies)}],
         output_format=Results,
     )
@@ -200,6 +268,7 @@ def classify_batch(
 
     now = datetime.now(UTC).isoformat()
     wanted = {p.key for p in postings}
+    by_key = {p.key: p for p in postings}
     rules = rules_fingerprint(profile, model)
     return {
         r.id: {
@@ -212,6 +281,16 @@ def classify_batch(
             "model": model,
             "rules": rules,
             "classified_at": now,
+            **(
+                {"salary": salaries.serialize(r.salary, model)}
+                if salaries.eligible(
+                    replace(
+                        by_key[r.id], classification={"relevance": r.relevance, "level": r.level}
+                    ),
+                    profile,
+                )
+                else {}
+            ),
         }
         for r in response.parsed_output.results
         if r.id in wanted
@@ -280,11 +359,14 @@ def match_group(classification: dict | None, profile: Profile) -> str | None:
     return group
 
 
-def posting_group(p: Posting, profile: Profile) -> str | None:
+def posting_group(p: Posting, profile: Profile, scope: locations.Scope | None = None) -> str | None:
     """Like match_group, but extended-area jobs only count as exact, and duplicates never do."""
     if p.duplicate_of:
         return None  # shown under the company's own listing instead
+    area = scope.area(p) if scope else p.area
+    if area is None:
+        return None
     group = match_group(p.classification, profile)
-    if p.area == "extended" and group != "exact":
+    if area == "extended" and group != "exact":
         return None
     return group

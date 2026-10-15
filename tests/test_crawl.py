@@ -4,7 +4,7 @@ import httpx
 import pytest
 from conftest import mock_client
 
-from jobscraper import crawl
+from jobscraper.scraping import crawl
 
 
 def test_normalizes_bare_domain():

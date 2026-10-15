@@ -4,10 +4,10 @@ from types import SimpleNamespace
 import pytest
 from conftest import llm_result
 
-from jobscraper import classify
+from jobscraper.classification import classify
 from jobscraper.config import Profile
 from jobscraper.models import Company
-from jobscraper.state import Posting
+from jobscraper.storage.state import Posting
 
 NOW = datetime(2026, 10, 12, tzinfo=UTC)
 PROFILE = Profile(

@@ -1,6 +1,6 @@
 import pytest
 
-from jobscraper.robots import Rules
+from jobscraper.scraping.robots import Rules
 
 
 @pytest.mark.parametrize(

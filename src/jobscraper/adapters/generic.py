@@ -12,8 +12,9 @@ from soupsieve import SelectorSyntaxError
 from soupsieve import compile as compile_selector
 
 from jobscraper import activity
-from jobscraper.locations import STATE_CODES
+from jobscraper.geography.locations import STATE_CODES
 from jobscraper.models import Company, RawPosting
+from jobscraper.scraping import crawl
 
 MAX_PAGES = 30
 NEXT_SELECTOR = (
@@ -342,4 +343,4 @@ def fetch(company: Company, client: httpx.Client) -> list[RawPosting]:
         if urlsplit(next_url).netloc != urlsplit(company.url).netloc:
             raise ValueError("Pagination left the jobs site. Check the next-page setting.")
         url = next_url
-    raise ValueError("Too many results pages. Use a filtered jobs URL.")
+    raise crawl.LimitExceeded("Too many results pages. Use a filtered jobs URL.")

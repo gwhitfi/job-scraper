@@ -5,9 +5,9 @@ import httpx
 import pytest
 from conftest import fixture_text, mock_client
 
-from jobscraper import crawl, discovery
 from jobscraper.adapters import workday
 from jobscraper.models import Company
+from jobscraper.scraping import crawl, discovery
 
 
 def test_workday_discovery_paginates_and_preserves_search():
@@ -153,7 +153,11 @@ def test_live_workday_facets_select_states_and_remote(fixture):
         calls.append(body)
         if not body["appliedFacets"]:
             return httpx.Response(200, json=data)
-        return httpx.Response(200, json={"total": 1, "jobPostings": data["jobPostings"][:1]})
+        job = data["jobPostings"][0] | {
+            "locationsText": "Greenville, SC",
+            "remoteType": "Remote" if "remoteType" in body["appliedFacets"] else "Onsite",
+        }
+        return httpx.Response(200, json={"total": 1, "jobPostings": [job]})
 
     postings = workday.fetch(company, mock_client(handler))
     assert len(postings) == 1  # State and remote searches can overlap.

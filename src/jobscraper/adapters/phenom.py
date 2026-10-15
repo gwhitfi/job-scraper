@@ -14,7 +14,7 @@ from urllib.parse import urlparse
 
 import httpx
 
-from jobscraper.locations import STATE_CODES
+from jobscraper.geography.locations import STATE_CODES, us_country
 from jobscraper.models import Company, RawPosting
 
 PAGE_SIZE = 50
@@ -49,15 +49,31 @@ def parse(data: dict, base: str) -> tuple[list[RawPosting], int]:
     search = data.get("refineSearch", {})
     postings = []
     for job in search.get("data", {}).get("jobs", []):
-        state = job.get("state") or ""
-        place = ", ".join(p for p in (job.get("city"), STATE_CODES.get(state, state)) if p)
+        sites = job.get("multi_location_array") or [job]
+        places, countries = [], []
+        for site in sites:
+            state = site.get("state") or (job.get("state") if len(sites) == 1 else "") or ""
+            city = site.get("city") or (job.get("city") if len(sites) == 1 else "")
+            place = ", ".join(p for p in (city, STATE_CODES.get(state, state)) if p)
+            place = place or site.get("location") or ""
+            if place:
+                places.append(place)
+            country = site.get("country") or (job.get("country") if len(sites) == 1 else "")
+            if country:
+                countries.append(country)
+                if place and not us_country(country):
+                    places[-1] += ", " + country
+        # Incomplete multi-location metadata must not imply every location is foreign.
+        if len(countries) != len(sites):
+            countries = []
         slug = re.sub(r"[^a-z0-9]+", "-", job["title"].lower()).strip("-")
         posted = job.get("postedDate")
         postings.append(
             RawPosting(
                 source_id=job["jobSeqNo"],
                 title=" ".join(job["title"].split()),
-                location=place,
+                location="; ".join(dict.fromkeys(places)),
+                countries=tuple(dict.fromkeys(countries)),
                 url=f"{base}/us/en/job/{job.get('jobId') or job['jobSeqNo']}/{slug}",
                 posted_date=datetime.fromisoformat(posted[:10]).date() if posted else None,
                 category=" / ".join(c for c in (job.get("category"), job.get("subCategory")) if c),

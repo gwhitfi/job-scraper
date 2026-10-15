@@ -15,6 +15,7 @@ class RawPosting:
     summary: str = ""  # short description, when the listing has one
     employer: str = ""  # set by job boards that list many employers
     area: str = "primary"  # "extended": outside the main area; only exact matches are shown
+    countries: tuple[str, ...] = ()  # explicit source countries; empty means unknown
 
 
 @dataclass(frozen=True)

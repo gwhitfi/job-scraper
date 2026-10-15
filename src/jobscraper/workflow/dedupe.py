@@ -1,9 +1,9 @@
 import re
 
 from jobscraper.adapters import platform
-from jobscraper.employers import normalize_name
 from jobscraper.models import Company
-from jobscraper.state import Posting, State
+from jobscraper.storage.employers import normalize_name
+from jobscraper.storage.state import Posting, State
 
 MIN_PREFIX_WORDS = 3  # boards often cut titles short; a shorter overlap is too ambiguous
 # "(Anderson, SC)" style location notes some sites add to titles

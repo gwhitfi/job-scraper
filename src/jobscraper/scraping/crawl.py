@@ -8,8 +8,9 @@ from urllib.parse import urljoin, urlsplit
 
 import httpx
 
-from jobscraper import activity, robots
-from jobscraper.http import USER_AGENT
+from jobscraper import activity
+from jobscraper.scraping import robots
+from jobscraper.scraping.http import USER_AGENT
 
 MAX_BYTES = 5_000_000
 

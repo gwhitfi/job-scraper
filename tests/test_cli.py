@@ -4,9 +4,11 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from jobscraper import adapters, cli, notify, state, tracker
+from jobscraper import adapters, cli
 from jobscraper.models import RawPosting
-from jobscraper.state import Posting, State
+from jobscraper.storage import state
+from jobscraper.storage.state import Posting, State
+from jobscraper.workflow import notify, tracker
 
 CONFIG = """
 [profile]
@@ -122,8 +124,8 @@ def test_email_failure_still_saves_state(setup, monkeypatch):
 
 
 def test_run_includes_website_added_company(setup):
-    from jobscraper import company_store
     from jobscraper.models import Company
+    from jobscraper.storage import company_store
 
     state_dir, sent, run_cli = setup
     c = Company(

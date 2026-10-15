@@ -1,0 +1,13 @@
+{
+  "jobPostingInfo": {
+    "location": "Charlotte, North Carolina",
+    "additionalLocations": [
+      "Mount Laurel, New Jersey"
+    ],
+    "remoteType": "Office Focused",
+    "country": {
+      "descriptor": "United States of America",
+      "id": "bc33aa3152ec42d4995f4791a106ed09"
+    }
+  }
+}

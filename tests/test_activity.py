@@ -4,7 +4,9 @@ from concurrent.futures import ThreadPoolExecutor
 import httpx
 import pytest
 
-from jobscraper import activity, http, jsonfile
+from jobscraper import activity
+from jobscraper.scraping import http
+from jobscraper.storage import jsonfile
 
 
 def test_trace_persists_progress_failure_and_redacts(tmp_path):
@@ -105,3 +107,69 @@ def test_logging_failure_does_not_break_work(tmp_path, monkeypatch):
     monkeypatch.setattr(jsonfile, "write", fail)
     with activity.Trace(tmp_path / "crawl-history.json", "crawl"):
         activity.emit("work_completed")
+
+
+def test_page_distinguishes_geography_and_classification_progress(tmp_path):
+    path = tmp_path / "crawl-history.json"
+    with activity.Trace(path, "crawl") as trace:
+        activity.emit("location_filter", company="hospital", unknown_kept=0)
+        activity.emit("company_completed", company="hospital", kept=671)
+        activity.emit("classification_progress", completed=50, total=671, calls=1)
+    html = activity.page([path], trace.record["id"])
+    assert "50 / 671 jobs complete" in html
+    assert "In location scope" in html
+    assert "before relevance classification" in html
+    assert "Unknown location kept" in html
+
+
+def test_log_summary_prioritizes_failures_and_uses_company_names(tmp_path):
+    from bs4 import BeautifulSoup
+
+    path = tmp_path / "crawl-history.json"
+    with activity.Trace(path, "crawl") as trace:
+        activity.emit("company_started", company="good-123", name="Good Company")
+        activity.emit("company_completed", company="good-123", kept=10)
+        activity.emit("company_started", company="bad-456", name="Failed Company")
+        activity.emit("company_failed", company="bad-456", error="HTTP 403 <denied>")
+        trace.record["status"] = "partial_failure"
+    soup = BeautifulSoup(activity.page([path]), "html.parser")
+    assert "Completed with issues" in soup.select_one(".run > summary").text
+    assert "Failed Company" in soup.select_one(".issues").text
+    assert "HTTP 403 <denied>" in soup.select_one(".issues").text
+    assert "Failed Company" in soup.select_one("tbody tr").text
+    assert soup.select_one(".event:last-child")["data-level"] == "warning"
+
+
+def test_event_filters_preserve_errors_and_expandable_details(tmp_path):
+    from bs4 import BeautifulSoup
+
+    path = tmp_path / "crawl-history.json"
+    with activity.Trace(path, "crawl"):
+        activity.emit("request", url="https://example.com/jobs")
+        activity.emit("response", status_code=403, url="https://example.com/jobs")
+        activity.emit("retry", delay_seconds=10)
+    soup = BeautifulSoup(activity.page([path]), "html.parser")
+    errors = soup.select('.event[data-level="error"]')
+    assert len(errors) == 1
+    assert "HTTP 403" in errors[0].summary.text
+    assert errors[0].select_one("details pre")
+    assert soup.select_one('.event[data-level="warning"]')
+    assert [o["value"] for o in soup.select("#event-level option")] == [
+        "milestones",
+        "issues",
+        "all",
+    ]
+
+
+@pytest.mark.parametrize(
+    "value,expected",
+    [
+        ("2026-10-15T14:00:00+00:00", "Oct 15, 2026 · 10:00 AM EDT"),
+        ("2026-12-15T15:00:00+00:00", "Dec 15, 2026 · 10:00 AM EST"),
+        ("2026-10-15T02:00:00+00:00", "Oct 14, 2026 · 10:00 PM EDT"),
+    ],
+)
+def test_log_times_are_eastern(value, expected):
+    from jobscraper.presentation.activity_view import stamp
+
+    assert stamp(value) == expected

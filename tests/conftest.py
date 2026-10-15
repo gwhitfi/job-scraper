@@ -4,7 +4,7 @@ from pathlib import Path
 import httpx
 import pytest
 
-from jobscraper import classify
+from jobscraper.classification import classify
 from jobscraper.models import Company
 
 FIXTURES = Path(__file__).parent / "fixtures"

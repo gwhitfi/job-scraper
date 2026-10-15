@@ -3,10 +3,10 @@ from datetime import UTC, date, datetime, timedelta
 
 import pytest
 
-from jobscraper import tracked
 from jobscraper.config import Config, Notifications, Profile
 from jobscraper.models import Company
-from jobscraper.state import Health, State
+from jobscraper.presentation import tracked
+from jobscraper.storage.state import Health, State
 
 NOW = datetime(2026, 10, 14, 23, tzinfo=UTC)
 COMPANY = Company("acme", "Acme", "generic", "https://acme.example/jobs", date(2026, 1, 1))
@@ -55,3 +55,12 @@ def test_page_escapes_errors_names_and_links():
     assert "<script>oops()" not in html and "<img src=x" not in html
     assert 'href="javascript:' not in html
     assert "Failing to crawl" in html and 'href="#"' in html
+
+
+def test_tracked_timestamps_are_eastern():
+    cfg = Config(Profile("dev"), Notifications("test@example.com"), [COMPANY])
+    html = tracked.page(
+        cfg, State(health={"acme": Health(last_success=NOW)}), stale_hours=6, now=NOW
+    )
+    assert "Oct 14, 2026 7:00 PM EDT" in html
+    assert "23:00 UTC" not in html

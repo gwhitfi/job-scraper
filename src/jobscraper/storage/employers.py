@@ -3,7 +3,7 @@ from datetime import UTC, datetime
 
 from jobscraper.adapters import BOARD_ADAPTERS, platform
 from jobscraper.models import Company
-from jobscraper.state import Posting
+from jobscraper.storage.state import Posting
 
 # My approve/block decisions, per employer, for postings from job boards.
 DECISIONS = {"approved", "blocked"}

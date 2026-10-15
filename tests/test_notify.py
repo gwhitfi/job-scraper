@@ -3,9 +3,10 @@ from pathlib import Path
 
 import pytest
 
-from jobscraper import jsonfile, notify
-from jobscraper.state import Health, Posting
-from jobscraper.tracker import HealthEvent
+from jobscraper.storage import jsonfile
+from jobscraper.storage.state import Health, Posting
+from jobscraper.workflow import notify
+from jobscraper.workflow.tracker import HealthEvent
 
 T0 = datetime(2026, 10, 1, tzinfo=UTC)
 NAMES = {"acme": "Acme Corp"}

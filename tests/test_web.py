@@ -7,10 +7,11 @@ from pathlib import Path
 import httpx
 import pytest
 
-from jobscraper import jsonfile, state, web
 from jobscraper.config import Config, Notifications, Profile
 from jobscraper.models import Company
-from jobscraper.state import Health, Posting, State
+from jobscraper.presentation import web
+from jobscraper.storage import jsonfile, state
+from jobscraper.storage.state import Health, Posting, State
 
 NOW = datetime.now(UTC)
 PROFILE = Profile(target_role="dev", levels=("entry", "mid"))
@@ -263,26 +264,33 @@ def test_http_employer_endpoint(server, app):
 
 
 @pytest.mark.parametrize(
-    ("now", "expected"),
+    "now,expected",
     [
-        (datetime(2026, 10, 13, 0, 0, tzinfo=UTC), datetime(2026, 10, 13, 0, 17, tzinfo=UTC)),
-        (datetime(2026, 10, 13, 0, 17, tzinfo=UTC), datetime(2026, 10, 13, 2, 17, tzinfo=UTC)),
-        (datetime(2026, 10, 13, 1, 30, tzinfo=UTC), datetime(2026, 10, 13, 2, 17, tzinfo=UTC)),
-        (datetime(2026, 10, 13, 23, 40, tzinfo=UTC), datetime(2026, 10, 14, 0, 17, tzinfo=UTC)),
+        ("2026-10-15T13:06:00+00:00", "2026-10-15T14:00:00+00:00"),
+        ("2026-10-15T14:00:00+00:00", "2026-10-15T16:00:00+00:00"),
+        ("2026-10-15T14:00:00.000001+00:00", "2026-10-15T16:00:00+00:00"),
+        ("2026-10-15T23:40:00+00:00", "2026-10-16T00:00:00+00:00"),
+        ("2026-12-15T14:06:00+00:00", "2026-12-15T15:00:00+00:00"),
+        ("2026-11-01T05:30:00+00:00", "2026-11-01T07:00:00+00:00"),
+        ("2027-03-14T06:30:00+00:00", "2027-03-14T08:00:00+00:00"),
     ],
 )
 def test_next_run(now, expected):
-    assert web.next_run(now) == expected
+    assert web.next_run(datetime.fromisoformat(now)) == datetime.fromisoformat(expected)
 
 
-def test_schedule_matches_workflow():
-    workflow = (Path(__file__).parent.parent / ".github/workflows/check.yml").read_text()
-    cron = f'cron: "{web.SCHEDULE_MINUTE} */{web.SCHEDULE_EVERY_HOURS} * * *"'
-    assert cron in workflow
+def test_schedule_matches_local_timer():
+    timer = (Path(__file__).parent.parent / "deploy/jobscraper-crawl.timer").read_text()
+    schedule = (
+        f"OnCalendar=*-*-* 00/{web.SCHEDULE_EVERY_HOURS}:"
+        f"{web.SCHEDULE_MINUTE:02d}:00 America/New_York"
+    )
+    assert schedule in timer
+    assert "AccuracySec=1us" in timer and "RandomizedDelaySec=0" in timer
 
 
 def test_header_shows_next_update(app):
-    assert "· next ~" in app.index({})
+    assert "· next " in app.index({})
 
 
 def test_stale_banner(app):
@@ -295,7 +303,7 @@ def test_stale_banner(app):
 
 
 def test_email_failure_banner(app, tmp_path):
-    from jobscraper import notify
+    from jobscraper.workflow import notify
 
     outbox = notify.load_outbox(tmp_path / "state" / "email.json")
     notify.queue(outbox, {"subject": "s", "text": "t", "html": "h"})
@@ -326,7 +334,7 @@ def test_nearest_sort_and_miles(app):
 
 
 def test_footer_shows_claude_cost(app, tmp_path):
-    from jobscraper import usage
+    from jobscraper.classification import usage
 
     run = usage.Usage(calls=1, input_tokens=100_000, output_tokens=10_000)
     usage.record(tmp_path / "state" / "usage.json", run, "claude-sonnet-5-5", NOW)
@@ -477,12 +485,38 @@ def test_newest_sorts_by_when_found_not_posted(app):
     st.postings["acme:1"].posted_date = date(2026, 10, 12)
     html = app.index({"view": "exact", "sort": "newest"})
     assert html.index("BI Developer") < html.index("Web Developer")
-    assert f'<span class="added">added {NOW.astimezone():%b %-d}</span>' in html
+    from bs4 import BeautifulSoup
+
+    label = BeautifulSoup(html, "html.parser").select_one('article[data-key="mus:9"] .added')
+    assert label.get_text(strip=True) == "added just now"
+    assert datetime.fromisoformat(label["datetime"]) == NOW
+    assert label["data-date"] == f"added {NOW.astimezone(web.EASTERN):%b %-d}"
+
+
+@pytest.mark.parametrize(
+    ("seconds", "expected"),
+    [
+        (-60, "added just now"),
+        (0, "added just now"),
+        (59, "added just now"),
+        (60, "added 1 minute ago"),
+        (3599, "added 59 minutes ago"),
+        (3600, "added 1 hour ago"),
+        (7200, "added 2 hours ago"),
+        (86400, "added 24 hours ago"),
+        (86401, None),
+    ],
+)
+def test_added_label(seconds, expected):
+    first_seen = NOW - timedelta(seconds=seconds)
+    if expected is None:
+        expected = f"added {first_seen.astimezone(web.EASTERN):%b %-d}"
+    assert web.added_label(first_seen, NOW) == expected
 
 
 def test_add_company_endpoint_persists_and_reloads(server, app, monkeypatch):
-    from jobscraper import discovery
     from jobscraper.models import RawPosting
+    from jobscraper.scraping import discovery
 
     c = Company(
         "new-co",
@@ -519,7 +553,7 @@ def test_add_company_endpoint_persists_and_reloads(server, app, monkeypatch):
 
 
 def test_add_company_missing_info_does_not_enable_tracking(server, app, monkeypatch):
-    from jobscraper import discovery
+    from jobscraper.scraping import discovery
 
     monkeypatch.setattr(
         discovery,
@@ -549,8 +583,9 @@ def test_add_company_form(app):
 def test_add_company_discovers_then_runner_uses_saved_recipe(app, monkeypatch):
     from conftest import mock_client
 
-    from jobscraper import crawl, runner
-    from jobscraper.state import State
+    from jobscraper.scraping import crawl
+    from jobscraper.storage.state import State
+    from jobscraper.workflow import runner
 
     page = '<title>New Co Careers</title><a class="job" href="/jobs/123">Software Developer</a>'
     requests = []
@@ -572,13 +607,14 @@ def test_add_company_discovers_then_runner_uses_saved_recipe(app, monkeypatch):
     with mock_client(handler) as client:
         result = runner.run(cfg, State(), client, llm=None, sleep=lambda delay: None)
     assert result.failed == {}
-    assert result.fetched[company.id] == 1
-    assert result.digest.new_exact[0].title == "Software Developer"
+    assert result.fetched[company.id] == 0  # No location evidence in the discovered page.
+    assert result.digest.new_exact == []
     assert all("new.example" in url for url in requests)
 
 
 def test_failed_add_company_has_reviewable_log(server, app, monkeypatch):
-    from jobscraper import discovery, jsonfile
+    from jobscraper.scraping import discovery
+    from jobscraper.storage import jsonfile
 
     def fail(*args, **kwargs):
         raise ValueError("Extraction failed <script>oops()</script>")
@@ -601,7 +637,7 @@ def test_failed_add_company_has_reviewable_log(server, app, monkeypatch):
 
 
 def test_tracked_companies_route_includes_website_additions(server, app):
-    from jobscraper import company_store
+    from jobscraper.storage import company_store
 
     company_store.add(
         app.companies_path,
@@ -630,3 +666,283 @@ def test_health_only_update_invalidates_web_cache(app):
     data["acme"]["last_error"] = "HTTP 403"
     jsonfile.write(path, data)
     assert app.state().health["acme"].consecutive_failures == 3
+
+
+def test_saved_foreign_jobs_are_excluded_without_deleting_history(app):
+    from dataclasses import replace
+
+    app._use_config(
+        replace(app.cfg, companies=[replace(c, locations=("SC",)) for c in app.cfg.companies])
+    )
+    st = app.state()
+    for key in ("acme:1", "acme:2", "acme:3", "mus:10"):
+        st.postings[key].countries = ("Poland",)
+        st.postings[key].location = "Warsaw, Masovian"
+    st.postings["acme:1"].title = "Java Developer - Remote in Poland"
+    state.save(st, app.state_dir)
+    assert keys(app, "exact") == ["mus:9"]
+    assert keys(app, "near") == []
+    assert keys(app, "maybe") == []
+    assert keys(app, "unverified") == ["mus:11"]
+    app.mark("acme:1", "starred", True)
+    app.mark("acme:2", "applied", True)
+    assert keys(app, "starred") == ["acme:1"]
+    assert keys(app, "applied") == ["acme:2"]
+    assert app.state().postings["acme:1"].status == "active"
+
+
+def test_current_scope_rechecks_saved_extended_and_unknown_locations(app):
+    from dataclasses import replace
+
+    app._use_config(
+        replace(
+            app.cfg,
+            companies=[replace(c, locations=("SC",)) for c in app.cfg.companies],
+            extended_locations=("NC",),
+        )
+    )
+    st = app.state()
+    st.postings["acme:1"].location = "Charlotte, North Carolina"
+    st.postings["acme:2"].location = "Charlotte, North Carolina"
+    st.postings["acme:3"].location = ""
+    state.save(st, app.state_dir)
+    assert "acme:1" in keys(app, "exact")
+    assert "acme:2" not in keys(app, "near")
+    assert "acme:3" not in keys(app, "maybe")
+
+
+@pytest.mark.parametrize("location", ["Warsaw, Poland", "Remote - Canada", "", "3 Locations"])
+def test_saved_jobs_without_country_metadata_require_location_evidence(app, location):
+    from dataclasses import replace
+
+    app._use_config(
+        replace(app.cfg, companies=[replace(c, locations=("SC",)) for c in app.cfg.companies])
+    )
+    st = app.state()
+    st.postings["acme:1"].location = location
+    st.postings["acme:1"].countries = ()
+    st.postings["acme:1"].title = "Remote Developer"
+    state.save(st, app.state_dir)
+    assert "acme:1" not in keys(app, "exact")
+    assert "acme:1" not in keys(app, "relevant")
+
+
+@pytest.mark.parametrize(
+    "query,expected",
+    [
+        ("!developer", ["acme:2", "acme:3"]),
+        ("developer !web", ["mus:9"]),
+        ('!"web developer"', ["acme:2", "acme:3", "mus:9"]),
+        ('"data analyst" !desktop', ["acme:2"]),
+        ("!developer !ops", ["acme:2"]),
+    ],
+)
+def test_exclusion_search(app, query, expected):
+    assert keys(app, "relevant", q=query) == expected
+
+
+def test_salary_sort_annualizes_hourly_and_keeps_unknown_last(app):
+    from jobscraper.classification import salaries
+
+    rows = app.rows()[:3]
+    for row, amount, period in zip(rows, [50000, 30, None], ["year", "hour", "year"], strict=True):
+        if amount:
+            row.posting.salary = salaries.serialize(
+                salaries.Salary(
+                    minimum=amount,
+                    maximum=amount * 2,
+                    period=period,
+                    currency="USD",
+                    confidence="low",
+                ),
+                "x",
+            )
+    assert [r.posting.key for r in sorted(rows, key=lambda r: app.sort_key(r, "salary"))] == [
+        "acme:2",
+        "acme:1",
+        "acme:3",
+    ]
+    assert [
+        r.posting.key for r in sorted(rows, key=lambda r: app.sort_key(r, "salary_lowest"))
+    ] == ["acme:1", "acme:2", "acme:3"]
+
+
+def test_reverse_distance_and_relevance_keep_missing_last(app):
+    rows = app.rows()[:3]
+    for row, miles, score in zip(rows, [None, 10, 50], [None, 3, 9], strict=True):
+        row.miles = miles
+        row.posting.classification["score"] = score
+    assert sorted(rows, key=lambda r: app.sort_key(r, "farthest")) == [rows[2], rows[1], rows[0]]
+    assert sorted(rows, key=lambda r: app.sort_key(r, "least_relevant")) == [
+        rows[1],
+        rows[2],
+        rows[0],
+    ]
+    assert sorted(rows, key=lambda r: app.sort_key(r, "oldest"))[-1] == rows[0]
+
+
+def test_personal_classification_override_persists_and_can_reset(app):
+    original = app.state().postings["acme:1"].classification.copy()
+    app.mark("acme:1", "group", "maybe")
+    assert "acme:1" not in keys(app, "exact")
+    assert "acme:1" in keys(app, "maybe")
+    reloaded = web.App(app.cfg, app.state_dir, app.marks_path, app.employers_path)
+    assert "acme:1" in keys(reloaded, "maybe")
+    assert reloaded.state().postings["acme:1"].classification == original
+    reloaded.mark("acme:1", "group", "")
+    assert "acme:1" in keys(reloaded, "exact")
+    with pytest.raises(ValueError):
+        app.mark("acme:1", "group", "bogus")
+
+
+def test_personal_override_cannot_bypass_geography(app):
+    from dataclasses import replace
+
+    app._use_config(
+        replace(app.cfg, companies=[replace(c, locations=("SC",)) for c in app.cfg.companies])
+    )
+    app._base_cfg = app.cfg
+    app.state().postings["acme:1"].location = "Warsaw, Poland"
+    state.save(app.state(), app.state_dir)
+    app.mark("acme:1", "group", "exact")
+    assert "acme:1" not in keys(app, "exact")
+    rows, _ = app.select({"view": "companies", "company": "acme"})
+    assert all(r.posting.key != "acme:1" for r in rows)
+
+
+def test_company_directory_counts_and_condensed_details(app):
+    from bs4 import BeautifulSoup
+
+    app.mark("acme:1", "starred", True)
+    app.mark("acme:6", "applied", True)
+    soup = BeautifulSoup(app.index({"view": "companies"}), "html.parser")
+    cards = soup.select(".company-card")
+    assert len(cards) == 2
+    assert [s.text for s in cards[0].select("strong")] == ["3", "1", "1"]
+    assert "company=acme" in cards[0]["href"]
+    detail = BeautifulSoup(app.index({"view": "companies", "company": "acme"}), "html.parser")
+    assert len(detail.select(".compact-jobs .card")) == 3
+    assert "Forklift Operator" not in detail.text
+    assert "Old Developer" not in detail.select_one(".compact-jobs").text
+    assert not detail.select(".reclassify")
+    assert len(detail.select(".card-check")) == 3
+    assert detail.select_one('input[name="company"]')["value"] == "acme"
+    assert "company=acme" in detail.select_one(".reverse-sort")["href"]
+
+
+def test_http_personal_rating_updates_counts(server):
+    response = httpx.post(
+        server + "/api/mark?view=exact",
+        json={"key": "acme:1", "field": "group", "value": "near"},
+        headers={"X-Requested-With": "jobscraper"},
+    )
+    assert response.status_code == 200
+    assert response.json()["visible"] is False
+    assert response.json()["counts"]["near"] == 2
+
+
+def test_company_jobs_follow_personal_and_relevance_filters(app):
+    rows, _ = app.select({"view": "companies", "company": "acme"})
+    assert {r.posting.key for r in rows} == {"acme:1", "acme:2", "acme:3"}
+    app.mark("acme:1", "hidden", True)
+    app.mark("acme:4", "group", "near")
+    rows, _ = app.select({"view": "companies", "company": "acme"})
+    assert {r.posting.key for r in rows} == {"acme:2", "acme:3", "acme:4"}
+
+
+def test_rejected_and_hidden_jobs_do_not_display_or_sort_by_salary(app):
+    from jobscraper.classification import salaries
+
+    st = app.state()
+    for key in ("acme:1", "acme:4"):
+        st.postings[key].salary = salaries.serialize(
+            salaries.Salary(
+                minimum=50000, maximum=70000, period="year", currency="USD", confidence="low"
+            ),
+            "x",
+        )
+    state.save(st, app.state_dir)
+    app.mark("acme:4", "starred", True)
+    app.mark("acme:1", "hidden", True)
+    assert "AI-estimated pay" not in app.index({"view": "starred"})
+    assert "AI-estimated pay" not in app.index({"view": "hidden"})
+    rejected = next(r for r in app.rows() if r.posting.key == "acme:4")
+    assert app.sort_key(rejected, "salary")[0] is True
+
+
+def test_move_mode_replaces_rating_select_and_applied_label(app):
+    from bs4 import BeautifulSoup
+
+    soup = BeautifulSoup(app.index({"view": "relevant"}), "html.parser")
+    assert soup.select_one("#move-mode").text == "Move"
+    assert not soup.select(".reclassify")
+    assert len(soup.select(".card-check")) == len(soup.select(".card"))
+    assert all(button.text == "Applied" for button in soup.select('[data-field="applied"]'))
+    app.mark("acme:1", "applied", True)
+    assert "✓ Applied" in app.index({"view": "applied"})
+
+
+def test_bulk_move_rating_updates_all_selected_and_preserves_notes(app):
+    app.mark("acme:1", "note", "Keep this note")
+    app.mark("acme:1", "hidden", True)
+    app.mark("acme:2", "applied", True)
+    assert app.move(["acme:1", "acme:2"], "maybe") == 2
+    assert keys(app, "maybe") == ["acme:1", "acme:2", "acme:3"]
+    marks = jsonfile.read(app.marks_path)
+    assert marks["acme:1"]["note"] == "Keep this note"
+    assert marks["acme:1"]["hidden"] is False
+    assert marks["acme:2"]["applied"] is False
+    assert "applied_at" not in marks["acme:2"]
+
+
+@pytest.mark.parametrize("target", ["starred", "applied", "hidden"])
+def test_bulk_move_turns_on_normal_mark(app, target):
+    app.mark("acme:1", "hidden", True)
+    app.move(["acme:1", "acme:2"], target)
+    marks = jsonfile.read(app.marks_path)
+    assert all(marks[k][target] for k in ["acme:1", "acme:2"])
+    assert all(k in keys(app, target) for k in ["acme:1", "acme:2"])
+    if target == "applied":
+        assert marks["acme:1"]["applied_at"]
+
+
+def test_bulk_move_bad_selection_is_atomic(app):
+    app.mark("acme:1", "note", "untouched")
+    before = app.marks_path.read_bytes()
+    with pytest.raises(KeyError):
+        app.move(["acme:1", "missing:key"], "hidden")
+    assert app.marks_path.read_bytes() == before
+    with pytest.raises(ValueError):
+        app.move(["acme:1", "acme:6"], "exact")
+    assert app.marks_path.read_bytes() == before
+    for invalid in [[], "acme:1", [False]]:
+        with pytest.raises(ValueError):
+            app.move(invalid, "starred")
+    with pytest.raises(ValueError):
+        app.move(["acme:1"], "companies")
+
+
+def test_bulk_move_cannot_bypass_geography(app):
+    from dataclasses import replace
+
+    app._base_cfg = replace(
+        app.cfg, companies=[replace(c, locations=("SC",)) for c in app.cfg.companies]
+    )
+    app._use_config(app._base_cfg)
+    st = app.state()
+    st.postings["acme:1"].location = "Toronto, ON"
+    state.save(st, app.state_dir)
+    with pytest.raises(ValueError):
+        app.move(["acme:1"], "exact")
+    assert jsonfile.read(app.marks_path) == {}
+
+
+def test_http_bulk_move_requires_header_and_moves_selection(server, app):
+    payload = {"keys": ["acme:1", "acme:2"], "destination": "starred"}
+    assert httpx.post(server + "/api/move", json=payload).status_code == 403
+    response = httpx.post(
+        server + "/api/move", json=payload, headers={"X-Requested-With": "jobscraper"}
+    )
+    assert response.status_code == 200
+    assert response.json()["moved"] == 2
+    assert keys(app, "starred") == ["acme:1", "acme:2"]

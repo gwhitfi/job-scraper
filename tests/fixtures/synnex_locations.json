@@ -1,0 +1,2097 @@
+{
+  "refineSearch": {
+    "data": {
+      "jobs": [
+        {
+          "descriptionTeaser": "We are recruiting a Field Sales Executive to drive growth of our Global System Integrators business in Spain. Manage and develop strategic relationships with enterprise integrators, identify new business opportunities, and position TD SYNNEX as a trusted partner. Ideal for experienced sales professionals with strong commercial awareness and customer focus.",
+          "state": "Lisbon",
+          "city": "Lisboa",
+          "multi_location": [
+            "Lisboa, Lisbon, Portugal"
+          ],
+          "country": "Portugal",
+          "jobId": "R52497",
+          "title": "Field Sales Executive - IT Distribution",
+          "jobSeqNo": "TSQTSBUSR52497EXTERNALENUS",
+          "postedDate": "2026-07-27T00:00:00.000+0000",
+          "location": "Lisboa, Lisbon, Portugal",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Portugal",
+              "cityState": "Lisboa, Lisbon",
+              "address": "Av. D. Jo\u00e3o II, 52, Piso 1 Ala A, 1998-014 Lisboa, Lisbon, Portugal",
+              "city": "Lisboa",
+              "postalCode": "1998-014",
+              "latlong": {
+                "lon": -9.13333,
+                "lat": 38.71667
+              },
+              "latitude": "38.71667",
+              "cityStateZipCode": "Lisboa, Lisbon, 1998-014",
+              "stateCountry": "Lisbon, Portugal",
+              "locationId": "PT01",
+              "location": "Lisboa, Lisbon, Portugal",
+              "state": "Lisbon",
+              "cityCountry": "Lisboa, Portugal",
+              "cityStateCountry": "Lisboa, Lisbon, Portugal",
+              "mapQueryLocation": "Av. D. Jo\u00e3o II, 52, Piso 1 Ala A, 1998-014 Lisboa, Lisbon, Portugal",
+              "longitude": "-9.13333"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Take on the role of Technical Sales Presales Consultant, providing presales technical support and delivering tailored product demonstrations to customers and prospects. Assist with qualification of opportunities and coordinate technical proof of concepts. Ideal for candidates with strong network and security knowledge and experience in networking technologies.",
+          "state": "Johor",
+          "city": "Johor Bahru",
+          "multi_location": [
+            "Johor Bahru, Johor, Malaysia",
+            "Petaling Jaya, Selangor, Malaysia"
+          ],
+          "country": "Malaysia",
+          "jobId": "R50082",
+          "title": "Technical Sales",
+          "jobSeqNo": "TSQTSBUSR50082EXTERNALENUS",
+          "postedDate": "2026-04-17T00:00:00.000+0000",
+          "location": "Johor Bahru, Johor, Malaysia",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Malaysia",
+              "cityState": "Johor Bahru, Johor",
+              "address": "JBO No 22, Jalan Suria 19, 81100 Johor Bahru, Johor, Malaysia",
+              "city": "Johor Bahru",
+              "postalCode": "81100",
+              "latlong": {
+                "lon": 103.7578,
+                "lat": 1.4655
+              },
+              "latitude": "1.4655",
+              "cityStateZipCode": "Johor Bahru, Johor, 81100",
+              "stateCountry": "Johor, Malaysia",
+              "locationId": "MYS003",
+              "location": "Johor Bahru, Johor, Malaysia",
+              "state": "Johor",
+              "cityCountry": "Johor Bahru, Malaysia",
+              "cityStateCountry": "Johor Bahru, Johor, Malaysia",
+              "mapQueryLocation": "JBO No 22, Jalan Suria 19, 81100 Johor Bahru, Johor, Malaysia",
+              "longitude": "103.7578"
+            },
+            {
+              "country": "Malaysia",
+              "cityState": "Petaling Jaya, Selangor",
+              "address": "6th Floor, Wisma Prosper, No.3, Jalan SS7/19, Kelana Jaya, 47301 Petaling Jaya, Selangor, Malaysia",
+              "city": "Petaling Jaya",
+              "postalCode": "47301",
+              "latlong": {
+                "lon": 101.60671,
+                "lat": 3.10726
+              },
+              "latitude": "3.10726",
+              "cityStateZipCode": "Petaling Jaya, Selangor, 47301",
+              "stateCountry": "Selangor, Malaysia",
+              "locationId": "MYS001",
+              "location": "Petaling Jaya, Selangor, Malaysia",
+              "state": "Selangor",
+              "cityCountry": "Petaling Jaya, Malaysia",
+              "cityStateCountry": "Petaling Jaya, Selangor, Malaysia",
+              "mapQueryLocation": "6th Floor, Wisma Prosper, No.3, Jalan SS7/19, Kelana Jaya, 47301 Petaling Jaya, Selangor, Malaysia",
+              "longitude": "101.60671"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are seeking a Channel Sales Manager to drive the complete sales cycle for IT business partners, focusing on maximising revenue and partner satisfaction. Key responsibilities include developing strong relationships and identifying sales opportunities. Ideal candidates will have significant experience in IT channel sales and a solid understanding of business and product offerings.",
+          "state": "H\u00e0 N\u1ed9i",
+          "city": "Cau Giay District",
+          "multi_location": [
+            "Cau Giay District, H\u00e0 N\u1ed9i, Vietnam"
+          ],
+          "country": "Vietnam",
+          "jobId": "R50095",
+          "title": "Channel Sales Manager",
+          "jobSeqNo": "TSQTSBUSR50095EXTERNALENUS",
+          "postedDate": "2026-04-28T00:00:00.000+0000",
+          "location": "Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Vietnam",
+              "cityState": "Cau Giay District, H\u00e0 N\u1ed9i",
+              "address": "Floor 3, IDMC Duy Tan Building, No. 21 Duy Tan road, Dich Vong Hau ward, Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+              "city": "Cau Giay District",
+              "postalCode": "",
+              "latlong": {
+                "lon": 105.7820594,
+                "lat": 21.0306151
+              },
+              "latitude": "21.0306151",
+              "cityStateZipCode": "Cau Giay District, H\u00e0 N\u1ed9i",
+              "stateCountry": "H\u00e0 N\u1ed9i, Vietnam",
+              "locationId": "VN20V",
+              "location": "Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+              "state": "H\u00e0 N\u1ed9i",
+              "cityCountry": "Cau Giay District, Vietnam",
+              "cityStateCountry": "Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+              "mapQueryLocation": "Floor 3, IDMC Duy Tan Building, No. 21 Duy Tan road, Dich Vong Hau ward, Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+              "longitude": "105.7820594"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are seeking a Business Development Manager \u2013 Oracle to drive the adoption of Oracle's cloud services, software, and hardware. This customer- and partner-facing role focuses on building strong relationships, identifying new business opportunities, and supporting partners across the Oracle portfolio. Ideal for candidates with experience in IT business development and partner management.",
+          "state": "Milano",
+          "city": "Milano",
+          "multi_location": [
+            "Milano, Milano, Italy"
+          ],
+          "country": "Italy",
+          "jobId": "R54002",
+          "title": "Business Development Manager \u2013 Oracle",
+          "jobSeqNo": "TSQTSBUSR54002EXTERNALENUS",
+          "postedDate": "2026-07-21T00:00:00.000+0000",
+          "location": "Milano, Milano, Italy",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Italy",
+              "cityState": "Milano, Milano",
+              "address": "Via Luigi Russolo, 7/9, 20138 Milano MI, Italy",
+              "city": "Milano",
+              "postalCode": "20138",
+              "latlong": {
+                "lon": 9.18951,
+                "lat": 45.46427
+              },
+              "latitude": "45.46427",
+              "cityStateZipCode": "Milano, Milano, 20138",
+              "stateCountry": "Milano, Italy",
+              "locationId": "IT03",
+              "location": "Milano, Milano, Italy",
+              "state": "Milano",
+              "cityCountry": "Milano, Italy",
+              "cityStateCountry": "Milano, Milano, Italy",
+              "mapQueryLocation": "Via Luigi Russolo, 7/9, 20138 Milano MI, Italy",
+              "longitude": "9.18951"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Exciting opportunity for an Internal Sales Specialist to drive business growth within a specialised sub-business unit. Focus on building strong customer and vendor relationships, managing quotes, and closing orders. Ideal for candidates with over three years\u2019 experience in sales, strong communication skills, and a proactive approach to relationship management.",
+          "state": "Barcelona",
+          "city": "Barcelona",
+          "multi_location": [
+            "Barcelona, Barcelona, Spain"
+          ],
+          "country": "Spain",
+          "jobId": "R54403",
+          "title": "Internal Sales Specialist (AWS) - Swedish",
+          "jobSeqNo": "TSQTSBUSR54403EXTERNALENUS",
+          "postedDate": "2026-07-30T00:00:00.000+0000",
+          "location": "Barcelona, Barcelona, Spain",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Spain",
+              "cityState": "Barcelona, Barcelona",
+              "address": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "city": "Barcelona",
+              "postalCode": "08038",
+              "latlong": {
+                "lon": -35.92639,
+                "lat": -5.95056
+              },
+              "latitude": "-5.95056",
+              "cityStateZipCode": "Barcelona, Barcelona, 08038",
+              "stateCountry": "Barcelona, Spain",
+              "locationId": "ES06",
+              "location": "Barcelona, Barcelona, Spain",
+              "state": "Barcelona",
+              "cityCountry": "Barcelona, Spain",
+              "cityStateCountry": "Barcelona, Barcelona, Spain",
+              "mapQueryLocation": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "longitude": "-35.92639"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are expanding our team: As a Technical Presales Specialist with Veeam expertise, you will support sales teams and channel partners in Italy, providing technical pre-sales support and delivering solutions for backup, disaster recovery, and data protection. Ideal candidates have experience in technical presales or engineering roles and strong communication skills.",
+          "state": "Milano",
+          "city": "Milano",
+          "multi_location": [
+            "Milano, Milano, Italy"
+          ],
+          "country": "Italy",
+          "jobId": "R54134",
+          "title": "Technical Presales Specialist Veeam",
+          "jobSeqNo": "TSQTSBUSR54134EXTERNALENUS",
+          "postedDate": "2026-07-21T00:00:00.000+0000",
+          "location": "Milano, Milano, Italy",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Italy",
+              "cityState": "Milano, Milano",
+              "address": "Via Luigi Russolo, 7/9, 20138 Milano MI, Italy",
+              "city": "Milano",
+              "postalCode": "20138",
+              "latlong": {
+                "lon": 9.18951,
+                "lat": 45.46427
+              },
+              "latitude": "45.46427",
+              "cityStateZipCode": "Milano, Milano, 20138",
+              "stateCountry": "Milano, Italy",
+              "locationId": "IT03",
+              "location": "Milano, Milano, Italy",
+              "state": "Milano",
+              "cityCountry": "Milano, Italy",
+              "cityStateCountry": "Milano, Milano, Italy",
+              "mapQueryLocation": "Via Luigi Russolo, 7/9, 20138 Milano MI, Italy",
+              "longitude": "9.18951"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are expanding our team: As a SAP EWM Senior Developer, you will design and implement integrated solutions for TD SYNNEX\u2019s business units, ensuring compliance with architectural standards. Lead SAP EWM development and collaborate with SAP functional teams. Ideal for experienced SAP technical leaders with strong EWM expertise.",
+          "state": "Tamil N\u0101du",
+          "city": "Chennai, Tamil Nadu",
+          "multi_location": [
+            "Chennai, Tamil Nadu, Tamil N\u0101du, India"
+          ],
+          "country": "India",
+          "jobId": "R53937",
+          "title": "SAP EWM Sr Developer",
+          "jobSeqNo": "TSQTSBUSR53937EXTERNALENUS",
+          "postedDate": "2026-07-17T00:00:00.000+0000",
+          "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+          "category": "IT",
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Chennai, Tamil Nadu, Tamil N\u0101du",
+              "address": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "city": "Chennai, Tamil Nadu",
+              "postalCode": "600032",
+              "latlong": {
+                "lon": 80.23333,
+                "lat": 13.06667
+              },
+              "latitude": "13.06667",
+              "cityStateZipCode": "Chennai, Tamil Nadu, Tamil N\u0101du, 600032",
+              "stateCountry": "Tamil N\u0101du, India",
+              "locationId": "IN19Y",
+              "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "state": "Tamil N\u0101du",
+              "cityCountry": "Chennai, Tamil Nadu, India",
+              "cityStateCountry": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "mapQueryLocation": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "longitude": "80.23333"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Seeking an experienced SAP Basis Administrator to manage and maintain SAP systems, including ECC, S/4, and CRM. Key responsibilities include system setup, troubleshooting, and performance monitoring. Ideal for candidates with extensive SAP expertise and a strong background in system administration.",
+          "state": "Tamil N\u0101du",
+          "city": "Chennai, Tamil Nadu",
+          "multi_location": [
+            "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+            "Remote, India"
+          ],
+          "country": "India",
+          "jobId": "R53554",
+          "title": "SAP Basis Administrator",
+          "jobSeqNo": "TSQTSBUSR53554EXTERNALENUS",
+          "postedDate": "2026-07-16T00:00:00.000+0000",
+          "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+          "category": "IT",
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Chennai, Tamil Nadu, Tamil N\u0101du",
+              "address": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "city": "Chennai, Tamil Nadu",
+              "postalCode": "600032",
+              "latlong": {
+                "lon": 80.23333,
+                "lat": 13.06667
+              },
+              "latitude": "13.06667",
+              "cityStateZipCode": "Chennai, Tamil Nadu, Tamil N\u0101du, 600032",
+              "stateCountry": "Tamil N\u0101du, India",
+              "locationId": "IN19Y",
+              "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "state": "Tamil N\u0101du",
+              "cityCountry": "Chennai, Tamil Nadu, India",
+              "cityStateCountry": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "mapQueryLocation": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "longitude": "80.23333"
+            },
+            {
+              "country": "India",
+              "cityState": "Remote",
+              "address": "N/A, Remote- 0, India",
+              "city": "Remote",
+              "postalCode": "0",
+              "latlong": {
+                "lon": 79.00000000000001,
+                "lat": 22.000000000000004
+              },
+              "latitude": "22.0",
+              "cityStateZipCode": "Remote, 0",
+              "stateCountry": "India",
+              "locationId": "IN99",
+              "location": "Remote, India",
+              "state": "",
+              "cityCountry": "Remote, India",
+              "cityStateCountry": "Remote, India",
+              "mapQueryLocation": "N/A, Remote- 0, India",
+              "longitude": "79.0"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are looking for a Networking Solution Architect to design and validate cloud networking solutions for partner and customer needs. You will act as a technical expert, collaborating with sales and partners. Ideal candidates have experience in networking architecture and cloud platforms.",
+          "state": "Milano",
+          "city": "Milano",
+          "multi_location": [
+            "Milano, Milano, Italy"
+          ],
+          "country": "Italy",
+          "jobId": "R53971",
+          "title": "Solution Architect Networking",
+          "jobSeqNo": "TSQTSBUSR53971EXTERNALENUS",
+          "postedDate": "2026-07-24T00:00:00.000+0000",
+          "location": "Milano, Milano, Italy",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Italy",
+              "cityState": "Milano, Milano",
+              "address": "Via Luigi Russolo, 7/9, 20138 Milano MI, Italy",
+              "city": "Milano",
+              "postalCode": "20138",
+              "latlong": {
+                "lon": 9.18951,
+                "lat": 45.46427
+              },
+              "latitude": "45.46427",
+              "cityStateZipCode": "Milano, Milano, 20138",
+              "stateCountry": "Milano, Italy",
+              "locationId": "IT03",
+              "location": "Milano, Milano, Italy",
+              "state": "Milano",
+              "cityCountry": "Milano, Italy",
+              "cityStateCountry": "Milano, Milano, Italy",
+              "mapQueryLocation": "Via Luigi Russolo, 7/9, 20138 Milano MI, Italy",
+              "longitude": "9.18951"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are expanding our team: As a Regional Business Development Manager for South, you will drive business expansion and execution of suppliers' strategies, focusing on maximising revenue and customer satisfaction. This role requires strong relationship-building skills and experience in managing the full sales cycle within the IT technology sector.",
+          "state": "Karn\u0101taka",
+          "city": "Someshwarpura,  Bengaluru",
+          "multi_location": [
+            "Someshwarpura,  Bengaluru, Karn\u0101taka, India"
+          ],
+          "country": "India",
+          "jobId": "R54630",
+          "title": "Regional Business Development Manager- South",
+          "jobSeqNo": "TSQTSBUSR54630EXTERNALENUS",
+          "postedDate": "2026-08-06T00:00:00.000+0000",
+          "location": "Someshwarpura,  Bengaluru, Karn\u0101taka, India",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Someshwarpura,  Bengaluru, Karn\u0101taka",
+              "address": "Tech Data Indiqube Brigade Square,, Cambridge Road, Halasuru,, Someshwarpura,  Bengaluru- 560008, Karn\u0101taka, India",
+              "city": "Someshwarpura,  Bengaluru",
+              "postalCode": "560008",
+              "latlong": {
+                "lon": 77.58287,
+                "lat": 12.99599
+              },
+              "latitude": "12.99599",
+              "cityStateZipCode": "Someshwarpura,  Bengaluru, Karn\u0101taka, 560008",
+              "stateCountry": "Karn\u0101taka, India",
+              "locationId": "IN6G",
+              "location": "Someshwarpura,  Bengaluru, Karn\u0101taka, India",
+              "state": "Karn\u0101taka",
+              "cityCountry": "Someshwarpura,  Bengaluru, India",
+              "cityStateCountry": "Someshwarpura,  Bengaluru, Karn\u0101taka, India",
+              "mapQueryLocation": "Tech Data Indiqube Brigade Square,, Cambridge Road, Halasuru,, Someshwarpura,  Bengaluru- 560008, Karn\u0101taka, India",
+              "longitude": "77.58287"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Become part of our team as a Product Specialist II, supporting the Product Manager to achieve sales and profit targets for TD SYNNEX and its vendors. Drive sales enablement through marketing and technical support, focusing on revenue and vendor relationships. Ideal for candidates with IT distribution experience and strong business acumen.",
+          "state": "",
+          "city": "",
+          "multi_location": [],
+          "country": "",
+          "jobId": "R54320",
+          "title": "Product Specialist II",
+          "jobSeqNo": "TSQTSBUSR54320EXTERNALENUS",
+          "postedDate": "2026-07-23T00:00:00.000+0000",
+          "location": "",
+          "category": "Sales and Business Development",
+          "multi_location_array": []
+        },
+        {
+          "descriptionTeaser": "We are looking for a Business Development Manager - IBM (Software) to drive IBM Software sales and grow market share. You will execute business unit strategies, negotiate key deals, and optimise results. Ideal candidates have experience with IBM and strong communication skills in Bulgarian and English.",
+          "state": "",
+          "city": "Sofia",
+          "multi_location": [
+            "Sofia, Bulgaria"
+          ],
+          "country": "Bulgaria",
+          "jobId": "R53618",
+          "title": "Business Development Manager - IBM (Software)",
+          "jobSeqNo": "TSQTSBUSR53618EXTERNALENUS",
+          "postedDate": "2026-07-14T00:00:00.000+0000",
+          "location": "Sofia, Bulgaria",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Bulgaria",
+              "cityState": "Sofia",
+              "address": "Pending assignment, 0000 Sofia, Bulgaria",
+              "city": "Sofia",
+              "postalCode": "0000",
+              "latlong": {
+                "lon": 23.32415,
+                "lat": 42.69751
+              },
+              "latitude": "42.69751",
+              "cityStateZipCode": "Sofia, 0000",
+              "stateCountry": "Bulgaria",
+              "locationId": "BG02",
+              "location": "Sofia, Bulgaria",
+              "state": "",
+              "cityCountry": "Sofia, Bulgaria",
+              "cityStateCountry": "Sofia, Bulgaria",
+              "mapQueryLocation": "Pending assignment, 0000 Sofia, Bulgaria",
+              "longitude": "23.32415"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are seeking a detail-oriented Accounts Payable Specialist I to process vendor invoices, maintain accurate financial records, and ensure timely payments. The role involves managing accounts payable correspondence and supporting month-end close activities. Ideal for candidates with strong organisational skills and proficiency in Microsoft Office.",
+          "state": "Virginia",
+          "city": "Herndon",
+          "multi_location": [
+            "Herndon, Virginia, United States of America"
+          ],
+          "country": "United States of America",
+          "jobId": "R53874",
+          "title": "A/P Specialist 1",
+          "jobSeqNo": "TSQTSBUSR53874EXTERNALENUS",
+          "postedDate": "2026-07-24T00:00:00.000+0000",
+          "location": "Herndon, Virginia, United States of America",
+          "category": "Finance and Accounting",
+          "multi_location_array": [
+            {
+              "country": "United States of America",
+              "cityState": "Herndon, Virginia",
+              "address": "2411 Dulles Corner Park, Suite 800, Herndon, VA 20171, United States of America",
+              "city": "Herndon",
+              "postalCode": "20171",
+              "latlong": {
+                "lon": -77.3861,
+                "lat": 38.96955
+              },
+              "latitude": "38.96955",
+              "cityStateZipCode": "Herndon, Virginia, 20171",
+              "stateCountry": "Virginia, United States of America",
+              "locationId": "TDS-US-VA-6982",
+              "location": "Herndon, Virginia, United States of America",
+              "state": "Virginia",
+              "cityCountry": "Herndon, United States of America",
+              "cityStateCountry": "Herndon, Virginia, United States of America",
+              "mapQueryLocation": "2411 Dulles Corner Park, Suite 800, Herndon, VA 20171, United States of America",
+              "longitude": "-77.3861"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Exciting opportunity for a Business Development Representative to act as the main interface between customers and suppliers, executing supplier strategies and managing the complete sales cycle. Key responsibilities include developing supplier relationships and driving revenue growth. Ideal for candidates with 1\u20133 years\u2019 relevant experience and a background in business or technical fields.",
+          "state": "",
+          "city": "Singapore",
+          "multi_location": [
+            "Singapore, Singapore"
+          ],
+          "country": "Singapore",
+          "jobId": "R54046",
+          "title": "BDM - HPE (Specializations)",
+          "jobSeqNo": "TSQTSBUSR54046EXTERNALENUS",
+          "postedDate": "2026-08-05T00:00:00.000+0000",
+          "location": "Singapore, Singapore",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Singapore",
+              "cityState": "Singapore",
+              "address": "2 Serangoon North Ave 5, Unit #05-03, Singapore 554911, Singapore",
+              "city": "Singapore",
+              "postalCode": "554911",
+              "latlong": {
+                "lon": 103.8,
+                "lat": 1.36667
+              },
+              "latitude": "1.36667",
+              "cityStateZipCode": "Singapore, 554911",
+              "stateCountry": "Singapore",
+              "locationId": "SGP002",
+              "location": "Singapore, Singapore",
+              "state": "",
+              "cityCountry": "Singapore, Singapore",
+              "cityStateCountry": "Singapore, Singapore",
+              "mapQueryLocation": "2 Serangoon North Ave 5, Unit #05-03, Singapore 554911, Singapore",
+              "longitude": "103.8"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Become part of our team as a Product Manager, driving sales and profit targets for IBM Hardware products. Lead business planning, marketing initiatives, and vendor relationships to achieve revenue goals. Ideal for experienced IT distribution professionals with strong leadership and business acumen.",
+          "state": "",
+          "city": "Jakarta",
+          "multi_location": [
+            "Jakarta, Indonesia"
+          ],
+          "country": "Indonesia",
+          "jobId": "R54226",
+          "title": "IBM Product (Hardware)",
+          "jobSeqNo": "TSQTSBUSR54226EXTERNALENUS",
+          "postedDate": "2026-07-27T00:00:00.000+0000",
+          "location": "Jakarta, Indonesia",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Indonesia",
+              "cityState": "Jakarta",
+              "address": "Prudential Centre, Level 10, Unit D - H, Jl. Casablanca Kav. 88, Selatan, Jakarta 12870, Indonesia",
+              "city": "Jakarta",
+              "postalCode": "12870",
+              "latlong": {
+                "lon": 106.84513,
+                "lat": -6.21462
+              },
+              "latitude": "-6.21462",
+              "cityStateZipCode": "Jakarta, 12870",
+              "stateCountry": "Indonesia",
+              "locationId": "ID20G",
+              "location": "Jakarta, Indonesia",
+              "state": "",
+              "cityCountry": "Jakarta, Indonesia",
+              "cityStateCountry": "Jakarta, Indonesia",
+              "mapQueryLocation": "Prudential Centre, Level 10, Unit D - H, Jl. Casablanca Kav. 88, Selatan, Jakarta 12870, Indonesia",
+              "longitude": "106.84513"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are looking for a Regional Business Development Manager to drive business expansion and execution of suppliers' strategies. This role focuses on managing the complete sales cycle, developing key relationships, and ensuring top-class value-added services. Ideal for experienced professionals with a strong background in supplier management and business development.",
+          "state": "",
+          "city": "Mumbai",
+          "multi_location": [
+            "Mumbai, India"
+          ],
+          "country": "India",
+          "jobId": "R54631",
+          "title": "Regional Business Development Manager- West",
+          "jobSeqNo": "TSQTSBUSR54631EXTERNALENUS",
+          "postedDate": "2026-08-06T00:00:00.000+0000",
+          "location": "Mumbai, India",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Mumbai",
+              "address": "A-301. 3rd Floor. Supreme Business Park, Hiranandani Garden, Powai, Mumbai- 400 076, India",
+              "city": "Mumbai",
+              "postalCode": "400 076",
+              "latlong": {
+                "lon": 72.88261,
+                "lat": 19.07283
+              },
+              "latitude": "19.07283",
+              "cityStateZipCode": "Mumbai, 400 076",
+              "stateCountry": "India",
+              "locationId": "IN11D",
+              "location": "Mumbai, India",
+              "state": "",
+              "cityCountry": "Mumbai, India",
+              "cityStateCountry": "Mumbai, India",
+              "mapQueryLocation": "A-301. 3rd Floor. Supreme Business Park, Hiranandani Garden, Powai, Mumbai- 400 076, India",
+              "longitude": "72.88261"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are looking for a Senior SAP Business Intelligence Technical Lead to design, develop, and optimise BI solutions across the organisation. You will collaborate with stakeholders to deliver scalable, high-quality solutions and provide technical guidance. Ideal candidates bring extensive SAP BI experience and strong technical expertise.",
+          "state": "Masovian",
+          "city": "Warsaw",
+          "multi_location": [
+            "Warsaw, Masovian, Poland",
+            "Zagreb, Grad Zagreb, Croatia",
+            "Lisboa, Lisbon, Portugal",
+            "Milano, Milano, Italy",
+            "Alcobendas, Madrid, Spain",
+            "Barcelona, Barcelona, Spain",
+            "Bucharest, Romania",
+            "Belgrade, Serbia"
+          ],
+          "country": "Poland",
+          "jobId": "R49708",
+          "title": "Senior SAP Business Intelligence or SAP Business Intelligence Technical Lead (m/f/d)",
+          "jobSeqNo": "TSQTSBUSR49708EXTERNALENUS",
+          "postedDate": "2026-07-30T00:00:00.000+0000",
+          "location": "Warsaw, Masovian, Poland",
+          "category": "IT",
+          "multi_location_array": [
+            {
+              "country": "Poland",
+              "cityState": "Warsaw, Masovian",
+              "address": "Aleje Jerozolimskie 212, 02-486 Warsaw, Masovian, Poland",
+              "city": "Warsaw",
+              "postalCode": "02-486",
+              "latlong": {
+                "lon": 21.01178,
+                "lat": 52.22977
+              },
+              "latitude": "52.22977",
+              "cityStateZipCode": "Warsaw, Masovian, 02-486",
+              "stateCountry": "Masovian, Poland",
+              "locationId": "PL01",
+              "location": "Warsaw, Masovian, Poland",
+              "state": "Masovian",
+              "cityCountry": "Warsaw, Poland",
+              "cityStateCountry": "Warsaw, Masovian, Poland",
+              "mapQueryLocation": "Aleje Jerozolimskie 212, 02-486 Warsaw, Masovian, Poland",
+              "longitude": "21.01178"
+            },
+            {
+              "country": "Croatia",
+              "cityState": "Zagreb, Grad Zagreb",
+              "address": "Ore\u0161kovi\u0107eva ulica, 6H/1, 10010 Zagreb, Grad Zagreb, Croatia",
+              "city": "Zagreb",
+              "postalCode": "10010",
+              "latlong": {
+                "lon": 15.97798,
+                "lat": 45.81444
+              },
+              "latitude": "45.81444",
+              "cityStateZipCode": "Zagreb, Grad Zagreb, 10010",
+              "stateCountry": "Grad Zagreb, Croatia",
+              "locationId": "HR02",
+              "location": "Zagreb, Grad Zagreb, Croatia",
+              "state": "Grad Zagreb",
+              "cityCountry": "Zagreb, Croatia",
+              "cityStateCountry": "Zagreb, Grad Zagreb, Croatia",
+              "mapQueryLocation": "Ore\u0161kovi\u0107eva ulica, 6H/1, 10010 Zagreb, Grad Zagreb, Croatia",
+              "longitude": "15.97798"
+            },
+            {
+              "country": "Portugal",
+              "cityState": "Lisboa, Lisbon",
+              "address": "Av. D. Jo\u00e3o II, 52, Piso 1 Ala A, 1998-014 Lisboa, Lisbon, Portugal",
+              "city": "Lisboa",
+              "postalCode": "1998-014",
+              "latlong": {
+                "lon": -9.13333,
+                "lat": 38.71667
+              },
+              "latitude": "38.71667",
+              "cityStateZipCode": "Lisboa, Lisbon, 1998-014",
+              "stateCountry": "Lisbon, Portugal",
+              "locationId": "PT01",
+              "location": "Lisboa, Lisbon, Portugal",
+              "state": "Lisbon",
+              "cityCountry": "Lisboa, Portugal",
+              "cityStateCountry": "Lisboa, Lisbon, Portugal",
+              "mapQueryLocation": "Av. D. Jo\u00e3o II, 52, Piso 1 Ala A, 1998-014 Lisboa, Lisbon, Portugal",
+              "longitude": "-9.13333"
+            },
+            {
+              "country": "Italy",
+              "cityState": "Milano, Milano",
+              "address": "Via Luigi Russolo, 7/9, 20138 Milano MI, Italy",
+              "city": "Milano",
+              "postalCode": "20138",
+              "latlong": {
+                "lon": 9.18951,
+                "lat": 45.46427
+              },
+              "latitude": "45.46427",
+              "cityStateZipCode": "Milano, Milano, 20138",
+              "stateCountry": "Milano, Italy",
+              "locationId": "IT03",
+              "location": "Milano, Milano, Italy",
+              "state": "Milano",
+              "cityCountry": "Milano, Italy",
+              "cityStateCountry": "Milano, Milano, Italy",
+              "mapQueryLocation": "Via Luigi Russolo, 7/9, 20138 Milano MI, Italy",
+              "longitude": "9.18951"
+            },
+            {
+              "country": "Spain",
+              "cityState": "Alcobendas, Madrid",
+              "address": "Av. De la Vega, 15 1, 3a Planta, 28108 Alcobendas, Madrid, Spain",
+              "city": "Alcobendas",
+              "postalCode": "28108",
+              "latlong": {
+                "lon": -3.64197,
+                "lat": 40.54746
+              },
+              "latitude": "40.54746",
+              "cityStateZipCode": "Alcobendas, Madrid, 28108",
+              "stateCountry": "Madrid, Spain",
+              "locationId": "ES07",
+              "location": "Alcobendas, Madrid, Spain",
+              "state": "Madrid",
+              "cityCountry": "Alcobendas, Spain",
+              "cityStateCountry": "Alcobendas, Madrid, Spain",
+              "mapQueryLocation": "Av. De la Vega, 15 1, 3a Planta, 28108 Alcobendas, Madrid, Spain",
+              "longitude": "-3.64197"
+            },
+            {
+              "country": "Spain",
+              "cityState": "Barcelona, Barcelona",
+              "address": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "city": "Barcelona",
+              "postalCode": "08038",
+              "latlong": {
+                "lon": -35.92639,
+                "lat": -5.95056
+              },
+              "latitude": "-5.95056",
+              "cityStateZipCode": "Barcelona, Barcelona, 08038",
+              "stateCountry": "Barcelona, Spain",
+              "locationId": "ES06",
+              "location": "Barcelona, Barcelona, Spain",
+              "state": "Barcelona",
+              "cityCountry": "Barcelona, Spain",
+              "cityStateCountry": "Barcelona, Barcelona, Spain",
+              "mapQueryLocation": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "longitude": "-35.92639"
+            },
+            {
+              "country": "Romania",
+              "cityState": "Bucharest",
+              "address": "175 Calea Floreasca Floreasca Tower, Bldg. et. 8, 014459 Bucharest, Romania",
+              "city": "Bucharest",
+              "postalCode": "014459",
+              "latlong": {
+                "lon": 26.10626,
+                "lat": 44.43225
+              },
+              "latitude": "44.43225",
+              "cityStateZipCode": "Bucharest, 014459",
+              "stateCountry": "Romania",
+              "locationId": "RO03",
+              "location": "Bucharest, Romania",
+              "state": "",
+              "cityCountry": "Bucharest, Romania",
+              "cityStateCountry": "Bucharest, Romania",
+              "mapQueryLocation": "175 Calea Floreasca Floreasca Tower, Bldg. et. 8, 014459 Bucharest, Romania",
+              "longitude": "26.10626"
+            },
+            {
+              "country": "Serbia",
+              "cityState": "Belgrade",
+              "address": "Milutina Milankovica 9\u017e, 11070 Belgrade, Serbia",
+              "city": "Belgrade",
+              "postalCode": "11070",
+              "latlong": {
+                "lon": 20.46513,
+                "lat": 44.80401
+              },
+              "latitude": "44.80401",
+              "cityStateZipCode": "Belgrade, 11070",
+              "stateCountry": "Serbia",
+              "locationId": "SR01",
+              "location": "Belgrade, Serbia",
+              "state": "",
+              "cityCountry": "Belgrade, Serbia",
+              "cityStateCountry": "Belgrade, Serbia",
+              "mapQueryLocation": "Milutina Milankovica 9\u017e, 11070 Belgrade, Serbia",
+              "longitude": "20.46513"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Join us as a Program Manager in Infra/Networking/Security, where you will lead marketing campaigns and support sales initiatives. Drive end-to-end event execution and provide guidance to junior team members. Ideal for candidates with significant experience in marketing, sales, and digital channels.",
+          "state": "",
+          "city": "Mumbai",
+          "multi_location": [
+            "Mumbai, India"
+          ],
+          "country": "India",
+          "jobId": "R54191",
+          "title": "Program Manager- Infra/Networking/Security",
+          "jobSeqNo": "TSQTSBUSR54191EXTERNALENUS",
+          "postedDate": "2026-07-21T00:00:00.000+0000",
+          "location": "Mumbai, India",
+          "category": "Marketing and Communications",
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Mumbai",
+              "address": "A-301. 3rd Floor. Supreme Business Park, Hiranandani Garden, Powai, Mumbai- 400 076, India",
+              "city": "Mumbai",
+              "postalCode": "400 076",
+              "latlong": {
+                "lon": 72.88261,
+                "lat": 19.07283
+              },
+              "latitude": "19.07283",
+              "cityStateZipCode": "Mumbai, 400 076",
+              "stateCountry": "India",
+              "locationId": "IN11D",
+              "location": "Mumbai, India",
+              "state": "",
+              "cityCountry": "Mumbai, India",
+              "cityStateCountry": "Mumbai, India",
+              "mapQueryLocation": "A-301. 3rd Floor. Supreme Business Park, Hiranandani Garden, Powai, Mumbai- 400 076, India",
+              "longitude": "72.88261"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Become part of our team as a Security Category Manager, supporting our Security Vendor portfolio in Italy. Oversee vendor operations, maintain product and pricing data, and collaborate with cross-functional teams. Ideal for candidates with experience in category management or product support, strong analytical skills, and proficiency in SAP.",
+          "state": "Milano",
+          "city": "Milano",
+          "multi_location": [
+            "Milano, Milano, Italy"
+          ],
+          "country": "Italy",
+          "jobId": "R54285",
+          "title": "Security Category Manager",
+          "jobSeqNo": "TSQTSBUSR54285EXTERNALENUS",
+          "postedDate": "2026-08-04T00:00:00.000+0000",
+          "location": "Milano, Milano, Italy",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Italy",
+              "cityState": "Milano, Milano",
+              "address": "Via Luigi Russolo, 7/9, 20138 Milano MI, Italy",
+              "city": "Milano",
+              "postalCode": "20138",
+              "latlong": {
+                "lon": 9.18951,
+                "lat": 45.46427
+              },
+              "latitude": "45.46427",
+              "cityStateZipCode": "Milano, Milano, 20138",
+              "stateCountry": "Milano, Italy",
+              "locationId": "IT03",
+              "location": "Milano, Milano, Italy",
+              "state": "Milano",
+              "cityCountry": "Milano, Italy",
+              "cityStateCountry": "Milano, Milano, Italy",
+              "mapQueryLocation": "Via Luigi Russolo, 7/9, 20138 Milano MI, Italy",
+              "longitude": "9.18951"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Become part of our team as a Business Development Manager, driving HPE Networking portfolio growth and executing strategic business plans. Lead vendor management, optimise sales results, and engage customers across multiple channels. Ideal for experienced IT professionals with strong networking expertise and a background in business development.",
+          "state": "Milano",
+          "city": "Milano",
+          "multi_location": [
+            "Milano, Milano, Italy"
+          ],
+          "country": "Italy",
+          "jobId": "R53972",
+          "title": "Business Development Manager - HPE",
+          "jobSeqNo": "TSQTSBUSR53972EXTERNALENUS",
+          "postedDate": "2026-07-23T00:00:00.000+0000",
+          "location": "Milano, Milano, Italy",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Italy",
+              "cityState": "Milano, Milano",
+              "address": "Via Luigi Russolo, 7/9, 20138 Milano MI, Italy",
+              "city": "Milano",
+              "postalCode": "20138",
+              "latlong": {
+                "lon": 9.18951,
+                "lat": 45.46427
+              },
+              "latitude": "45.46427",
+              "cityStateZipCode": "Milano, Milano, 20138",
+              "stateCountry": "Milano, Italy",
+              "locationId": "IT03",
+              "location": "Milano, Milano, Italy",
+              "state": "Milano",
+              "cityCountry": "Milano, Italy",
+              "cityStateCountry": "Milano, Milano, Italy",
+              "mapQueryLocation": "Via Luigi Russolo, 7/9, 20138 Milano MI, Italy",
+              "longitude": "9.18951"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Take on the role of Internal Sales Specialist (AWS) and drive business growth by managing customer and vendor relationships, generating new opportunities, and achieving revenue targets. Ideal for candidates with strong sales acumen and experience in IT systems, particularly in quotation and CRM.",
+          "state": "Barcelona",
+          "city": "Barcelona",
+          "multi_location": [
+            "Barcelona, Barcelona, Spain"
+          ],
+          "country": "Spain",
+          "jobId": "R54139",
+          "title": "Internal Sales Specialist (AWS) - French",
+          "jobSeqNo": "TSQTSBUSR54139EXTERNALENUS",
+          "postedDate": "2026-07-30T00:00:00.000+0000",
+          "location": "Barcelona, Barcelona, Spain",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Spain",
+              "cityState": "Barcelona, Barcelona",
+              "address": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "city": "Barcelona",
+              "postalCode": "08038",
+              "latlong": {
+                "lon": -35.92639,
+                "lat": -5.95056
+              },
+              "latitude": "-5.95056",
+              "cityStateZipCode": "Barcelona, Barcelona, 08038",
+              "stateCountry": "Barcelona, Spain",
+              "locationId": "ES06",
+              "location": "Barcelona, Barcelona, Spain",
+              "state": "Barcelona",
+              "cityCountry": "Barcelona, Spain",
+              "cityStateCountry": "Barcelona, Barcelona, Spain",
+              "mapQueryLocation": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "longitude": "-35.92639"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are currently hiring a SAP Basis Administrator to manage and maintain SAP systems, including ECC, S/4, and CRM. You will handle system setup, troubleshooting, and performance monitoring. Ideal candidates bring extensive SAP administration experience and strong technical expertise.",
+          "state": "Tamil N\u0101du",
+          "city": "Chennai, Tamil Nadu",
+          "multi_location": [
+            "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+            "Remote, India"
+          ],
+          "country": "India",
+          "jobId": "R53936",
+          "title": "SAP Basis Administrator",
+          "jobSeqNo": "TSQTSBUSR53936EXTERNALENUS",
+          "postedDate": "2026-07-17T00:00:00.000+0000",
+          "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+          "category": "IT",
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Chennai, Tamil Nadu, Tamil N\u0101du",
+              "address": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "city": "Chennai, Tamil Nadu",
+              "postalCode": "600032",
+              "latlong": {
+                "lon": 80.23333,
+                "lat": 13.06667
+              },
+              "latitude": "13.06667",
+              "cityStateZipCode": "Chennai, Tamil Nadu, Tamil N\u0101du, 600032",
+              "stateCountry": "Tamil N\u0101du, India",
+              "locationId": "IN19Y",
+              "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "state": "Tamil N\u0101du",
+              "cityCountry": "Chennai, Tamil Nadu, India",
+              "cityStateCountry": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "mapQueryLocation": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "longitude": "80.23333"
+            },
+            {
+              "country": "India",
+              "cityState": "Remote",
+              "address": "N/A, Remote- 0, India",
+              "city": "Remote",
+              "postalCode": "0",
+              "latlong": {
+                "lon": 79.00000000000001,
+                "lat": 22.000000000000004
+              },
+              "latitude": "22.0",
+              "cityStateZipCode": "Remote, 0",
+              "stateCountry": "India",
+              "locationId": "IN99",
+              "location": "Remote, India",
+              "state": "",
+              "cityCountry": "Remote, India",
+              "cityStateCountry": "Remote, India",
+              "mapQueryLocation": "N/A, Remote- 0, India",
+              "longitude": "79.0"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Take on the role of Inside Sales, focusing on driving sales of resold services and supporting clients. Engage with end users, channel partners, and vendors to address their needs. Ideal for candidates with at least one year of inside sales or IT industry experience and strong communication skills.",
+          "state": "Tokyo",
+          "city": "Minato-ku",
+          "multi_location": [
+            "Minato-ku, Tokyo, Japan",
+            "Tokyo, Tokyo, Japan"
+          ],
+          "country": "Japan",
+          "jobId": "R53825",
+          "title": "\u5185\u52e4\u55b6\u696d Inside Sales",
+          "jobSeqNo": "TSQTSBUSR53825EXTERNALENUS",
+          "postedDate": "2026-07-29T00:00:00.000+0000",
+          "location": "Minato-ku, Tokyo, Japan",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Japan",
+              "cityState": "Minato-ku, Tokyo",
+              "address": "msb Tamachi-Tamachi Station Tower N, 21F, 3-1-1 Shibaura, Minato-ku, Tokyo, 1080023, Japan",
+              "city": "Minato-ku",
+              "postalCode": "1080023",
+              "latlong": {
+                "lon": 139.7496359,
+                "lat": 35.6458841
+              },
+              "latitude": "35.6458841",
+              "cityStateZipCode": "Minato-ku, Tokyo, 1080023",
+              "stateCountry": "Tokyo, Japan",
+              "locationId": "SNX-JP-TO-8004",
+              "location": "Minato-ku, Tokyo, Japan",
+              "state": "Tokyo",
+              "cityCountry": "Minato-ku, Japan",
+              "cityStateCountry": "Minato-ku, Tokyo, Japan",
+              "mapQueryLocation": "msb Tamachi-Tamachi Station Tower N, 21F, 3-1-1 Shibaura, Minato-ku, Tokyo, 1080023, Japan",
+              "longitude": "139.7496359"
+            },
+            {
+              "country": "Japan",
+              "cityState": "Tokyo, Tokyo",
+              "address": "6-3-1 Toyo, Tokyo, Tokyo, 1358559, Japan",
+              "city": "Tokyo",
+              "postalCode": "1358559",
+              "latlong": {
+                "lon": 139.69171,
+                "lat": 35.6895
+              },
+              "latitude": "35.6895",
+              "cityStateZipCode": "Tokyo, Tokyo, 1358559",
+              "stateCountry": "Tokyo, Japan",
+              "locationId": "SNX-JP-TO-8005",
+              "location": "Tokyo, Tokyo, Japan",
+              "state": "Tokyo",
+              "cityCountry": "Tokyo, Japan",
+              "cityStateCountry": "Tokyo, Tokyo, Japan",
+              "mapQueryLocation": "6-3-1 Toyo, Tokyo, Tokyo, 1358559, Japan",
+              "longitude": "139.69171"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Become part of our team as a Product Executive, driving sales and profit targets for Tech Data and vendor product groups. Lead marketing and sales enablement initiatives, develop business plans, and foster strong vendor relationships. Ideal for candidates with significant IT distribution experience and strong leadership skills.",
+          "state": "",
+          "city": "Singapore",
+          "multi_location": [
+            "Singapore, Singapore"
+          ],
+          "country": "Singapore",
+          "jobId": "R54817",
+          "title": "Product Executive (Fortinet & CyberReason)",
+          "jobSeqNo": "TSQTSBUSR54817EXTERNALENUS",
+          "postedDate": "2026-08-05T00:00:00.000+0000",
+          "location": "Singapore, Singapore",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Singapore",
+              "cityState": "Singapore",
+              "address": "2 Serangoon North Ave 5, Unit #05-03, Singapore 554911, Singapore",
+              "city": "Singapore",
+              "postalCode": "554911",
+              "latlong": {
+                "lon": 103.8,
+                "lat": 1.36667
+              },
+              "latitude": "1.36667",
+              "cityStateZipCode": "Singapore, 554911",
+              "stateCountry": "Singapore",
+              "locationId": "SGP002",
+              "location": "Singapore, Singapore",
+              "state": "",
+              "cityCountry": "Singapore, Singapore",
+              "cityStateCountry": "Singapore, Singapore",
+              "mapQueryLocation": "2 Serangoon North Ave 5, Unit #05-03, Singapore 554911, Singapore",
+              "longitude": "103.8"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are recruiting a Business Development Manager to drive business growth and execute supplier strategies within the assigned market. Manage the sales cycle, build strong relationships with stakeholders, and identify new business opportunities. Ideal for experienced professionals in business development or IT solutions sales with strong relationship management skills.",
+          "state": "H\u00e0 N\u1ed9i",
+          "city": "Cau Giay District",
+          "multi_location": [
+            "Cau Giay District, H\u00e0 N\u1ed9i, Vietnam"
+          ],
+          "country": "Vietnam",
+          "jobId": "R53956",
+          "title": "Business Development Manager - NextGen",
+          "jobSeqNo": "TSQTSBUSR53956EXTERNALENUS",
+          "postedDate": "2026-07-21T00:00:00.000+0000",
+          "location": "Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Vietnam",
+              "cityState": "Cau Giay District, H\u00e0 N\u1ed9i",
+              "address": "Floor 3, IDMC Duy Tan Building, No. 21 Duy Tan road, Dich Vong Hau ward, Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+              "city": "Cau Giay District",
+              "postalCode": "",
+              "latlong": {
+                "lon": 105.7816099,
+                "lat": 21.0308245
+              },
+              "latitude": "21.0308245",
+              "cityStateZipCode": "Cau Giay District, H\u00e0 N\u1ed9i",
+              "stateCountry": "H\u00e0 N\u1ed9i, Vietnam",
+              "locationId": "VN20V",
+              "location": "Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+              "state": "H\u00e0 N\u1ed9i",
+              "cityCountry": "Cau Giay District, Vietnam",
+              "cityStateCountry": "Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+              "mapQueryLocation": "Floor 3, IDMC Duy Tan Building, No. 21 Duy Tan road, Dich Vong Hau ward, Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+              "longitude": "105.7816099"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Take on the role of Pre-Sales Consultant \u2013 Automation, Hybrid Cloud, Security & Data Analytics, providing technical consultancy and solution design for automation, hybrid cloud, security, analytics, and AI solutions. Engage with customers to identify requirements and deliver tailored solutions. Ideal for candidates with strong technical expertise in these areas and experience in pre-sales consulting.",
+          "state": "Selangor",
+          "city": "Petaling Jaya",
+          "multi_location": [
+            "Petaling Jaya, Selangor, Malaysia"
+          ],
+          "country": "Malaysia",
+          "jobId": "R54642",
+          "title": "Solution Architect - IBM",
+          "jobSeqNo": "TSQTSBUSR54642EXTERNALENUS",
+          "postedDate": "2026-08-11T00:00:00.000+0000",
+          "location": "Petaling Jaya, Selangor, Malaysia",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Malaysia",
+              "cityState": "Petaling Jaya, Selangor",
+              "address": "6th Floor, Wisma Prosper, No.3, Jalan SS7/19, Kelana Jaya, 47301 Petaling Jaya, Selangor, Malaysia",
+              "city": "Petaling Jaya",
+              "postalCode": "47301",
+              "latlong": {
+                "lon": 101.60671,
+                "lat": 3.10726
+              },
+              "latitude": "3.10726",
+              "cityStateZipCode": "Petaling Jaya, Selangor, 47301",
+              "stateCountry": "Selangor, Malaysia",
+              "locationId": "MYS001",
+              "location": "Petaling Jaya, Selangor, Malaysia",
+              "state": "Selangor",
+              "cityCountry": "Petaling Jaya, Malaysia",
+              "cityStateCountry": "Petaling Jaya, Selangor, Malaysia",
+              "mapQueryLocation": "6th Floor, Wisma Prosper, No.3, Jalan SS7/19, Kelana Jaya, 47301 Petaling Jaya, Selangor, Malaysia",
+              "longitude": "101.60671"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Become part of our team as a Technical Sales Presales Consultant, supporting the Sales Team with technical demonstrations and qualification discussions for IT solutions. You will assist in qualifying opportunities and deliver product presentations. Ideal for candidates with strong network and security knowledge and experience in networking technologies.",
+          "state": "Pulau Pinang (Penang)",
+          "city": "Gelugor",
+          "multi_location": [
+            "Gelugor, Pulau Pinang (Penang), Malaysia"
+          ],
+          "country": "Malaysia",
+          "jobId": "R50040",
+          "title": "Technical Sales",
+          "jobSeqNo": "TSQTSBUSR50040EXTERNALENUS",
+          "postedDate": "2026-04-17T00:00:00.000+0000",
+          "location": "Gelugor, Pulau Pinang (Penang), Malaysia",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Malaysia",
+              "cityState": "Gelugor, Pulau Pinang (Penang)",
+              "address": "Lebuh Tunku Kudin 2, 1-04-13, eGate, No 1, 0 Gelugor, Pulau Pinang (Penang), Malaysia",
+              "city": "Gelugor",
+              "postalCode": "0",
+              "latlong": {
+                "lon": 100.3153234,
+                "lat": 5.375986
+              },
+              "latitude": "5.375986",
+              "cityStateZipCode": "Gelugor, Pulau Pinang (Penang), 0",
+              "stateCountry": "Pulau Pinang (Penang), Malaysia",
+              "locationId": "MY7G",
+              "location": "Gelugor, Pulau Pinang (Penang), Malaysia",
+              "state": "Pulau Pinang (Penang)",
+              "cityCountry": "Gelugor, Malaysia",
+              "cityStateCountry": "Gelugor, Pulau Pinang (Penang), Malaysia",
+              "mapQueryLocation": "Lebuh Tunku Kudin 2, 1-04-13, eGate, No 1, 0 Gelugor, Pulau Pinang (Penang), Malaysia",
+              "longitude": "100.3153234"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Join our team as a Business Development Manager Services, driving the growth of our services portfolio by engaging with reseller partners and identifying new business opportunities. This customer-facing role suits a commercially driven professional with experience in business development or services sales, ideally with IT reseller or technology partner exposure.",
+          "state": "",
+          "city": "Aalst",
+          "multi_location": [
+            "Aalst, Belgium"
+          ],
+          "country": "Belgium",
+          "jobId": "R54464",
+          "title": "Business Development Manager Services",
+          "jobSeqNo": "TSQTSBUSR54464EXTERNALENUS",
+          "postedDate": "2026-07-29T00:00:00.000+0000",
+          "location": "Aalst, Belgium",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Belgium",
+              "cityState": "Aalst",
+              "address": "Tragel 47, 9300 Aalst, Belgium",
+              "city": "Aalst",
+              "postalCode": "9300",
+              "latlong": {
+                "lon": 4.0355,
+                "lat": 50.93604
+              },
+              "latitude": "50.93604",
+              "cityStateZipCode": "Aalst, 9300",
+              "stateCountry": "Belgium",
+              "locationId": "BE01",
+              "location": "Aalst, Belgium",
+              "state": "",
+              "cityCountry": "Aalst, Belgium",
+              "cityStateCountry": "Aalst, Belgium",
+              "mapQueryLocation": "Tragel 47, 9300 Aalst, Belgium",
+              "longitude": "4.0355"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are recruiting a skilled AI and Cloud Security Analyst to provide L2 coverage of AI security detection, triage, and support for cloud environments. The role involves monitoring security events, analysing telemetry, and producing operational and compliance reports. Ideal for candidates with hands-on security operations experience and strong data analytics skills.",
+          "state": "Tamil N\u0101du",
+          "city": "Chennai, Tamil Nadu",
+          "multi_location": [
+            "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+            "Barcelona, Barcelona, Spain",
+            "San Jose, San Jose, Costa Rica",
+            "Remote, Spain"
+          ],
+          "country": "India",
+          "jobId": "R54076",
+          "title": "AI and Cloud Security Analyst",
+          "jobSeqNo": "TSQTSBUSR54076EXTERNALENUS",
+          "postedDate": "2026-07-22T00:00:00.000+0000",
+          "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+          "category": "IT",
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Chennai, Tamil Nadu, Tamil N\u0101du",
+              "address": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "city": "Chennai, Tamil Nadu",
+              "postalCode": "600032",
+              "latlong": {
+                "lon": 80.23333,
+                "lat": 13.06667
+              },
+              "latitude": "13.06667",
+              "cityStateZipCode": "Chennai, Tamil Nadu, Tamil N\u0101du, 600032",
+              "stateCountry": "Tamil N\u0101du, India",
+              "locationId": "IN19Y",
+              "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "state": "Tamil N\u0101du",
+              "cityCountry": "Chennai, Tamil Nadu, India",
+              "cityStateCountry": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "mapQueryLocation": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "longitude": "80.23333"
+            },
+            {
+              "country": "Spain",
+              "cityState": "Barcelona, Barcelona",
+              "address": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "city": "Barcelona",
+              "postalCode": "08038",
+              "latlong": {
+                "lon": -35.92639,
+                "lat": -5.95056
+              },
+              "latitude": "-5.95056",
+              "cityStateZipCode": "Barcelona, Barcelona, 08038",
+              "stateCountry": "Barcelona, Spain",
+              "locationId": "ES06",
+              "location": "Barcelona, Barcelona, Spain",
+              "state": "Barcelona",
+              "cityCountry": "Barcelona, Spain",
+              "cityStateCountry": "Barcelona, Barcelona, Spain",
+              "mapQueryLocation": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "longitude": "-35.92639"
+            },
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            },
+            {
+              "country": "Spain",
+              "cityState": "Remote",
+              "address": "N/A, 08038 Remote, Spain",
+              "city": "Remote",
+              "postalCode": "08038",
+              "latlong": {
+                "lon": 2.15899,
+                "lat": 41.38879
+              },
+              "latitude": "41.38879",
+              "cityStateZipCode": "Remote, 08038",
+              "stateCountry": "Spain",
+              "locationId": "ES08",
+              "location": "Remote, Spain",
+              "state": "",
+              "cityCountry": "Remote, Spain",
+              "cityStateCountry": "Remote, Spain",
+              "mapQueryLocation": "N/A, 08038 Remote, Spain",
+              "longitude": "2.15899"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Become part of our team as a Product Manager, driving sales and profit targets for the vendor product group. Lead sales enablement initiatives, develop business plans, and foster strong vendor relationships. Ideal for candidates with 3\u20135 years\u2019 relevant experience and a background in IT, Marketing, or Business Studies.",
+          "state": "Selangor",
+          "city": "Petaling Jaya",
+          "multi_location": [
+            "Petaling Jaya, Selangor, Malaysia"
+          ],
+          "country": "Malaysia",
+          "jobId": "R54585",
+          "title": "Product Manager (IBM)",
+          "jobSeqNo": "TSQTSBUSR54585EXTERNALENUS",
+          "postedDate": "2026-08-05T00:00:00.000+0000",
+          "location": "Petaling Jaya, Selangor, Malaysia",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Malaysia",
+              "cityState": "Petaling Jaya, Selangor",
+              "address": "6th Floor, Wisma Prosper, No.3, Jalan SS7/19, Kelana Jaya, 47301 Petaling Jaya, Selangor, Malaysia",
+              "city": "Petaling Jaya",
+              "postalCode": "47301",
+              "latlong": {
+                "lon": 101.60671,
+                "lat": 3.10726
+              },
+              "latitude": "3.10726",
+              "cityStateZipCode": "Petaling Jaya, Selangor, 47301",
+              "stateCountry": "Selangor, Malaysia",
+              "locationId": "MYS001",
+              "location": "Petaling Jaya, Selangor, Malaysia",
+              "state": "Selangor",
+              "cityCountry": "Petaling Jaya, Malaysia",
+              "cityStateCountry": "Petaling Jaya, Selangor, Malaysia",
+              "mapQueryLocation": "6th Floor, Wisma Prosper, No.3, Jalan SS7/19, Kelana Jaya, 47301 Petaling Jaya, Selangor, Malaysia",
+              "longitude": "101.60671"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are recruiting a Technical Presales Consultant \u2013 HPE networking to support partners and sales teams in delivering technical solutions and demonstrations for HPE infrastructure and hybrid cloud technologies. The role involves translating business requirements into technical solutions and guiding customers through the adoption process. Ideal for candidates with technical presales experience and strong knowledge of IT infrastructure.",
+          "state": "",
+          "city": "Bucharest",
+          "multi_location": [
+            "Bucharest, Romania"
+          ],
+          "country": "Romania",
+          "jobId": "R53843",
+          "title": "Technical Presales Consultant - HPE networking",
+          "jobSeqNo": "TSQTSBUSR53843EXTERNALENUS",
+          "postedDate": "2026-07-17T00:00:00.000+0000",
+          "location": "Bucharest, Romania",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Romania",
+              "cityState": "Bucharest",
+              "address": "175 Calea Floreasca Floreasca Tower, Bldg. et. 8, 014459 Bucharest, Romania",
+              "city": "Bucharest",
+              "postalCode": "014459",
+              "latlong": {
+                "lon": 26.10626,
+                "lat": 44.43225
+              },
+              "latitude": "44.43225",
+              "cityStateZipCode": "Bucharest, 014459",
+              "stateCountry": "Romania",
+              "locationId": "RO03",
+              "location": "Bucharest, Romania",
+              "state": "",
+              "cityCountry": "Bucharest, Romania",
+              "cityStateCountry": "Bucharest, Romania",
+              "mapQueryLocation": "175 Calea Floreasca Floreasca Tower, Bldg. et. 8, 014459 Bucharest, Romania",
+              "longitude": "26.10626"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are looking for an Accounts Payable Specialist II to join our team at TD SYNNEX. This role involves managing supplier invoices, vendor reconciliations, and dispute resolutions while supporting process improvements in a hybrid work environment.",
+          "state": "Virginia",
+          "city": "Herndon",
+          "multi_location": [
+            "Herndon, Virginia, United States of America"
+          ],
+          "country": "United States of America",
+          "jobId": "R54656",
+          "title": "A/P Specialist 2",
+          "jobSeqNo": "TSQTSBUSR54656EXTERNALENUS",
+          "postedDate": "2026-08-12T00:00:00.000+0000",
+          "location": "Herndon, Virginia, United States of America",
+          "category": "Finance and Accounting",
+          "multi_location_array": [
+            {
+              "country": "United States of America",
+              "cityState": "Herndon, Virginia",
+              "address": "2411 Dulles Corner Park, Suite 800, Herndon, VA 20171, United States of America",
+              "city": "Herndon",
+              "postalCode": "20171",
+              "latlong": {
+                "lon": -77.3861,
+                "lat": 38.96955
+              },
+              "latitude": "38.96955",
+              "cityStateZipCode": "Herndon, Virginia, 20171",
+              "stateCountry": "Virginia, United States of America",
+              "locationId": "TDS-US-VA-6982",
+              "location": "Herndon, Virginia, United States of America",
+              "state": "Virginia",
+              "cityCountry": "Herndon, United States of America",
+              "cityStateCountry": "Herndon, Virginia, United States of America",
+              "mapQueryLocation": "2411 Dulles Corner Park, Suite 800, Herndon, VA 20171, United States of America",
+              "longitude": "-77.3861"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Join our team as a Product Manager, where you will drive sales and profit targets for IBM Software products, focusing on sales enablement and vendor relationships. Lead business planning and marketing initiatives, ensuring effective team support. Ideal for candidates with significant IT distribution experience and strong leadership skills.",
+          "state": "",
+          "city": "Jakarta",
+          "multi_location": [
+            "Jakarta, Indonesia"
+          ],
+          "country": "Indonesia",
+          "jobId": "R54227",
+          "title": "IBM Product (Software)",
+          "jobSeqNo": "TSQTSBUSR54227EXTERNALENUS",
+          "postedDate": "2026-07-27T00:00:00.000+0000",
+          "location": "Jakarta, Indonesia",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Indonesia",
+              "cityState": "Jakarta",
+              "address": "Prudential Centre, Level 10, Unit D - H, Jl. Casablanca Kav. 88, Selatan, Jakarta 12870, Indonesia",
+              "city": "Jakarta",
+              "postalCode": "12870",
+              "latlong": {
+                "lon": 106.84513,
+                "lat": -6.21462
+              },
+              "latitude": "-6.21462",
+              "cityStateZipCode": "Jakarta, 12870",
+              "stateCountry": "Indonesia",
+              "locationId": "ID20G",
+              "location": "Jakarta, Indonesia",
+              "state": "",
+              "cityCountry": "Jakarta, Indonesia",
+              "cityStateCountry": "Jakarta, Indonesia",
+              "mapQueryLocation": "Prudential Centre, Level 10, Unit D - H, Jl. Casablanca Kav. 88, Selatan, Jakarta 12870, Indonesia",
+              "longitude": "106.84513"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are currently hiring a Pre-Sales Consultant (Endpoint solutions) to provide technical support and deliver product demonstrations to customers and prospects. You will assist with qualification discussions and technical proof of concepts. Ideal candidates have strong knowledge of desktops, laptops, and endpoint security solutions.",
+          "state": "",
+          "city": "Jakarta",
+          "multi_location": [
+            "Jakarta, Indonesia"
+          ],
+          "country": "Indonesia",
+          "jobId": "R45807",
+          "title": "Pre-Sales Consultant (Endpoint solutions)",
+          "jobSeqNo": "TSQTSBUSR45807EXTERNALENUS",
+          "postedDate": "2025-12-22T00:00:00.000+0000",
+          "location": "Jakarta, Indonesia",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Indonesia",
+              "cityState": "Jakarta",
+              "address": "Prudential Centre, Level 10, Unit D - H, Jl. Casablanca Kav. 88, Selatan, Jakarta 12870, Indonesia",
+              "city": "Jakarta",
+              "postalCode": "12870",
+              "latlong": {
+                "lon": 106.84513,
+                "lat": -6.21462
+              },
+              "latitude": "-6.21462",
+              "cityStateZipCode": "Jakarta, 12870",
+              "stateCountry": "Indonesia",
+              "locationId": "ID20G",
+              "location": "Jakarta, Indonesia",
+              "state": "",
+              "cityCountry": "Jakarta, Indonesia",
+              "cityStateCountry": "Jakarta, Indonesia",
+              "mapQueryLocation": "Prudential Centre, Level 10, Unit D - H, Jl. Casablanca Kav. 88, Selatan, Jakarta 12870, Indonesia",
+              "longitude": "106.84513"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Become part of our team as a Senior Accountant, leading month-end closings and managing General Ledger activities for a European region. Oversee financial processes, support junior colleagues, and drive process improvements. Ideal for candidates with strong accounting expertise, advanced Excel skills, and experience with SAP.",
+          "state": "Barcelona",
+          "city": "Barcelona",
+          "multi_location": [
+            "Barcelona, Barcelona, Spain"
+          ],
+          "country": "Spain",
+          "jobId": "R49665",
+          "title": "Senior Accountant",
+          "jobSeqNo": "TSQTSBUSR49665EXTERNALENUS",
+          "postedDate": "2026-08-03T00:00:00.000+0000",
+          "location": "Barcelona, Barcelona, Spain",
+          "category": "Finance and Accounting",
+          "multi_location_array": [
+            {
+              "country": "Spain",
+              "cityState": "Barcelona, Barcelona",
+              "address": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "city": "Barcelona",
+              "postalCode": "08038",
+              "latlong": {
+                "lon": -35.92639,
+                "lat": -5.95056
+              },
+              "latitude": "-5.95056",
+              "cityStateZipCode": "Barcelona, Barcelona, 08038",
+              "stateCountry": "Barcelona, Spain",
+              "locationId": "ES06",
+              "location": "Barcelona, Barcelona, Spain",
+              "state": "Barcelona",
+              "cityCountry": "Barcelona, Spain",
+              "cityStateCountry": "Barcelona, Barcelona, Spain",
+              "mapQueryLocation": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "longitude": "-35.92639"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are looking for a Full Stack Developer to design, build, and maintain integrated business applications. You will analyse requirements, develop solutions, and ensure compliance with architectural standards. Ideal candidates have 3\u20135 years\u2019 experience and a background in Computer Science or MIS.",
+          "state": "Tamil N\u0101du",
+          "city": "Chennai, Tamil Nadu",
+          "multi_location": [
+            "Chennai, Tamil Nadu, Tamil N\u0101du, India"
+          ],
+          "country": "India",
+          "jobId": "R49701",
+          "title": "Full Stack Developer",
+          "jobSeqNo": "TSQTSBUSR49701EXTERNALENUS",
+          "postedDate": "2026-04-13T00:00:00.000+0000",
+          "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+          "category": "IT",
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Chennai, Tamil Nadu, Tamil N\u0101du",
+              "address": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "city": "Chennai, Tamil Nadu",
+              "postalCode": "600032",
+              "latlong": {
+                "lon": 80.23333,
+                "lat": 13.06667
+              },
+              "latitude": "13.06667",
+              "cityStateZipCode": "Chennai, Tamil Nadu, Tamil N\u0101du, 600032",
+              "stateCountry": "Tamil N\u0101du, India",
+              "locationId": "IN19Y",
+              "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "state": "Tamil N\u0101du",
+              "cityCountry": "Chennai, Tamil Nadu, India",
+              "cityStateCountry": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "mapQueryLocation": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "longitude": "80.23333"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Seeking an Incentive Compensation Operations Analyst to manage incentive plans across the Asia Pacific and Japan region. Key responsibilities include coordinating incentive plan setups, supporting payout processes, and ensuring compliance with compensation policies. Ideal for candidates with strong analytical skills and experience in finance or business economics.",
+          "state": "",
+          "city": "",
+          "multi_location": [],
+          "country": "",
+          "jobId": "R39913",
+          "title": "Incentive Compensation Operation Analyst",
+          "jobSeqNo": "TSQTSBUSR39913EXTERNALENUS",
+          "postedDate": "2025-05-14T00:00:00.000+0000",
+          "location": "",
+          "category": "Finance and Accounting",
+          "multi_location_array": []
+        },
+        {
+          "descriptionTeaser": "We are expanding our team: Take on a key role in executive billing and logistics, supporting daily warehouse and shipping operations. Oversee inventory management and ensure shipment accuracy. Ideal for candidates with logistics experience and strong organisational skills.",
+          "state": "",
+          "city": "Pune",
+          "multi_location": [
+            "Pune, India"
+          ],
+          "country": "India",
+          "jobId": "R39926",
+          "title": "Executive Billing and logistics",
+          "jobSeqNo": "TSQTSBUSR39926EXTERNALENUS",
+          "postedDate": "2025-05-14T00:00:00.000+0000",
+          "location": "Pune, India",
+          "category": "Warehouse, Technicians, Operations, and Procurement",
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Pune",
+              "address": "3rd floor, Survey No. 25 A/1, 25 C, CTS. No. 31, Plot No. 38, Wakdewadi, Pune- 411003, India",
+              "city": "Pune",
+              "postalCode": "411003",
+              "latlong": {
+                "lon": 73.85535,
+                "lat": 18.51957
+              },
+              "latitude": "18.51957",
+              "cityStateZipCode": "Pune, 411003",
+              "stateCountry": "India",
+              "locationId": "LOCATION-3-803",
+              "location": "Pune, India",
+              "state": "",
+              "cityCountry": "Pune, India",
+              "cityStateCountry": "Pune, India",
+              "mapQueryLocation": "3rd floor, Survey No. 25 A/1, 25 C, CTS. No. 31, Plot No. 38, Wakdewadi, Pune- 411003, India",
+              "longitude": "73.85535"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Become part of our team as an Inside Sales Specialist, driving sales of resold services and supporting clients with renewals and product support. Engage directly with customers and partners, ensuring timely invoicing and meeting sales targets. Ideal for candidates with at least one year of inside sales or IT industry experience and strong communication skills.",
+          "state": "",
+          "city": "",
+          "multi_location": [],
+          "country": "",
+          "jobId": "R35872",
+          "title": "Inside Sales Specialist",
+          "jobSeqNo": "TSQTSBUSR35872EXTERNALENUS",
+          "postedDate": "2024-12-09T00:00:00.000+0000",
+          "location": "",
+          "category": "Sales and Business Development",
+          "multi_location_array": []
+        },
+        {
+          "descriptionTeaser": "We are currently hiring a Inside Account Manager to manage daily engagement with assigned accounts, driving revenue and margin growth through strategic, consultative sales. The role focuses on account management and pipeline development, ideal for candidates with proven B2B sales experience and strong CRM proficiency.",
+          "state": "San Jose",
+          "city": "San Jose",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "country": "Costa Rica",
+          "jobId": "R40170",
+          "title": "Inside Account Manager",
+          "jobSeqNo": "TSQTSBUSR40170EXTERNALENUS",
+          "postedDate": "2025-10-08T00:00:00.000+0000",
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Take on the role of Software Engineer to design and develop enterprise-grade AI applications, integrating advanced LLM technologies into business scenarios. Lead RAG system development and model service middleware, while mentoring junior developers. Ideal for candidates with strong Python expertise and experience in AI application delivery.",
+          "state": "Sichuan",
+          "city": "Chengdu",
+          "multi_location": [
+            "Chengdu, Sichuan, China"
+          ],
+          "country": "China",
+          "jobId": "R48648",
+          "title": "Software Engineer",
+          "jobSeqNo": "TSQTSBUSR48648EXTERNALENUS",
+          "postedDate": "2026-03-09T00:00:00.000+0000",
+          "location": "Chengdu, Sichuan, China",
+          "category": "IT",
+          "multi_location_array": [
+            {
+              "country": "China",
+              "cityState": "Chengdu, Sichuan",
+              "address": "Floor 3, Building A7, Tianfu Software Park, Chengdu, 610041 Sichuan, China",
+              "city": "Chengdu",
+              "postalCode": "610041",
+              "latlong": {
+                "lon": 104.06667,
+                "lat": 30.66667
+              },
+              "latitude": "30.66667",
+              "cityStateZipCode": "Chengdu, Sichuan, 610041",
+              "stateCountry": "Sichuan, China",
+              "locationId": "SNX-CH-CD-0004",
+              "location": "Chengdu, Sichuan, China",
+              "state": "Sichuan",
+              "cityCountry": "Chengdu, China",
+              "cityStateCountry": "Chengdu, Sichuan, China",
+              "mapQueryLocation": "Floor 3, Building A7, Tianfu Software Park, Chengdu, 610041 Sichuan, China",
+              "longitude": "104.06667"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Take on the role of Internal Sales Specialist, where you will manage key accounts, build strong customer and vendor relationships, and drive business growth through proactive sales activities. Ideal for candidates with over three years\u2019 experience in sales, strong relationship-building skills, and a solid understanding of the sales process.",
+          "state": "Barcelona",
+          "city": "Barcelona",
+          "multi_location": [
+            "Barcelona, Barcelona, Spain"
+          ],
+          "country": "Spain",
+          "jobId": "R42012",
+          "title": "Internal Sales Specialist",
+          "jobSeqNo": "TSQTSBUSR42012EXTERNALENUS",
+          "postedDate": "2026-03-04T00:00:00.000+0000",
+          "location": "Barcelona, Barcelona, Spain",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Spain",
+              "cityState": "Barcelona, Barcelona",
+              "address": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "city": "Barcelona",
+              "postalCode": "08038",
+              "latlong": {
+                "lon": -35.92639,
+                "lat": -5.95056
+              },
+              "latitude": "-5.95056",
+              "cityStateZipCode": "Barcelona, Barcelona, 08038",
+              "stateCountry": "Barcelona, Spain",
+              "locationId": "ES06",
+              "location": "Barcelona, Barcelona, Spain",
+              "state": "Barcelona",
+              "cityCountry": "Barcelona, Spain",
+              "cityStateCountry": "Barcelona, Barcelona, Spain",
+              "mapQueryLocation": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "longitude": "-35.92639"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Become part of our team as a Digital Marketing Analyst, leading initiatives to drive digital platform adoption and enablement. Collaborate cross-functionally to design and execute digital campaigns, manage change, and deliver actionable insights. Ideal for candidates with significant experience in digital marketing, change management, and strong content creation skills.",
+          "state": "",
+          "city": "Mumbai",
+          "multi_location": [
+            "Mumbai, India"
+          ],
+          "country": "India",
+          "jobId": "R42259",
+          "title": "Digital Marketing Analyst",
+          "jobSeqNo": "TSQTSBUSR42259EXTERNALENUS",
+          "postedDate": "2025-08-07T00:00:00.000+0000",
+          "location": "Mumbai, India",
+          "category": "IT",
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Mumbai",
+              "address": "A-301. 3rd Floor. Supreme Business Park, Hiranandani Garden, Powai, Mumbai- 400 076, India",
+              "city": "Mumbai",
+              "postalCode": "400 076",
+              "latlong": {
+                "lon": 72.88261,
+                "lat": 19.07283
+              },
+              "latitude": "19.07283",
+              "cityStateZipCode": "Mumbai, 400 076",
+              "stateCountry": "India",
+              "locationId": "IN11D",
+              "location": "Mumbai, India",
+              "state": "",
+              "cityCountry": "Mumbai, India",
+              "cityStateCountry": "Mumbai, India",
+              "mapQueryLocation": "A-301. 3rd Floor. Supreme Business Park, Hiranandani Garden, Powai, Mumbai- 400 076, India",
+              "longitude": "72.88261"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Seeking a Renewable Specialist to drive sales of resold services and renewals, engaging with clients and partners. Responsible for meeting sales targets and managing service documentation. Ideal for candidates with inside sales experience in IT and strong customer orientation.",
+          "state": "Tamil N\u0101du",
+          "city": "Chennai, Tamil Nadu",
+          "multi_location": [
+            "Chennai, Tamil Nadu, Tamil N\u0101du, India"
+          ],
+          "country": "India",
+          "jobId": "R40890",
+          "title": "Renewable Specialist",
+          "jobSeqNo": "TSQTSBUSR40890EXTERNALENUS",
+          "postedDate": "2025-06-20T00:00:00.000+0000",
+          "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Chennai, Tamil Nadu, Tamil N\u0101du",
+              "address": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "city": "Chennai, Tamil Nadu",
+              "postalCode": "600032",
+              "latlong": {
+                "lon": 80.23333,
+                "lat": 13.06667
+              },
+              "latitude": "13.06667",
+              "cityStateZipCode": "Chennai, Tamil Nadu, Tamil N\u0101du, 600032",
+              "stateCountry": "Tamil N\u0101du, India",
+              "locationId": "IN19Y",
+              "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "state": "Tamil N\u0101du",
+              "cityCountry": "Chennai, Tamil Nadu, India",
+              "cityStateCountry": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "mapQueryLocation": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "longitude": "80.23333"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are recruiting a Technical PreSales Consultant (Microsoft) to support vendor solutions and partner base, focusing on defining solutions and projects. Key responsibilities include supporting solution design and providing quality service. Ideal for candidates with experience in Microsoft Azure and Security.",
+          "state": "\u0130stanbul",
+          "city": "Istanbul",
+          "multi_location": [
+            "Istanbul, \u0130stanbul, T\u00fcrkiye"
+          ],
+          "country": "T\u00fcrkiye",
+          "jobId": "R49723",
+          "title": "Technical PreSales Consultant (Microsoft)",
+          "jobSeqNo": "TSQTSBUSR49723EXTERNALENUS",
+          "postedDate": "2026-04-07T00:00:00.000+0000",
+          "location": "Istanbul, \u0130stanbul, T\u00fcrkiye",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "T\u00fcrkiye",
+              "cityState": "Istanbul, \u0130stanbul",
+              "address": "Istanbul, Saray Mahallesi, Site Yolu Sokak, Anel \u0130\u015f Merkezi 5/ Kat:8, 34768 \u0130stanbul, T\u00fcrkiye",
+              "city": "Istanbul",
+              "postalCode": "34768",
+              "latlong": {
+                "lon": 28.94966,
+                "lat": 41.01384
+              },
+              "latitude": "41.01384",
+              "cityStateZipCode": "Istanbul, \u0130stanbul, 34768",
+              "stateCountry": "\u0130stanbul, T\u00fcrkiye",
+              "locationId": "TR02",
+              "location": "Istanbul, \u0130stanbul, T\u00fcrkiye",
+              "state": "\u0130stanbul",
+              "cityCountry": "Istanbul, T\u00fcrkiye",
+              "cityStateCountry": "Istanbul, \u0130stanbul, T\u00fcrkiye",
+              "mapQueryLocation": "Istanbul, Saray Mahallesi, Site Yolu Sokak, Anel \u0130\u015f Merkezi 5/ Kat:8, 34768 \u0130stanbul, T\u00fcrkiye",
+              "longitude": "28.94966"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Take on the role of Business Development Manager - IT Distribution and drive business growth by executing strategic initiatives and engaging key customers. Lead vendor partnerships and collaborate with sales teams to optimise results. Ideal for candidates with strong sales experience and commercial awareness.",
+          "state": "Porto",
+          "city": "Porto",
+          "multi_location": [
+            "Porto, Porto, Portugal"
+          ],
+          "country": "Portugal",
+          "jobId": "R52499",
+          "title": "Business Development Manager - IT Distribution",
+          "jobSeqNo": "TSQTSBUSR52499EXTERNALENUS",
+          "postedDate": "2026-07-10T00:00:00.000+0000",
+          "location": "Porto, Porto, Portugal",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Portugal",
+              "cityState": "Porto, Porto",
+              "address": "Avenida da Boavista, 3265, Piso 7, 4100-137 Porto, Porto, Portugal",
+              "city": "Porto",
+              "postalCode": "4100-137",
+              "latlong": {
+                "lon": -8.61099,
+                "lat": 41.14961
+              },
+              "latitude": "41.14961",
+              "cityStateZipCode": "Porto, Porto, 4100-137",
+              "stateCountry": "Porto, Portugal",
+              "locationId": "PT02",
+              "location": "Porto, Porto, Portugal",
+              "state": "Porto",
+              "cityCountry": "Porto, Portugal",
+              "cityStateCountry": "Porto, Porto, Portugal",
+              "mapQueryLocation": "Avenida da Boavista, 3265, Piso 7, 4100-137 Porto, Porto, Portugal",
+              "longitude": "-8.61099"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "We are expanding our team: As a Solution Sales Specialist, you will drive sales of resold services and support end customers, channel partners, and vendors. This role requires a customer-oriented professional with at least one year of inside sales or IT industry experience and the ability to manage renewals.",
+          "state": "",
+          "city": "",
+          "multi_location": [],
+          "country": "",
+          "jobId": "R40179",
+          "title": "Solution Sales Specialist",
+          "jobSeqNo": "TSQTSBUSR40179EXTERNALENUS",
+          "postedDate": "2025-05-26T00:00:00.000+0000",
+          "location": "",
+          "category": "Sales and Business Development",
+          "multi_location_array": []
+        },
+        {
+          "descriptionTeaser": "Join our team as a Product Manager to drive sales and profit targets for our product suite, focusing on NetApp, Fortinet, HPE, Vertiv, Cohesity, Azure ISV, Cloudera Analytics, Huawei X Fusion, and Lenovo. Lead business planning, sales enablement, and vendor relationships. Ideal for experienced IT distribution professionals with strong leadership and business acumen.",
+          "state": "",
+          "city": "Singapore",
+          "multi_location": [
+            "Singapore, Singapore"
+          ],
+          "country": "Singapore",
+          "jobId": "R44841",
+          "title": "Product Manager",
+          "jobSeqNo": "TSQTSBUSR44841EXTERNALENUS",
+          "postedDate": "2025-11-14T00:00:00.000+0000",
+          "location": "Singapore, Singapore",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Singapore",
+              "cityState": "Singapore",
+              "address": "2 Serangoon North Ave 5, Unit #05-03, Singapore 554911, Singapore",
+              "city": "Singapore",
+              "postalCode": "554911",
+              "latlong": {
+                "lon": 103.8,
+                "lat": 1.36667
+              },
+              "latitude": "1.36667",
+              "cityStateZipCode": "Singapore, 554911",
+              "stateCountry": "Singapore",
+              "locationId": "SGP002",
+              "location": "Singapore, Singapore",
+              "state": "",
+              "cityCountry": "Singapore, Singapore",
+              "cityStateCountry": "Singapore, Singapore",
+              "mapQueryLocation": "2 Serangoon North Ave 5, Unit #05-03, Singapore 554911, Singapore",
+              "longitude": "103.8"
+            }
+          ]
+        },
+        {
+          "descriptionTeaser": "Become part of our team as a Snr Marketing Specialist, driving the development and execution of marketing strategies to support Autodesk\u2019s growth in Malaysia. Oversee online marketing channels, collaborate with regional teams, and optimise digital campaigns. Ideal for experienced marketing professionals with expertise in technology solutions and digital strategy.",
+          "state": "",
+          "city": "",
+          "multi_location": [],
+          "country": "",
+          "jobId": "R47713",
+          "title": "Snr Marketing Specialist",
+          "jobSeqNo": "TSQTSBUSR47713EXTERNALENUS",
+          "postedDate": "2026-02-20T00:00:00.000+0000",
+          "location": "",
+          "category": "Marketing and Communications",
+          "multi_location_array": []
+        },
+        {
+          "descriptionTeaser": "We are looking for a Sales Intern to support vendor coordination and product learning, while assisting in sales execution and business development. Ideal for recent graduates with a strong interest in B2B sales and business development.",
+          "state": "H\u00e0 N\u1ed9i",
+          "city": "Cau Giay District",
+          "multi_location": [
+            "Cau Giay District, H\u00e0 N\u1ed9i, Vietnam"
+          ],
+          "country": "Vietnam",
+          "jobId": "R48272",
+          "title": "Sales Intern",
+          "jobSeqNo": "TSQTSBUSR48272EXTERNALENUS",
+          "postedDate": "2026-07-17T00:00:00.000+0000",
+          "location": "Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+          "category": "Sales and Business Development",
+          "multi_location_array": [
+            {
+              "country": "Vietnam",
+              "cityState": "Cau Giay District, H\u00e0 N\u1ed9i",
+              "address": "Floor 3, IDMC Duy Tan Building, No. 21 Duy Tan road, Dich Vong Hau ward, Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+              "city": "Cau Giay District",
+              "postalCode": "",
+              "latlong": {
+                "lon": 105.7816099,
+                "lat": 21.0308245
+              },
+              "latitude": "21.0308245",
+              "cityStateZipCode": "Cau Giay District, H\u00e0 N\u1ed9i",
+              "stateCountry": "H\u00e0 N\u1ed9i, Vietnam",
+              "locationId": "VN20V",
+              "location": "Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+              "state": "H\u00e0 N\u1ed9i",
+              "cityCountry": "Cau Giay District, Vietnam",
+              "cityStateCountry": "Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+              "mapQueryLocation": "Floor 3, IDMC Duy Tan Building, No. 21 Duy Tan road, Dich Vong Hau ward, Cau Giay District, H\u00e0 N\u1ed9i, Vietnam",
+              "longitude": "105.7816099"
+            }
+          ]
+        }
+      ]
+    },
+    "totalHits": 50
+  }
+}

@@ -5,10 +5,12 @@ import httpx
 import pytest
 from conftest import llm_result
 
-from jobscraper import adapters, classify, runner, tracker
+from jobscraper import adapters
+from jobscraper.classification import classify
 from jobscraper.config import Config, Notifications, Profile
 from jobscraper.models import Company, RawPosting
-from jobscraper.state import State
+from jobscraper.storage.state import State
+from jobscraper.workflow import runner, tracker
 
 T0 = datetime(2026, 10, 12, 12, 0, tzinfo=UTC)
 PROFILE = Profile(
@@ -75,6 +77,16 @@ def test_second_identical_run_is_quiet(fake_sites):
     s = State()
     do_run(cfg("acme"), s)
     assert quiet(do_run(cfg("acme"), s, hours=1).digest)
+
+
+def test_extraction_limit_is_not_retried(fake_sites):
+    from jobscraper.scraping.crawl import LimitExceeded
+
+    fake_sites["acme"] = LimitExceeded("Use a narrower search")
+    delays = []
+    with pytest.raises(LimitExceeded):
+        runner.fetch_with_retry(company("acme"), httpx.Client(), delays.append)
+    assert delays == []
 
 
 def test_removed_relevant_job_reported_after_two_runs(fake_sites):
@@ -384,7 +396,9 @@ def test_run_reports_claude_usage(fake_sites):
 
 
 def test_prisma_forbidden_keeps_postings_and_records_requests(tmp_path):
-    from jobscraper import activity, http, jsonfile
+    from jobscraper import activity
+    from jobscraper.scraping import http
+    from jobscraper.storage import jsonfile
 
     prisma = Company(
         "prisma",
@@ -421,7 +435,7 @@ def test_prisma_forbidden_keeps_postings_and_records_requests(tmp_path):
 
 
 def test_successful_retry_warning_is_saved_and_cleared(monkeypatch, tmp_path):
-    from jobscraper import state as state_file
+    from jobscraper.storage import state as state_file
 
     calls = []
 
@@ -442,3 +456,48 @@ def test_successful_retry_warning_is_saved_and_cleared(monkeypatch, tmp_path):
     assert "Recovered after 1" in st.health["acme"].last_warning
     runner.run(cfg("acme"), st, httpx.Client(), llm=None, now=T0, sleep=lambda d: None)
     assert st.health["acme"].last_warning is None
+
+
+def test_excluded_metadata_hides_saved_match_before_removal(fake_sites):
+    from dataclasses import replace
+
+    c = cfg("acme")
+    c = replace(c, companies=[replace(c.companies[0], locations=("SC",))])
+    fake_sites["acme"] = [raw("1", "Software Developer"), raw("2", "Developer")]
+    s = State()
+    do_run(c, s)
+    s.postings["acme:1"].classification = None
+    fake_sites["acme"] = [
+        replace(raw("1", "Software Developer"), location="Warsaw", countries=("Poland",)),
+        raw("2", "Developer"),
+    ]
+    result = do_run(c, s, hours=2)
+    p = s.postings["acme:1"]
+    assert p.status == "active" and p.missed_runs == 1
+    assert p.countries == ("Poland",)
+    assert p.classification is None  # No paid or keyword classification of excluded saved jobs.
+    assert p not in result.digest.still_available
+    assert p not in result.digest.new_exact
+
+
+@pytest.mark.parametrize("excluded_location", ["Toronto, ON", "Austin, TX", ""])
+def test_all_jobs_location_filtered_is_success_not_empty_source(fake_sites, excluded_location):
+    from dataclasses import replace
+
+    c = cfg("acme")
+    c.companies[0] = replace(c.companies[0], locations=("SC",))
+    fake_sites["acme"] = [RawPosting("1", "Software Developer I", "Greenville, SC", "u")]
+    s = State()
+    do_run(c, s)
+    tracker.record_failure(s, "acme", "previous failure", T0)
+    fake_sites["acme"] = [RawPosting("1", "Software Developer I", excluded_location, "u")]
+    for h in (1, 2):
+        result = do_run(c, s, hours=h)
+        assert result.failed == {}
+        assert result.fetched == {"acme": 0}
+        assert s.health["acme"].consecutive_failures == 0
+        assert s.health["acme"].last_error is None
+        assert s.health["acme"].last_count == 0
+        assert s.health["acme"].empty_streak == 0
+    assert s.postings["acme:1"].location == excluded_location
+    assert s.postings["acme:1"].status == "removed"
