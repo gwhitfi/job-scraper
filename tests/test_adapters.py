@@ -3,16 +3,12 @@ from datetime import date, timedelta
 
 import httpx
 import pytest
-from conftest import fixture_text
+from conftest import fixture_text, mock_client
 
 from jobscraper.adapters import michelin, moveupstatesc, successfactors, ultipro
 
 MICHELIN_URL = "https://jobs.michelinman.com/job-offer-result-list?criteria=%7B%7D&page=1"
 ULTIPRO_URL = "https://recruiting.ultipro.com/ABC/JobBoard/123/"
-
-
-def mock_client(handler) -> httpx.Client:
-    return httpx.Client(transport=httpx.MockTransport(handler))
 
 
 # --- SuccessFactors (Arthrex) ---

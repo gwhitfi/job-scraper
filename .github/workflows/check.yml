@@ -39,6 +39,7 @@ jobs:
       - run: uv sync --locked --no-dev
 
       - name: Run
+        id: crawl
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           SMTP_USER: ${{ secrets.SMTP_USER }}
@@ -47,33 +48,47 @@ jobs:
 
       # My stars/applied/notes and employer decisions only exist on this PC; keep a versioned
       # copy on the state branch. Restore with: cp state/backup/*.json ~/.local/share/jobscraper/
-      - name: Back up my marks
+      - name: Back up my settings and marks
         run: |
           mkdir -p state/backup
-          for f in marks.json employers.json; do
+          for f in marks.json employers.json companies.json; do
             src="$HOME/.local/share/jobscraper/$f"
             if [ -f "$src" ]; then cp "$src" "state/backup/$f"; fi
           done
 
-      # Skipped if the run failed, so the next run re-detects the same changes and retries the email.
+      # Preserve failure traces without committing partially saved posting/email state.
       - name: Save state
+        if: ${{ !cancelled() && (steps.crawl.outcome == 'success' || steps.crawl.outcome == 'failure') }}
         working-directory: state
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
+          if [ "${{ steps.crawl.outcome }}" = "success" ]; then
+            git add -A
+          else
+            for f in crawl-history.json crawl-current.json; do
+              if [ -f "$f" ]; then git add -- "$f"; fi
+            done
+          fi
           git diff --cached --quiet && exit 0
           git commit -q -m "Update state $(date -u +%Y-%m-%dT%H:%MZ)"
           git push origin HEAD:state
 
       # The web page (jobscraper serve) reads this copy; mv keeps each swap atomic.
       - name: Publish state for the web page
+        if: ${{ !cancelled() && (steps.crawl.outcome == 'success' || steps.crawl.outcome == 'failure') }}
         run: |
           data="$HOME/.local/share/jobscraper"
           mkdir -p "$data/state"
           publish() { cp "$1" "$2.tmp" && mv "$2.tmp" "$2"; }
-          for f in postings.json health.json email.json usage.json; do
+          files="crawl-history.json crawl-current.json"
+          if [ "${{ steps.crawl.outcome }}" = "success" ]; then
+            files="$files postings.json health.json email.json usage.json"
+          fi
+          for f in $files; do
             if [ -f "state/$f" ]; then publish "state/$f" "$data/state/$f"; fi
           done
           # The page uses the same config this run used, so its groups match the alerts.
-          publish config.toml "$data/config.toml"
+          if [ "${{ steps.crawl.outcome }}" = "success" ]; then
+            publish config.toml "$data/config.toml"
+          fi

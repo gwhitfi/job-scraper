@@ -1,6 +1,7 @@
 from datetime import date
 from pathlib import Path
 
+import httpx
 import pytest
 
 from jobscraper import classify
@@ -32,3 +33,7 @@ def llm_result(id: str, **kw) -> classify.Result:
         employer_check="ok",
     )
     return classify.Result(id=id, **(fields | kw))
+
+
+def mock_client(handler) -> httpx.Client:
+    return httpx.Client(transport=httpx.MockTransport(handler))

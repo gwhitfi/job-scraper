@@ -35,13 +35,11 @@ def _search_body(skip: int) -> dict:
     }
 
 
-def _location(loc: dict) -> tuple[str, str]:
-    """Return (display text, state code) for one location."""
+def _location(loc: dict) -> str:
     address = loc.get("Address") or {}
     state = (address.get("State") or {}).get("Code") or ""
     city = address.get("City") or ""
-    text = ", ".join(p for p in (city, state) if p) or loc.get("LocalizedDescription") or ""
-    return text, state
+    return ", ".join(p for p in (city, state) if p) or loc.get("LocalizedDescription") or ""
 
 
 def _is_remote(opp: dict) -> bool:
@@ -58,7 +56,7 @@ def _is_remote(opp: dict) -> bool:
 def parse(data: dict, board_url: str) -> list[RawPosting]:
     postings = []
     for opp in data["opportunities"]:
-        texts = [text for text, _ in (_location(loc) for loc in opp.get("Locations") or [])]
+        texts = [_location(loc) for loc in opp.get("Locations") or []]
         if _is_remote(opp) and not any("remote" in t.lower() for t in texts):
             texts.append("Remote")  # so the shared location filter keeps it
         posted = opp.get("PostedDate")

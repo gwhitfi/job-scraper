@@ -9,17 +9,18 @@ import anthropic
 from dotenv import find_dotenv, load_dotenv
 
 from jobscraper import (
+    activity,
     classify,
+    company_store,
     config,
-    employers,
     http,
+    jsonfile,
     locations,
     notify,
     runner,
     state,
     tracker,
     usage,
-    userdata,
     web,
 )
 
@@ -28,7 +29,7 @@ DATA_DIR = Path.home() / ".local" / "share" / "jobscraper"
 
 
 def cmd_test(args: argparse.Namespace) -> None:
-    cfg = config.load(args.config)
+    cfg = company_store.merge(config.load(args.config), args.data_dir / "companies.json")
     company = cfg.company(args.company_id)
     with http.client() as c:
         postings, dropped = runner.fetch_company(
@@ -65,12 +66,25 @@ def _llm_client(enabled: bool) -> anthropic.Anthropic | None:
 
 
 def cmd_run(args: argparse.Namespace) -> None:
-    cfg = config.load(args.config)
+    path = None if args.dry_run else args.state_dir / "crawl-history.json"
+    with activity.Trace(path, "crawl") as trace:
+        _run(args, trace)
+
+
+def _run(args: argparse.Namespace, trace: activity.Trace) -> None:
+    cfg = company_store.merge(config.load(args.config), args.data_dir / "companies.json")
     st = state.load(args.state_dir)
-    decisions = employers.load(args.data_dir / "employers.json")
+    decisions = jsonfile.read(args.data_dir / "employers.json")
     with http.client() as c:
         result = runner.run(cfg, st, c, _llm_client(not args.no_llm), decisions=decisions)
 
+    trace.record["status"] = "partial_failure" if result.failed else "completed"
+    activity.emit(
+        "crawl_summary",
+        successful=len(result.fetched),
+        failed=len(result.failed),
+        postings=sum(result.fetched.values()),
+    )
     names = {c.id: c.name for c in cfg.companies}
     health_names = cfg.health_names()
     for company_id, count in result.fetched.items():
@@ -91,7 +105,7 @@ def cmd_run(args: argparse.Namespace) -> None:
     if args.dry_run:
         print("\n(dry run: state not saved, no email sent)")
         return
-    marks = userdata.load(args.data_dir / "marks.json")
+    marks = jsonfile.read(args.data_dir / "marks.json")
     archived = tracker.archive_closed(st, set(marks), datetime.now(UTC))
     if archived:
         state.append_archive(archived, args.state_dir)
@@ -99,6 +113,7 @@ def cmd_run(args: argparse.Namespace) -> None:
             f"Archived {len(archived)} postings closed over {tracker.ARCHIVE_AFTER_DAYS} days ago"
         )
     state.save(st, args.state_dir)
+    activity.emit("state_saved", archived=len(archived))
     usage.record(
         args.state_dir / "usage.json", result.usage, cfg.classifier_model, datetime.now(UTC)
     )
@@ -117,11 +132,12 @@ def _send_alerts(cfg: config.Config, digest: notify.Digest, names: dict, outbox_
         waiting = len(outbox["pending"])
         print(f"\n{sent} email(s) sent to {cfg.notifications.email}", end="")
         print(f"; {waiting} waiting to retry" if waiting else "")
-    notify.save_outbox(outbox_path, outbox)
+    jsonfile.write(outbox_path, outbox)
+    activity.emit("notifications", pending=len(outbox["pending"]))
 
 
 def cmd_status(args: argparse.Namespace) -> None:
-    cfg = config.load(args.config)
+    cfg = company_store.merge(config.load(args.config), args.data_dir / "companies.json")
     st = state.load(args.state_dir)
     now = datetime.now(UTC)
     names = cfg.health_names()
@@ -147,7 +163,7 @@ def cmd_status(args: argparse.Namespace) -> None:
 
 
 def cmd_list(args: argparse.Namespace) -> None:
-    cfg = config.load(args.config)
+    cfg = company_store.merge(config.load(args.config), args.data_dir / "companies.json")
     st = state.load(args.state_dir)
     postings = sorted(
         (
@@ -209,11 +225,13 @@ def main() -> None:
     run.set_defaults(func=cmd_run)
 
     status = sub.add_parser("status", help="Per-company counts and health")
+    status.add_argument("--data-dir", type=Path, default=DATA_DIR)
     status.set_defaults(func=cmd_status)
 
     lst = sub.add_parser("list", help="Show active relevant postings")
     lst.add_argument("--company")
     lst.add_argument("--all", action="store_true", help="Include postings that aren't relevant")
+    lst.add_argument("--data-dir", type=Path, default=DATA_DIR)
     lst.set_defaults(func=cmd_list)
 
     serve = sub.add_parser("serve", help="Serve the web page")
@@ -224,6 +242,7 @@ def main() -> None:
 
     test = sub.add_parser("test", help="Run one adapter and print raw postings")
     test.add_argument("company_id")
+    test.add_argument("--data-dir", type=Path, default=DATA_DIR)
     test.set_defaults(func=cmd_test)
 
     args = parser.parse_args()

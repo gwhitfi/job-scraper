@@ -119,3 +119,63 @@ def test_email_failure_still_saves_state(setup, monkeypatch):
     run_cli()
     assert len(sent) == 1
     assert notify.load_outbox(state_dir / "email.json")["pending"] == []
+
+
+def test_run_includes_website_added_company(setup):
+    from jobscraper import company_store
+    from jobscraper.models import Company
+
+    state_dir, sent, run_cli = setup
+    c = Company(
+        "web-added", "Web Added", "fake", "https://new.example/jobs", datetime.now(UTC).date()
+    )
+    company_store.add(state_dir.parent / "data" / "companies.json", c)
+    run_cli()
+    assert "web-added:1" in state.load(state_dir).postings
+    assert sent
+
+
+def test_completed_run_log_has_company_metrics_and_state_save(setup):
+    state_dir, sent, run_cli = setup
+    run_cli()
+    record = json.loads((state_dir / "crawl-history.json").read_text())["runs"][0]
+    assert record["status"] == "completed"
+    events = record["events"]
+    company = next(e for e in events if e["stage"] == "company_completed")
+    assert company["company"] == "acme" and company["fetched"] == company["kept"] == 1
+    assert company["new"] == 1 and company["removed"] == company["dropped"] == 0
+    assert any(e["stage"] == "state_saved" for e in events)
+    assert events[-1]["stage"] == "finished"
+
+
+def test_crashed_run_log_is_preserved(setup, monkeypatch):
+    state_dir, _, run_cli = setup
+
+    def fail(*args, **kwargs):
+        raise RuntimeError("state save failed")
+
+    monkeypatch.setattr(state, "save", fail)
+    with pytest.raises(RuntimeError):
+        run_cli()
+    record = json.loads((state_dir / "crawl-history.json").read_text())["runs"][0]
+    assert record["status"] == "failed"
+    assert "state save failed" in str(record["events"])
+
+
+def test_dry_run_writes_no_logs_or_state(setup, monkeypatch):
+    from argparse import Namespace
+
+    state_dir, sent, _ = setup
+    before = {p.name: p.read_bytes() for p in state_dir.iterdir()}
+    cli.cmd_run(
+        Namespace(
+            config=state_dir.parent / "config.toml",
+            state_dir=state_dir,
+            data_dir=state_dir.parent / "data",
+            dry_run=True,
+            no_llm=True,
+            no_email=False,
+        )
+    )
+    assert {p.name: p.read_bytes() for p in state_dir.iterdir()} == before
+    assert sent == []

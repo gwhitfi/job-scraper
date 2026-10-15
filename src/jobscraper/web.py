@@ -1,7 +1,7 @@
 import json
 import logging
 import threading
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import UTC, datetime, timedelta
 from html import escape
 from http import HTTPStatus
@@ -9,10 +9,30 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote_plus, urlencode, urlparse
 
-from jobscraper import classify, distance, employers, jsonfile, notify, state, usage, userdata
+import httpx
+
+from jobscraper import (
+    activity,
+    classify,
+    company_store,
+    crawl,
+    discovery,
+    distance,
+    employers,
+    http,
+    jsonfile,
+    locations,
+    notify,
+    onboarding,
+    state,
+    tracked,
+    usage,
+    userdata,
+)
 from jobscraper import config as config_file
 from jobscraper.config import Config
 from jobscraper.state import Posting, State
+from jobscraper.tracker import FAILURES_BEFORE_ALERT
 
 log = logging.getLogger(__name__)
 
@@ -69,44 +89,117 @@ class App:
         self.state_dir = state_dir
         self.marks_path = marks_path
         self.employers_path = employers_path
+        self.companies_path = marks_path.parent / "companies.json"
+        self.discovery_lock = threading.Lock()
+        self._base_cfg = cfg
         self.config_path = config_path  # reloaded when it changes, if given
         self._config_mtime = config_path.stat().st_mtime if config_path else None
         self.lock = threading.Lock()
-        self._cache: tuple[float, State] | None = None
+        self._cache: tuple[tuple[int, ...], State] | None = None
         self._use_config(cfg)
 
     def _use_config(self, cfg: Config) -> None:
+        cfg = company_store.merge(cfg, self.companies_path)
         self.cfg = cfg
         self.companies = {c.id: c for c in cfg.companies}
         self.home = distance.home_coords(cfg.web.home)
 
     def reload_config(self) -> None:
-        """Pick up a new config.toml (e.g. the copy each run publishes) without a restart."""
-        if self.config_path is None or not self.config_path.exists():
-            return
-        mtime = self.config_path.stat().st_mtime
-        if mtime == self._config_mtime:
-            return
+        """Reload the published config and companies added through the page."""
+        if self.config_path and self.config_path.exists():
+            mtime = self.config_path.stat().st_mtime
+            if mtime != self._config_mtime:
+                try:
+                    self._base_cfg = config_file.load(self.config_path)
+                except Exception:
+                    log.exception(
+                        "Couldn't reload %s; keeping the previous config", self.config_path
+                    )
+                self._config_mtime = mtime
+        self._use_config(self._base_cfg)
+
+    def add_company(self, body: dict) -> dict:
+        # Keep discovery serial so repeated clicks don't launch overlapping crawls.
+        if not self.discovery_lock.acquire(blocking=False):
+            raise ValueError("Another company is being checked. Please wait for it to finish.")
         try:
-            self._use_config(config_file.load(self.config_path))
-        except Exception:
-            log.exception("Couldn't reload %s; keeping the previous config", self.config_path)
-        self._config_mtime = mtime
+            with activity.Trace(
+                self.marks_path.parent / "discovery-history.json",
+                "add_company",
+                url=body.get("url", ""),
+            ) as trace:
+                try:
+                    result = self._add_company(body)
+                except Exception as exc:
+                    exc.add_note("Log: /logs?id=" + trace.record["id"])
+                    raise
+                trace.record["status"] = result["status"]
+                activity.emit(
+                    "outcome",
+                    status=result["status"],
+                    message=result["message"],
+                    help=result.get("help", []),
+                )
+                return result | {"log_url": "/logs?id=" + trace.record["id"]}
+        finally:
+            self.discovery_lock.release()
+
+    def _add_company(self, body: dict) -> dict:
+        self.reload_config()
+        url = crawl.normalize_url(body.get("url", ""))
+        if any(c.url.rstrip("/") == url.rstrip("/") for c in self.cfg.companies):
+            raise ValueError("This careers page is already being tracked.")
+        region = body.get("locations", "")
+        entries = (region,) if region else ()
+        location_filter = locations.build_filter(entries, self.cfg.regions)
+        scope_states = location_filter.watched_states
+        if entries and self.cfg.extended_locations:
+            scope_states |= locations.build_filter(
+                self.cfg.extended_locations, self.cfg.regions
+            ).watched_states
+        with http.client() as client:
+            result = discovery.inspect(
+                url,
+                crawl.Client(client, limit=200),
+                name=body.get("name", ""),
+                settings=body.get("settings"),
+                states=tuple(sorted(scope_states)) if entries else (),
+            )
+        if result.company is None:
+            return {"status": result.status, "message": result.message, "help": result.help}
+        company = replace(result.company, locations=entries)
+        with self.lock:
+            self.reload_config()
+            if any(
+                c.id == company.id or c.url.rstrip("/") == company.url.rstrip("/")
+                for c in self.cfg.companies
+            ):
+                raise ValueError("This jobs source is already being tracked.")
+            activity.emit("saving_company", company=company.id, url=company.url)
+            company_store.add(self.companies_path, company)
+            activity.emit("company_saved", company=company.id)
+            self.reload_config()
+        return {
+            "status": "added",
+            "company_id": company.id,
+            "message": result.message + " Tracking is enabled for the next scheduled check.",
+            "sample": [{"title": p.title, "location": p.location} for p in result.postings[:5]],
+        }
 
     # --- data ---
 
     def state(self) -> State:
         """Reload only when the runner has written new state."""
-        path = self.state_dir / "postings.json"
-        mtime = path.stat().st_mtime if path.exists() else 0.0
+        paths = [self.state_dir / name for name in ("postings.json", "health.json")]
+        mtime = tuple(path.stat().st_mtime_ns if path.exists() else 0 for path in paths)
         if self._cache is None or self._cache[0] != mtime:
             self._cache = (mtime, state.load(self.state_dir))
         return self._cache[1]
 
     def rows(self) -> list[Row]:
         st = self.state()
-        marks = userdata.load(self.marks_path)
-        decisions = employers.load(self.employers_path)
+        marks = jsonfile.read(self.marks_path)
+        decisions = jsonfile.read(self.employers_path)
         duplicates: dict[str, list[tuple[str, str]]] = {}
         for p in st.postings.values():
             if p.duplicate_of and p.status == "active":
@@ -135,22 +228,26 @@ class App:
         """Approve, block, or clear (back to Claude's call) one job-board employer."""
         if action not in EMPLOYER_ACTIONS:
             raise ValueError(f"Unknown action {action!r}")
-        rows = [r for r in self.rows() if r.is_board and r.employer_key == key]
-        if not rows:
+        postings = [
+            p
+            for p in self.state().postings.values()
+            if employers.is_board(p, self.companies) and employers.employer_key(p) == key
+        ]
+        if not postings:
             raise KeyError(key)
         with self.lock:
-            decisions = employers.load(self.employers_path)
-            name = rows[0].posting.employer or rows[0].posting.title
+            decisions = jsonfile.read(self.employers_path)
+            name = postings[0].employer or postings[0].title
             employers.decide(decisions, key, name, EMPLOYER_ACTIONS[action])
-            employers.save(self.employers_path, decisions)
+            jsonfile.write(self.employers_path, decisions)
 
     def mark(self, key: str, field: str, value) -> dict:
         if key not in self.state().postings:
             raise KeyError(key)
         with self.lock:
-            marks = userdata.load(self.marks_path)
+            marks = jsonfile.read(self.marks_path)
             entry = userdata.update(marks, key, field, value)
-            userdata.save(self.marks_path, marks)
+            jsonfile.write(self.marks_path, marks)
         return entry
 
     # --- filtering ---
@@ -193,45 +290,41 @@ class App:
     @staticmethod
     def sort_key(r: Row, sort: str = "newest"):
         p = r.posting
-        when = (p.posted_date or p.first_seen.date()).toordinal()
+        # Newest means newest to me: job boards can pick up a posting days after it went up.
+        added = -p.first_seen.timestamp()
+        posted = -(p.posted_date.toordinal() if p.posted_date else 0)
         if sort == "relevant":
             # Keyword-only results have no score yet; they sort last.
             score = (p.classification or {}).get("score") or 0
-            return (-score, -when, p.title.lower())
+            return (-score, added, posted, p.title.lower())
         if sort == "nearest":
             # Remote and unknown places sort last.
-            return (r.miles is None, r.miles or 0, -when, p.title.lower())
-        return (-when, p.title.lower())
+            return (r.miles is None, r.miles or 0, added, posted, p.title.lower())
+        return (added, posted, p.title.lower())
 
     # --- pages ---
 
-    def _scoped(self, query: dict[str, str]) -> list[Row]:
-        """Rows matching the page's source filter and search, before picking a tab."""
+    def select(self, query: dict[str, str]) -> tuple[list[Row], dict[str, int]]:
+        """Rows in the selected tab and counts for every tab, using the same filters."""
+        self.reload_config()
+        view = query.get("view") if query.get("view") in VIEWS else "exact"
         source = query.get("source") if query.get("source") in SOURCES else "all"
         q = query.get("q", "").strip()
-        return [r for r in self.rows() if self.in_source(r, source) and self.matches_query(r, q)]
-
-    def counts(self, query: dict[str, str]) -> dict[str, int]:
-        scoped = self._scoped(query)
-        return {v: sum(self.in_view(r, v) for r in scoped) for v in VIEWS}
+        scoped = [r for r in self.rows() if self.in_source(r, source) and self.matches_query(r, q)]
+        counts = {v: sum(self.in_view(r, v) for r in scoped) for v in VIEWS}
+        return [r for r in scoped if self.in_view(r, view)], counts
 
     def index(self, query: dict[str, str]) -> str:
-        self.reload_config()
         view = query.get("view") if query.get("view") in VIEWS else "exact"
         source = query.get("source") if query.get("source") in SOURCES else "all"
         sort = query.get("sort") if query.get("sort") in SORTS else "newest"
         q = query.get("q", "").strip()
-        scoped = self._scoped(query)
-        counts = {v: sum(self.in_view(r, v) for r in scoped) for v in VIEWS}
-        shown = sorted(
-            (r for r in scoped if self.in_view(r, view)), key=lambda r: self.sort_key(r, sort)
-        )
+        shown, counts = self.select(query)
+        shown.sort(key=lambda r: self.sort_key(r, sort))
         return render_page(self, view, source, q, sort, counts, shown)
 
 
 # --- rendering ---
-
-GROUP_LABELS = {"exact": "Exact", "near": "Close", "maybe": "Probably not"}
 
 # Google Fonts offered in the settings panel, by fallback category.
 FONTS = {
@@ -308,7 +401,7 @@ def _banners(app: App, now: datetime) -> str:
     failing = [
         f"{names.get(cid, cid)} ({h.consecutive_failures} failed checks)"
         for cid, h in health.items()
-        if h.consecutive_failures >= 3
+        if h.consecutive_failures >= FAILURES_BEFORE_ALERT
     ]
     if failing:
         messages.append(f"Site checks failing: {', '.join(failing)}")
@@ -369,7 +462,7 @@ def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
     c = p.classification or {}
     badges = []
     if r.group:
-        badges.append(f'<span class="badge g-{r.group}">{GROUP_LABELS[r.group]}</span>')
+        badges.append(f'<span class="badge g-{r.group}">{VIEWS[r.group]}</span>')
     fresh = new_tier(p, latest_check, now)
     if fresh:
         badges.append(f'<span class="badge new {fresh}">New</span>')
@@ -382,7 +475,7 @@ def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
     score_html = (
         f'<span class="score" title="Similarity to target role">{score}/10</span>' if score else ""
     )
-    when = f"posted {p.posted_date:%b %-d}" if p.posted_date else f"seen {p.first_seen:%b %-d}"
+    when = f"posted {p.posted_date:%b %-d}" if p.posted_date else "posting date unknown"
     level = c.get("level", "unknown")
     far = f"{r.miles:.0f} mi" if r.miles is not None else ""
     meta_parts = [escape(x) for x in (p.location, far, level if level != "unknown" else "") if x]
@@ -403,7 +496,10 @@ def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
 
     return f"""
 <article class="card{f" tier-{tier}" if tier else ""}" data-key="{key}">
-  <p class="company">{escape(r.source)}</p>
+  <div class="company-row">
+    <p class="company">{escape(r.source)}</p>
+    <span class="added">added {p.first_seen.astimezone():%b %-d}</span>
+  </div>
   <div class="title-row">
     <h2><a href="{href}" target="_blank" rel="noopener">{escape(p.title)}</a></h2>
     {score_html}
@@ -506,19 +602,27 @@ def render_page(
     cards = cards or '<p class="empty">Nothing here.</p>'
     return PAGE.format(
         head_script=HEAD_SCRIPT,
+        onboarding_form=onboarding.FORM.format(
+            locations="".join(
+                f'<option value="{escape(region)}"'
+                + (" selected" if region == "upstate_sc" else "")
+                + f">{escape(region.replace('_', ' ').title())}</option>"
+                for region in app.cfg.regions
+            )
+            + '<option value="">All locations</option>'
+        ),
+        onboarding_script=onboarding.SCRIPT,
         font_head=_font_select("head", "Company &amp; position"),
         font_body=_font_select("body", "Rest of page"),
         updated=escape(_updated(app)),
-        banner=_banners(app, datetime.now(UTC)),
+        banner=_banners(app, now),
         tabs=tabs,
         view=escape(view),
         source_opts=source_opts,
         sort_opts=sort_opts,
         q=escape(q),
         cards=cards,
-        footer=escape(
-            usage.summary(jsonfile.read(app.state_dir / "usage.json"), datetime.now(UTC))
-        ),
+        footer=escape(usage.summary(jsonfile.read(app.state_dir / "usage.json"), now)),
     )
 
 
@@ -560,10 +664,11 @@ a {{ color: var(--accent); }}
 header {{ position: sticky; top: 0; z-index: 1; background: var(--bg);
   border-bottom: 1px solid var(--line); padding: 12px 16px 0; }}
 .header-inner {{ max-width: 760px; margin: 0 auto; }}
-.top {{ display: flex; justify-content: space-between; align-items: center; gap: 12px; }}
+.top {{ display: flex; flex-wrap: wrap; justify-content: space-between;
+  align-items: center; gap: 12px; }}
 h1 {{ font-size: 1.1rem; font-weight: 700; letter-spacing: -.01em; margin: 0;
   white-space: nowrap; }}
-.top-right {{ display: flex; align-items: center; gap: 10px; min-width: 0; }}
+.top-right {{ display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; }}
 .updated {{ color: var(--muted); font-size: .78rem; text-align: right; line-height: 1.3; }}
 .cog {{ flex: none; width: 40px; height: 40px; font-size: 1.15rem; line-height: 1; cursor: pointer;
   border: 1px solid var(--line); border-radius: 8px; background: var(--card); }}
@@ -595,6 +700,8 @@ main {{ max-width: 792px; margin: 0 auto; padding: 12px 16px 48px; }}
 .company, .card h2 {{ font-family: var(--font-head, inherit); }}
 .company {{ margin: 0; font-size: .82rem; font-weight: 600; color: var(--muted);
   text-transform: uppercase; letter-spacing: .04em; }}
+.company-row {{ display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }}
+.added {{ flex: none; color: var(--muted); font-size: .78rem; white-space: nowrap; }}
 .title-row {{ display: flex; align-items: flex-start; gap: 10px; margin: 2px 0 4px; }}
 .card h2 {{ flex: 1; min-width: 0; margin: 0; font-size: 1.08rem; font-weight: 700;
   line-height: 1.3; overflow-wrap: anywhere; }}
@@ -649,7 +756,8 @@ dialog {{ border: 1px solid var(--line); border-radius: 12px; background: var(--
 dialog::backdrop {{ background: rgb(0 0 0 / .45); }}
 dialog h2 {{ margin: 0 0 14px; font-size: 1.05rem; }}
 dialog label {{ display: block; font-size: .88rem; color: var(--muted); margin-bottom: 14px; }}
-dialog select {{ display: block; width: 100%; height: 42px; margin-top: 4px; padding: 0 10px;
+dialog input, dialog select {{ display: block; width: 100%; height: 42px;
+  margin-top: 4px; padding: 0 10px;
   border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--text); }}
 .dialog-actions {{ display: flex; justify-content: space-between; gap: 8px; }}
 
@@ -675,6 +783,9 @@ dialog select {{ display: block; width: 100%; height: 42px; margin-top: 4px; pad
     <h1>Job Scraper</h1>
     <div class="top-right">
       <span class="updated">{updated}</span>
+      <a class="btn" href="/companies">Tracked companies</a>
+      <a class="btn" href="/logs">Crawl logs</a>
+      <button type="button" class="btn" id="open-company">Add company to track</button>
       <button type="button" class="cog" id="open-settings" aria-label="Settings">⚙</button>
     </div>
   </div>
@@ -688,8 +799,9 @@ dialog select {{ display: block; width: 100%; height: 42px; margin-top: 4px; pad
   <nav class="tabs">{tabs}</nav>
   </div>
 </header>
-<main data-view="{view}">{cards}</main>
+<main>{cards}</main>
 <footer>{footer}</footer>
+{onboarding_form}
 <dialog id="settings">
   <h2>Settings</h2>
   {font_head}
@@ -700,11 +812,12 @@ dialog select {{ display: block; width: 100%; height: 42px; margin-top: 4px; pad
   </div>
 </dialog>
 <script>
-async function mark(card, field, value) {{
-  const res = await fetch("/api/mark", {{
+{onboarding_script}
+async function post(path, body) {{
+  const res = await fetch(path + location.search, {{
     method: "POST",
     headers: {{"Content-Type": "application/json", "X-Requested-With": "jobscraper"}},
-    body: JSON.stringify({{key: card.dataset.key, field, value}}),
+    body: JSON.stringify(body),
   }});
   if (!res.ok) throw new Error(await res.text());
   return res.json();
@@ -716,31 +829,22 @@ document.addEventListener("click", async (e) => {{
   const value = btn.getAttribute("aria-pressed") !== "true";
   btn.disabled = true;
   try {{
-    await mark(card, btn.dataset.field, value);
+    const result = await post("/api/mark", {{
+      key: card.dataset.key, field: btn.dataset.field, value,
+    }});
     btn.setAttribute("aria-pressed", String(value));
     btn.classList.toggle("on", value);
     btn.textContent = value ? btn.dataset.on : btn.dataset.off;
-    if (!belongs(card)) dropCard(card);
-    refreshCounts();
+    if (!result.visible) dropCard(card);
+    for (const [view, n] of Object.entries(result.counts)) {{
+      document.querySelector(`.tab[data-view="${{view}}"] span`).textContent = n;
+    }}
   }} catch (err) {{
     alert("Couldn't save: " + err.message);
   }} finally {{
     btn.disabled = false;
   }}
 }});
-// Mirrors App.in_view for the marks, so a card leaves the current tab as soon as it no
-// longer fits (hidden, applied, unstarred on Starred, ...).
-function belongs(card) {{
-  const on = (f) => card.querySelector(`.toggle[data-field="${{f}}"]`)
-    .getAttribute("aria-pressed") === "true";
-  const view = card.closest("main").dataset.view;
-  if (view === "hidden") return on("hidden");
-  if (view === "applied") return on("applied");
-  if (view === "starred") return on("starred") && !on("hidden");
-  // Starred jobs leave the match tabs for Starred.
-  const matchTab = ["exact", "near", "maybe", "relevant"].includes(view);
-  return !on("hidden") && !on("applied") && !(matchTab && on("starred"));
-}}
 function dropCard(card) {{
   const main = card.closest("main");
   card.classList.add("leaving");
@@ -748,17 +852,6 @@ function dropCard(card) {{
     card.remove();
     if (!main.querySelector(".card")) main.innerHTML = '<p class="empty">Nothing here.</p>';
   }}, 200);
-}}
-// Counts respect the page's source filter and search, so ask with the same query string.
-async function refreshCounts() {{
-  try {{
-    const res = await fetch("/api/counts" + location.search);
-    if (!res.ok) return;
-    for (const [view, n] of Object.entries(await res.json())) {{
-      const count = document.querySelector(`.tab[data-view="${{view}}"] span`);
-      if (count) count.textContent = n;
-    }}
-  }} catch (err) {{}}  // stale counts fix themselves on the next page load
 }}
 const settings = document.getElementById("settings");
 const fontSelects = settings.querySelectorAll("select[data-slot]");
@@ -789,12 +882,7 @@ document.addEventListener("click", async (e) => {{
   if (!btn) return;
   btn.disabled = true;
   try {{
-    const res = await fetch("/api/employer", {{
-      method: "POST",
-      headers: {{"Content-Type": "application/json", "X-Requested-With": "jobscraper"}},
-      body: JSON.stringify({{employer: btn.dataset.employer, action: btn.dataset.action}}),
-    }});
-    if (!res.ok) throw new Error(await res.text());
+    await post("/api/employer", {{employer: btn.dataset.employer, action: btn.dataset.action}});
     location.reload();  // every posting from this employer moves tabs
   }} catch (err) {{
     alert("Couldn't save: " + err.message);
@@ -804,9 +892,10 @@ document.addEventListener("click", async (e) => {{
 document.addEventListener("change", async (e) => {{
   if (e.target.tagName !== "TEXTAREA") return;
   const card = e.target.closest(".card");
+  if (!card) return;
   const status = card.querySelector(".saved");
   try {{
-    await mark(card, "note", e.target.value);
+    await post("/api/mark", {{key: card.dataset.key, field: "note", value: e.target.value}});
     status.textContent = "Saved";
   }} catch (err) {{
     status.textContent = "Couldn't save: " + err.message;
@@ -837,14 +926,32 @@ def make_server(app: App, host: str, port: int) -> ThreadingHTTPServer:
             query = {k: v[0] for k, v in parse_qs(url.query).items()}
             if url.path == "/":
                 self._send(HTTPStatus.OK, app.index(query), "text/html")
-            elif url.path == "/api/counts":
-                self._send(HTTPStatus.OK, json.dumps(app.counts(query)), "application/json")
+            elif url.path == "/companies":
+                app.reload_config()
+                self._send(
+                    HTTPStatus.OK,
+                    tracked.page(app.cfg, app.state(), stale_hours=STALE_HOURS),
+                    "text/html",
+                )
+            elif url.path == "/logs":
+                self._send(
+                    HTTPStatus.OK,
+                    activity.page(
+                        [
+                            app.state_dir / "crawl-history.json",
+                            app.marks_path.parent / "discovery-history.json",
+                        ],
+                        query.get("id", ""),
+                    ),
+                    "text/html",
+                )
             else:
                 self._send(HTTPStatus.NOT_FOUND, "Not found", "text/plain")
 
         def do_POST(self) -> None:
-            path = urlparse(self.path).path
-            if path not in ("/api/mark", "/api/employer"):
+            url = urlparse(self.path)
+            path = url.path
+            if path not in ("/api/mark", "/api/employer", "/api/companies"):
                 self._send(HTTPStatus.NOT_FOUND, "Not found", "text/plain")
                 return
             # A custom header can't be sent cross-site without a CORS preflight, which this
@@ -854,17 +961,41 @@ def make_server(app: App, host: str, port: int) -> ThreadingHTTPServer:
                 return
             try:
                 length = int(self.headers.get("Content-Length", "0"))
-                body = json.loads(self.rfile.read(min(length, 64_000)))
-                if path == "/api/employer":
+                if not 0 < length <= 64_000:
+                    raise ValueError("Invalid request size")
+                body = json.loads(self.rfile.read(length))
+                if not isinstance(body, dict):
+                    raise ValueError("Expected a JSON object")
+                if path == "/api/companies":
+                    entry = app.add_company(body)
+                elif path == "/api/employer":
                     app.decide_employer(body["employer"], body["action"])
                     entry = {"ok": True}
                 else:
                     entry = app.mark(body["key"], body["field"], body["value"])
+                    query = {k: v[0] for k, v in parse_qs(url.query).items()}
+                    shown, counts = app.select(query)
+                    entry = entry | {
+                        "counts": counts,
+                        "visible": any(r.posting.key == body["key"] for r in shown),
+                    }
             except KeyError:
                 self._send(HTTPStatus.NOT_FOUND, "Unknown posting or employer", "text/plain")
                 return
-            except (ValueError, TypeError) as e:
-                self._send(HTTPStatus.BAD_REQUEST, str(e), "text/plain")
+            except (ValueError, TypeError, httpx.HTTPError) as e:
+                self._send(
+                    HTTPStatus.BAD_REQUEST,
+                    activity.clean(str(e)) + "\n" + "\n".join(getattr(e, "__notes__", [])),
+                    "text/plain",
+                )
+                return
+            except Exception:
+                log.exception("Request failed")
+                self._send(
+                    HTTPStatus.INTERNAL_SERVER_ERROR,
+                    "Unexpected error. Open Crawl logs for the attempt details.",
+                    "text/plain",
+                )
                 return
             self._send(HTTPStatus.OK, json.dumps(entry), "application/json")
 

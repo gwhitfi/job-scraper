@@ -1,11 +1,12 @@
 import math
 import re
 import time
-from urllib.parse import parse_qsl, urlencode, urljoin, urlparse, urlunparse
+from urllib.parse import urljoin
 
 import httpx
 from bs4 import BeautifulSoup
 
+from jobscraper.http import with_page
 from jobscraper.models import Company, RawPosting
 
 PER_PAGE = 12
@@ -45,19 +46,13 @@ def parse(html: str, base_url: str) -> tuple[list[RawPosting], int]:
     return postings, int(m.group(1).replace(",", "")) if m else len(postings)
 
 
-def _with_page(url: str, page: int) -> str:
-    parts = urlparse(url)
-    query = [(k, v) for k, v in parse_qsl(parts.query) if k != "page"] + [("page", str(page))]
-    return urlunparse(parts._replace(query=urlencode(query)))
-
-
 def fetch(company: Company, client: httpx.Client, delay: float = 1.0) -> list[RawPosting]:
     by_id: dict[str, RawPosting] = {}
     page, pages = 1, 1
     while page <= min(pages, MAX_PAGES):
         if page > 1:
             time.sleep(delay)
-        resp = client.get(_with_page(company.url, page))
+        resp = client.get(with_page(company.url, page))
         resp.raise_for_status()
         postings, total = parse(resp.text, company.url)
         pages = math.ceil(total / PER_PAGE)

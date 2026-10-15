@@ -1,0 +1,34 @@
+{
+  "videocarousel": {
+    "items": [
+      {
+        "url": "https://cms.careers.walmart.com/content/dam/careers/day-in-the-life-videos/25Verge_Walmart_StoreCoach_FINAL.mp4",
+        "title": "Day in the life",
+        "posterSrc": null,
+        "description": "Store Coach",
+        "captions": []
+      },
+      {
+        "url": "https://cms.careers.walmart.com/content/dam/careers/day-in-the-life-videos/25Verge_Walmart_Optician_FINAL.mp4",
+        "title": "Day in Life",
+        "posterSrc": null,
+        "description": "Optician",
+        "captions": []
+      },
+      {
+        "url": "https://cms.careers.walmart.com/content/dam/careers/day-in-the-life-videos/25Verge_Walmart_StoreManager_FINAL.mp4",
+        "title": "Day in the life",
+        "posterSrc": null,
+        "description": "Store Manager",
+        "captions": []
+      },
+      {
+        "url": "https://cms.careers.walmart.com/content/dam/careers/day-in-the-life-videos/25Verge_Walmart_PharmacyTech_FINAL.mp4",
+        "title": "Day in the life",
+        "posterSrc": null,
+        "description": "Pharmacy Tech",
+        "captions": []
+      }
+    ]
+  }
+}

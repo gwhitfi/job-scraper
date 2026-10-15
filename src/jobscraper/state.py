@@ -44,6 +44,7 @@ class Health:
     alerted: bool = False
     # Consecutive empty results after a non-empty run; accepted as real at EMPTY_RUNS_TO_ACCEPT.
     empty_streak: int = 0
+    last_warning: str | None = None  # most recent successful crawl needed retries
 
 
 @dataclass

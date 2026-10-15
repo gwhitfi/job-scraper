@@ -7,7 +7,7 @@ from datetime import UTC, datetime
 import anthropic
 import httpx
 
-from jobscraper import adapters, classify, dedupe, employers, locations, tracker
+from jobscraper import activity, adapters, classify, dedupe, employers, locations, tracker
 from jobscraper.config import Config
 from jobscraper.models import Company, RawPosting
 from jobscraper.notify import Digest
@@ -16,7 +16,6 @@ from jobscraper.usage import Usage
 
 log = logging.getLogger(__name__)
 
-FETCH_ATTEMPTS = 3
 RETRY_DELAYS = (5.0, 15.0)
 
 
@@ -29,17 +28,30 @@ class RunResult:
 
 
 def fetch_with_retry(
-    company: Company, client: httpx.Client, sleep: Callable[[float], None] = time.sleep
+    company: Company,
+    client: httpx.Client,
+    sleep: Callable[[float], None] = time.sleep,
+    retry_errors: list[str] | None = None,
 ) -> list[RawPosting]:
     adapter = adapters.get(company.adapter)
-    for attempt in range(FETCH_ATTEMPTS):
+    for attempt in range(len(RETRY_DELAYS) + 1):
         try:
+            activity.emit("fetch_attempt", company=company.id, attempt=attempt + 1)
             return adapter(company, client)
         except (httpx.HTTPError, ValueError) as e:
-            if attempt == FETCH_ATTEMPTS - 1:
+            if retry_errors is not None:
+                retry_errors.append(f"{type(e).__name__}: {e}")
+            activity.emit(
+                "fetch_error",
+                company=company.id,
+                attempt=attempt + 1,
+                error=f"{type(e).__name__}: {e}",
+            )
+            if attempt == len(RETRY_DELAYS):
                 raise
             log.warning("%s attempt %d failed: %s", company.id, attempt + 1, e)
-            sleep(RETRY_DELAYS[min(attempt, len(RETRY_DELAYS) - 1)])
+            activity.emit("retry", company=company.id, delay_seconds=RETRY_DELAYS[attempt])
+            sleep(RETRY_DELAYS[attempt])
     raise AssertionError("unreachable")
 
 
@@ -49,12 +61,13 @@ def fetch_company(
     regions: dict[str, tuple[str, ...]],
     sleep: Callable[[float], None] = time.sleep,
     extended: tuple[str, ...] = (),
+    retry_errors: list[str] | None = None,
 ) -> tuple[list[RawPosting], list[RawPosting]]:
     """Fetch and location-filter one company; return (kept, dropped).
 
     Kept postings outside the company's `locations` but inside `extended` get area="extended".
     """
-    postings = fetch_with_retry(company, client, sleep)
+    postings = fetch_with_retry(company, client, sleep, retry_errors)
     if not company.locations:
         return postings, []
     primary = locations.build_filter(company.locations, regions, company.remote)
@@ -107,6 +120,7 @@ def _classify_pending(
             )
         except Exception:
             log.exception("LLM classification failed, using keywords")
+            activity.emit("classification_fallback", reason="LLM failed; using keywords")
     missing = [p for p in pending if p.key not in results and not _has_llm_result(p)]
     results |= classify.classify_keywords(missing, cfg.profile)
 
@@ -146,8 +160,19 @@ def run(
     for i, company in enumerate(c for c in cfg.companies if c.enabled):
         if i:
             sleep(1.0)
+        started = time.monotonic()
+        retry_errors: list[str] = []
         try:
-            postings, _ = fetch_company(company, http, cfg.regions, sleep, cfg.extended_locations)
+            activity.emit(
+                "company_started",
+                company=company.id,
+                name=company.name,
+                adapter=adapters.platform(company),
+                url=company.url,
+            )
+            postings, dropped = fetch_company(
+                company, http, cfg.regions, sleep, cfg.extended_locations, retry_errors
+            )
             if tracker.is_suspicious_empty(state, company.id, postings):
                 raise ValueError("returned 0 postings after a non-empty run")
         except Exception as e:  # one site breaking (e.g. a redesign) mustn't stop the others
@@ -155,19 +180,43 @@ def run(
                 log.exception("%s: unexpected error", company.id)
             error = f"{type(e).__name__}: {e}"
             result.failed[company.id] = error
+            activity.emit(
+                "company_failed",
+                company=company.id,
+                error=error,
+                seconds=round(time.monotonic() - started, 2),
+            )
             log.warning("%s failed: %s", company.id, error)
             event = tracker.record_failure(state, company.id, error, now)
         else:
             result.fetched[company.id] = len(postings)
             changes = tracker.apply_results(state, company.id, postings, now)
+            activity.emit(
+                "company_completed",
+                company=company.id,
+                fetched=len(postings) + len(dropped),
+                kept=len(postings),
+                dropped=len(dropped),
+                new=len(changes.new),
+                removed=len(changes.removed),
+                seconds=round(time.monotonic() - started, 2),
+            )
             new_keys += changes.new
             removed_keys += changes.removed
-            event = tracker.record_success(state, company.id, len(postings), now)
+            warning = (
+                f"Recovered after {len(retry_errors)} failed attempt(s): {retry_errors[-1]}"
+                if retry_errors
+                else None
+            )
+            event = tracker.record_success(state, company.id, len(postings), now, warning)
         if event:
             result.digest.health.append(event)
 
     dedupe.mark_duplicates(state, cfg.companies, adapters.BOARD_ADAPTERS)
+    activity.emit("classification_started", mode="llm" if llm else "keywords")
     upgraded = _classify_pending(state, cfg, llm, result.usage)
+
+    activity.emit("classification_completed", calls=result.usage.calls, upgraded=len(upgraded))
 
     def group(key: str) -> str | None:
         p = state.postings[key]

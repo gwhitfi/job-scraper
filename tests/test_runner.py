@@ -381,3 +381,64 @@ def test_run_reports_claude_usage(fake_sites):
         1000,
         200,
     )
+
+
+def test_prisma_forbidden_keeps_postings_and_records_requests(tmp_path):
+    from jobscraper import activity, http, jsonfile
+
+    prisma = Company(
+        "prisma",
+        "Prisma Health",
+        "prisma",
+        "https://careers.prismahealth.org/jobs/",
+        date(2026, 10, 14),
+    )
+    c = Config(PROFILE, Notifications("a@b.c"), [prisma])
+    st = State()
+    tracker.apply_results(st, "prisma", [raw("r1", "Software Developer")], T0)
+
+    def forbidden(request):
+        return httpx.Response(403, text="Forbidden")
+
+    with http.client() as configured:
+        hooks = configured.event_hooks
+    with (
+        activity.Trace(tmp_path / "crawl-history.json", "crawl"),
+        httpx.Client(transport=httpx.MockTransport(forbidden), event_hooks=hooks) as client,
+    ):
+        for i in range(3):
+            result = runner.run(
+                c, st, client, llm=None, now=T0 + timedelta(hours=i * 2), sleep=lambda _: None
+            )
+            assert "403" in result.failed["prisma"]
+            assert st.postings["prisma:r1"].status == "active"
+            assert result.digest.removed == []
+    assert len(result.digest.health) == 1
+    record = jsonfile.read(tmp_path / "crawl-history.json")["runs"][0]
+    responses = [e for e in record["events"] if e["stage"] == "response"]
+    assert len(responses) == 9
+    assert all(e["status_code"] == 403 and e["company"] == "prisma" for e in responses)
+
+
+def test_successful_retry_warning_is_saved_and_cleared(monkeypatch, tmp_path):
+    from jobscraper import state as state_file
+
+    calls = []
+
+    def flaky(company, client):
+        calls.append(1)
+        if len(calls) == 1:
+            raise httpx.ReadTimeout("slow response")
+        return [raw("1", "Software Developer")]
+
+    monkeypatch.setitem(adapters.ADAPTERS, "fake_acme", flaky)
+    st = State()
+    result = runner.run(cfg("acme"), st, httpx.Client(), llm=None, now=T0, sleep=lambda d: None)
+    assert not result.failed
+    assert "slow response" in st.health["acme"].last_warning
+    assert st.health["acme"].consecutive_failures == 0
+    state_file.save(st, tmp_path)
+    st = state_file.load(tmp_path)
+    assert "Recovered after 1" in st.health["acme"].last_warning
+    runner.run(cfg("acme"), st, httpx.Client(), llm=None, now=T0, sleep=lambda d: None)
+    assert st.health["acme"].last_warning is None

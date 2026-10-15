@@ -1,9 +1,7 @@
 import re
 from datetime import UTC, datetime
-from pathlib import Path
 
-from jobscraper import jsonfile
-from jobscraper.adapters import BOARD_ADAPTERS
+from jobscraper.adapters import BOARD_ADAPTERS, platform
 from jobscraper.models import Company
 from jobscraper.state import Posting
 
@@ -26,7 +24,7 @@ def employer_key(p: Posting) -> str:
 
 def is_board(p: Posting, companies: dict[str, Company]) -> bool:
     c = companies.get(p.company_id)
-    return bool(c and c.adapter in BOARD_ADAPTERS)
+    return bool(c and platform(c) in BOARD_ADAPTERS)
 
 
 def status(p: Posting, companies: dict[str, Company], decisions: dict[str, dict]) -> str:
@@ -39,14 +37,6 @@ def status(p: Posting, companies: dict[str, Company], decisions: dict[str, dict]
     if (p.classification or {}).get("employer_check") == "verify":
         return "unverified"
     return "ok"
-
-
-def load(path: Path) -> dict[str, dict]:
-    return jsonfile.read(path)
-
-
-def save(path: Path, decisions: dict[str, dict]) -> None:
-    jsonfile.write(path, decisions)
 
 
 def decide(decisions: dict[str, dict], key: str, name: str, decision: str | None) -> None:

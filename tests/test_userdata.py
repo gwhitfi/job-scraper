@@ -1,16 +1,16 @@
 import pytest
 
-from jobscraper import userdata
+from jobscraper import jsonfile, userdata
 
 
 def test_round_trip_and_fields(tmp_path):
     path = tmp_path / "marks.json"
-    marks = userdata.load(path)
+    marks = jsonfile.read(path)
     assert marks == {}
     userdata.update(marks, "a:1", "starred", True)
     userdata.update(marks, "a:1", "note", "  call recruiter  ")
-    userdata.save(path, marks)
-    loaded = userdata.load(path)
+    jsonfile.write(path, marks)
+    loaded = jsonfile.read(path)
     assert loaded["a:1"]["starred"] is True
     assert loaded["a:1"]["note"] == "call recruiter"
 

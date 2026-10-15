@@ -5,7 +5,7 @@ from datetime import date
 
 import httpx
 import pytest
-from conftest import fixture_text
+from conftest import fixture_text, mock_client
 
 from jobscraper.adapters import (
     bamboohr,
@@ -24,10 +24,6 @@ def company(adapter: str, url: str, **options) -> Company:
     return Company(
         id="x", name="X Co", adapter=adapter, url=url, added=date(2026, 1, 1), options=options
     )
-
-
-def mock_client(handler) -> httpx.Client:
-    return httpx.Client(transport=httpx.MockTransport(handler))
 
 
 # --- html_list ---

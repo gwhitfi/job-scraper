@@ -2,11 +2,12 @@ import logging
 import re
 import time
 from datetime import date
-from urllib.parse import parse_qs, urlencode, urljoin, urlparse, urlunparse
+from urllib.parse import urljoin
 
 import httpx
 from bs4 import BeautifulSoup
 
+from jobscraper.http import with_page
 from jobscraper.models import Company, RawPosting
 
 log = logging.getLogger(__name__)
@@ -46,13 +47,6 @@ def parse(html: str, base_url: str) -> tuple[list[RawPosting], int]:
     return postings, max(pages, default=1)
 
 
-def _with_page(url: str, page: int) -> str:
-    parts = urlparse(url)
-    query = parse_qs(parts.query)
-    query["page"] = [str(page)]
-    return urlunparse(parts._replace(query=urlencode(query, doseq=True)))
-
-
 def fetch(company: Company, client: httpx.Client, delay: float = 1.0) -> list[RawPosting]:
     by_id: dict[str, RawPosting] = {}
     repeats = 0
@@ -60,7 +54,7 @@ def fetch(company: Company, client: httpx.Client, delay: float = 1.0) -> list[Ra
     while page <= min(last_page, MAX_PAGES):
         if page > 1:
             time.sleep(delay)
-        resp = client.get(_with_page(company.url, page))
+        resp = client.get(with_page(company.url, page))
         resp.raise_for_status()
         postings, last_page = parse(resp.text, company.url)
         for p in postings:

@@ -101,12 +101,15 @@ def is_suspicious_empty(state: State, company_id: str, results: list[RawPosting]
     return health.empty_streak < EMPTY_RUNS_TO_ACCEPT
 
 
-def record_success(state: State, company_id: str, count: int, now: datetime) -> HealthEvent | None:
+def record_success(
+    state: State, company_id: str, count: int, now: datetime, warning: str | None = None
+) -> HealthEvent | None:
     health = state.health.setdefault(company_id, Health())
     recovered = health.alerted
     health.consecutive_failures = 0
     health.last_success = now
     health.last_error = None
+    health.last_warning = warning
     health.last_count = count
     health.failing_since = None
     health.alerted = False

@@ -1,19 +1,8 @@
 from datetime import UTC, datetime
-from pathlib import Path
-
-from jobscraper import jsonfile
 
 # My own marks on postings, kept apart from the runner's state so runs never overwrite them.
 FIELDS = {"starred": bool, "hidden": bool, "applied": bool, "note": str}
 MAX_NOTE = 5000
-
-
-def load(path: Path) -> dict[str, dict]:
-    return jsonfile.read(path)
-
-
-def save(path: Path, marks: dict[str, dict]) -> None:
-    jsonfile.write(path, marks)
 
 
 def update(marks: dict[str, dict], key: str, field: str, value) -> dict:

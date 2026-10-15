@@ -2,7 +2,7 @@ from datetime import UTC, date, datetime
 
 import pytest
 
-from jobscraper import employers
+from jobscraper import employers, jsonfile
 from jobscraper.models import Company
 from jobscraper.state import Posting
 
@@ -64,9 +64,9 @@ def test_status():
 
 def test_round_trip_and_bad_decision(tmp_path):
     path = tmp_path / "employers.json"
-    d = employers.load(path)
+    d = jsonfile.read(path)
     employers.decide(d, "employer:afl", "AFL", "approved")
-    employers.save(path, d)
-    assert employers.load(path)["employer:afl"]["status"] == "approved"
+    jsonfile.write(path, d)
+    assert jsonfile.read(path)["employer:afl"]["status"] == "approved"
     with pytest.raises(ValueError):
         employers.decide(d, "employer:afl", "AFL", "maybe")

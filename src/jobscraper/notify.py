@@ -125,11 +125,11 @@ def render_text(d: Digest, names: dict[str, str], show_reasons: bool = False) ->
     return "\n".join(out) or "Nothing to report."
 
 
-def render_html(d: Digest, names: dict[str, str]) -> str:
+def render_alert_html(d: Digest, names: dict[str, str], page_url: str) -> str:
     out = []
-    for title, postings in d.job_sections():
-        out.append(f"<h2>{escape(title)}</h2>")
-        for source, group in _by_company(postings, names).items():
+    if d.new_exact:
+        out.append("<h2>New exact matches</h2>")
+        for source, group in _by_company(d.new_exact, names).items():
             out.append(f"<h3>{escape(source)}</h3><ul>")
             for p in group:
                 out.append(
@@ -140,17 +140,12 @@ def render_html(d: Digest, names: dict[str, str]) -> str:
                     + "</li>"
                 )
             out.append("</ul>")
-    if d.removed:
-        out.append("<h2>Removed jobs</h2><ul>")
-        for p in sorted(d.removed, key=lambda p: (p.company_id, p.title)):
-            out.append(
-                f"<li>{escape(p.title)} at {escape(_source(p, names))}, up {_days_up(p)} days</li>"
-            )
-        out.append("</ul>")
     if d.health:
         out.append("<h2>Site health</h2><ul>")
         out.extend(f"<li>{escape(_health_line(e, names | d.health_names))}</li>" for e in d.health)
         out.append("</ul>")
+    if page_url:
+        out.append(f'<p><a href="{escape(safe_url(page_url))}">Open all jobs</a></p>')
     return "<html><body>" + "".join(out) + "</body></html>"
 
 
@@ -186,14 +181,6 @@ def render_alert_text(d: Digest, names: dict[str, str], page_url: str) -> str:
     return f"{text}\nAll jobs: {page_url}\n" if page_url else text
 
 
-def render_alert_html(d: Digest, names: dict[str, str], page_url: str) -> str:
-    html = render_html(_alert_only(d), names)
-    if page_url:
-        link = f'<p><a href="{escape(page_url)}">Open all jobs</a></p>'
-        html = html.replace("</body>", link + "</body>")
-    return html
-
-
 def compose(d: Digest, names: dict[str, str], page_url: str = "") -> dict:
     """The alert's contents, in a form that can wait in the outbox."""
     return {
@@ -215,12 +202,6 @@ def to_message(alert: dict, to: str, sender: str) -> EmailMessage:
     return msg
 
 
-def build_message(
-    d: Digest, names: dict[str, str], to: str, sender: str, page_url: str = ""
-) -> EmailMessage:
-    return to_message(compose(d, names, page_url), to, sender)
-
-
 # --- outbox ---
 # Alerts wait in <state dir>/email.json until sent, so a mail problem (e.g. an expired app
 # password) is retried next run instead of blocking state from being saved.
@@ -230,10 +211,6 @@ def load_outbox(path: Path) -> dict:
     return {"pending": [], "last_sent_at": None, "last_error": None, "last_error_at": None} | (
         jsonfile.read(path)
     )
-
-
-def save_outbox(path: Path, outbox: dict) -> None:
-    jsonfile.write(path, outbox)
 
 
 def queue(outbox: dict, alert: dict) -> None:

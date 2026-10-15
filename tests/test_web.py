@@ -7,7 +7,7 @@ from pathlib import Path
 import httpx
 import pytest
 
-from jobscraper import state, web
+from jobscraper import jsonfile, state, web
 from jobscraper.config import Config, Notifications, Profile
 from jobscraper.models import Company
 from jobscraper.state import Health, Posting, State
@@ -161,6 +161,8 @@ def server(app):
     thread.start()
     yield f"http://127.0.0.1:{srv.server_address[1]}"
     srv.shutdown()
+    srv.server_close()
+    thread.join()
 
 
 def test_http_get_and_mark(server, app):
@@ -298,7 +300,7 @@ def test_email_failure_banner(app, tmp_path):
     outbox = notify.load_outbox(tmp_path / "state" / "email.json")
     notify.queue(outbox, {"subject": "s", "text": "t", "html": "h"})
     outbox["last_error"] = "SMTPAuthenticationError: 535 bad <creds>"
-    notify.save_outbox(tmp_path / "state" / "email.json", outbox)
+    jsonfile.write(tmp_path / "state" / "email.json", outbox)
     html = app.index({})
     assert "Alert email failing (1 unsent): SMTPAuthenticationError: 535 bad &lt;creds&gt;" in html
 
@@ -395,14 +397,44 @@ def test_score_tier(score, tier):
     assert web.score_tier(score) == tier
 
 
-def test_http_counts_follow_marks_and_filters(server, app):
-    before = httpx.get(server + "/api/counts").json()
-    assert before == app.counts({})
-    app.mark("acme:1", "hidden", True)
-    after = httpx.get(server + "/api/counts").json()
-    assert after["hidden"] == before["hidden"] + 1
-    assert after["relevant"] == before["relevant"] - 1
-    assert httpx.get(server + "/api/counts?q=nomatch").json()["hidden"] == 0
+@pytest.mark.parametrize(
+    ("view", "field", "value", "visible"),
+    [
+        ("exact", "starred", True, False),
+        ("relevant", "applied", True, False),
+        ("exact", "hidden", True, False),
+        ("starred", "starred", True, True),
+        ("starred", "starred", False, False),
+        ("applied", "applied", True, True),
+        ("hidden", "hidden", True, True),
+        ("exact", "note", "follow up", True),
+    ],
+)
+def test_http_marks_return_tab_membership_and_counts(server, app, view, field, value, visible):
+    response = httpx.post(
+        server + f"/api/mark?view={view}&source=companies&q=web",
+        json={"key": "acme:1", "field": field, "value": value},
+        headers={"X-Requested-With": "jobscraper"},
+    )
+    assert response.status_code == 200
+    result = response.json()
+    assert result["visible"] is visible
+    assert result["counts"][view] == int(visible)
+    assert result["counts"]["unverified"] == 0  # source/search exclude the board jobs
+    assert ("acme:1" in keys(app, view, "companies", "web")) is visible
+    # Response metadata must never become part of my saved marks.
+    assert "counts" not in json.loads(app.marks_path.read_text())["acme:1"]
+
+
+def test_http_mark_response_respects_search(server):
+    response = httpx.post(
+        server + "/api/mark?view=hidden&q=nomatch",
+        json={"key": "acme:1", "field": "hidden", "value": True},
+        headers={"X-Requested-With": "jobscraper"},
+    )
+    assert response.status_code == 200
+    assert response.json()["visible"] is False
+    assert not any(response.json()["counts"].values())
 
 
 def test_applied_jobs_move_to_applied_tab(app):
@@ -434,3 +466,167 @@ def test_no_new_badge_for_postings_from_before_badges(monkeypatch):
     monkeypatch.setattr(web, "BADGES_SINCE", NOW - timedelta(hours=2))
     old = posting("acme:1", "Dev", first_seen=NOW - timedelta(hours=3))
     assert web.new_tier(old, old.first_seen, NOW) == ""
+
+
+def test_newest_sorts_by_when_found_not_posted(app):
+    st = app.state()
+    # The board picked this one up today, days after it was posted.
+    st.postings["mus:9"].first_seen = NOW
+    st.postings["mus:9"].posted_date = date(2026, 9, 1)
+    st.postings["acme:1"].first_seen = NOW - timedelta(days=1)
+    st.postings["acme:1"].posted_date = date(2026, 10, 12)
+    html = app.index({"view": "exact", "sort": "newest"})
+    assert html.index("BI Developer") < html.index("Web Developer")
+    assert f'<span class="added">added {NOW.astimezone():%b %-d}</span>' in html
+
+
+def test_add_company_endpoint_persists_and_reloads(server, app, monkeypatch):
+    from jobscraper import discovery
+    from jobscraper.models import RawPosting
+
+    c = Company(
+        "new-co",
+        "New Co",
+        "auto",
+        "https://new.example/jobs",
+        date(2026, 10, 14),
+        options={"strategy": "generic", "settings": {"format": "jsonld"}},
+    )
+    monkeypatch.setattr(
+        discovery,
+        "inspect",
+        lambda *args, **kwargs: discovery.Discovery(
+            company=c,
+            postings=[RawPosting("1", "Developer", "SC", "https://new.example/jobs/1")],
+            message="Found 1 job.",
+        ),
+    )
+    original_config = app.config_path
+    headers = {"X-Requested-With": "jobscraper"}
+    body = {"url": c.url, "name": c.name, "locations": "SC"}
+    assert httpx.post(server + "/api/companies", json=body).status_code == 403
+    response = httpx.post(server + "/api/companies", json=body, headers=headers)
+    assert response.status_code == 200
+    assert response.json()["status"] == "added"
+    assert app.cfg.company(c.id).locations == ("SC",)
+    assert app.config_path == original_config
+    assert not app.marks_path.exists() and not app.employers_path.exists()
+    response = httpx.post(server + "/api/companies", json=body, headers=headers)
+    assert response.status_code == 400
+    assert "already" in response.text
+    reloaded = web.App(app._base_cfg, app.state_dir, app.marks_path, app.employers_path)
+    assert reloaded.cfg.company(c.id).name == "New Co"
+
+
+def test_add_company_missing_info_does_not_enable_tracking(server, app, monkeypatch):
+    from jobscraper import discovery
+
+    monkeypatch.setattr(
+        discovery,
+        "inspect",
+        lambda *args, **kwargs: discovery.Discovery(
+            message="Need the results page",
+            help=["Click Search jobs"],
+        ),
+    )
+    response = httpx.post(
+        server + "/api/companies",
+        json={"url": "https://new.example"},
+        headers={"X-Requested-With": "jobscraper"},
+    )
+    assert response.status_code == 200
+    assert response.json()["status"] == "needs_input"
+    assert not app.companies_path.exists()
+
+
+def test_add_company_form(app):
+    html = app.index({})
+    assert 'id="open-company"' in html
+    assert 'id="company-form"' in html
+    assert 'id="company-advanced"' in html
+
+
+def test_add_company_discovers_then_runner_uses_saved_recipe(app, monkeypatch):
+    from conftest import mock_client
+
+    from jobscraper import crawl, runner
+    from jobscraper.state import State
+
+    page = '<title>New Co Careers</title><a class="job" href="/jobs/123">Software Developer</a>'
+    requests = []
+
+    def handler(request):
+        requests.append(str(request.url))
+        return httpx.Response(
+            200, text="User-agent: *\nAllow: /" if request.url.path == "/robots.txt" else page
+        )
+
+    monkeypatch.setattr(crawl, "public_host", lambda url: None)
+    monkeypatch.setattr(crawl.time, "sleep", lambda delay: None)
+    monkeypatch.setattr(web.http, "client", lambda: mock_client(handler))
+    added = app.add_company({"url": "new.example/careers", "name": "New Co", "locations": "SC"})
+    assert added["status"] == "added"
+    company = app.cfg.company(added["company_id"])
+    assert company.adapter == "auto" and company.options["strategy"] == "generic"
+    cfg = Config(Profile("software developer"), Notifications("test@example.com"), [company])
+    with mock_client(handler) as client:
+        result = runner.run(cfg, State(), client, llm=None, sleep=lambda delay: None)
+    assert result.failed == {}
+    assert result.fetched[company.id] == 1
+    assert result.digest.new_exact[0].title == "Software Developer"
+    assert all("new.example" in url for url in requests)
+
+
+def test_failed_add_company_has_reviewable_log(server, app, monkeypatch):
+    from jobscraper import discovery, jsonfile
+
+    def fail(*args, **kwargs):
+        raise ValueError("Extraction failed <script>oops()</script>")
+
+    monkeypatch.setattr(discovery, "inspect", fail)
+    response = httpx.post(
+        server + "/api/companies",
+        json={"url": "new.example"},
+        headers={"X-Requested-With": "jobscraper"},
+    )
+    assert response.status_code == 400
+    assert "Log: /logs?id=" in response.text
+    record = jsonfile.read(app.marks_path.parent / "discovery-history.json")["runs"][0]
+    assert record["status"] == "failed"
+    assert not app.companies_path.exists()
+    page = httpx.get(server + "/logs?id=" + record["id"])
+    assert page.status_code == 200
+    assert "Extraction failed" in page.text and "<script>oops()" not in page.text
+    assert " open>" in page.text
+
+
+def test_tracked_companies_route_includes_website_additions(server, app):
+    from jobscraper import company_store
+
+    company_store.add(
+        app.companies_path,
+        Company(
+            "new-co",
+            "New Co",
+            "auto",
+            "https://new.example/jobs",
+            date(2026, 10, 14),
+            options={"strategy": "generic"},
+        ),
+    )
+    response = httpx.get(server + "/companies")
+    assert response.status_code == 200
+    assert "Acme" in response.text and "Move Upstate SC" in response.text
+    assert "New Co" in response.text and "Waiting for first crawl" in response.text
+    assert "Failing to crawl" in response.text and "Good" in response.text
+    assert 'href="/companies"' in app.index({})
+
+
+def test_health_only_update_invalidates_web_cache(app):
+    assert app.state().health["acme"].consecutive_failures == 0
+    path = app.state_dir / "health.json"
+    data = jsonfile.read(path)
+    data["acme"]["consecutive_failures"] = 3
+    data["acme"]["last_error"] = "HTTP 403"
+    jsonfile.write(path, data)
+    assert app.state().health["acme"].consecutive_failures == 3
