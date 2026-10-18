@@ -20,6 +20,9 @@ class Profile:
     exclude_examples: tuple[str, ...] = ()
     levels: tuple[str, ...] = ("intern", "entry", "mid")
     keywords: tuple[str, ...] = ()
+    screening_rules: str = ""
+    review_examples: tuple[str, ...] = ()
+    rules_version: str = "legacy-v1"
 
 
 @dataclass(frozen=True)

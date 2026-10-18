@@ -31,6 +31,7 @@ class RunResult:
     fetched: dict[str, int] = field(default_factory=dict)  # company_id -> postings found
     failed: dict[str, str] = field(default_factory=dict)  # company_id -> error
     usage: Usage = field(default_factory=Usage)  # Claude tokens spent this run
+    assessed: list[Posting] = field(default_factory=list)  # snapshots for shadow comparison
 
 
 def fetch_with_retry(
@@ -116,6 +117,7 @@ def _classify_pending(
     llm: anthropic.Anthropic | None,
     usage: Usage,
     checkpoint: Checkpoint | None = None,
+    assessed: list[Posting] | None = None,
 ) -> list[str]:
     """Classify postings that need it; return keys that just became relevant on an LLM retry.
 
@@ -161,6 +163,8 @@ def _classify_pending(
             continue  # stale LLM result and the LLM failed; retry next run
         prior = p.classification
         p.classification = results[p.key]
+        if assessed is not None and _has_llm_result(p):
+            assessed.append(replace(p, classification=p.classification.copy()))
         retried = prior is not None and prior.get("model") == classify.KEYWORD_MODEL
         if (
             retried
@@ -249,7 +253,7 @@ def run(
 
     dedupe.mark_duplicates(state, cfg.companies, adapters.BOARD_ADAPTERS)
     activity.emit("classification_started", mode="llm" if llm else "keywords")
-    upgraded = _classify_pending(state, cfg, llm, result.usage, checkpoint)
+    upgraded = _classify_pending(state, cfg, llm, result.usage, checkpoint, result.assessed)
 
     activity.emit("classification_completed", calls=result.usage.calls, upgraded=len(upgraded))
 

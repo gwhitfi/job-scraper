@@ -49,9 +49,11 @@ def eligible(posting: "Posting", profile, scope=None, marks: dict | None = None)
     area = scope.area(posting) if scope else posting.area
     if area is None:
         return False
+    if marks.get("group") == "industrial":
+        return False
     if marks.get("group") in ("exact", "near", "maybe"):
         return True
-    return classify.posting_group(posting, profile, scope) is not None
+    return classify.posting_group(posting, profile, scope) in ("exact", "near", "maybe")
 
 
 def serialize(value: Salary | None, model: str) -> dict:

@@ -501,3 +501,31 @@ def test_all_jobs_location_filtered_is_success_not_empty_source(fake_sites, excl
         assert s.health["acme"].empty_streak == 0
     assert s.postings["acme:1"].location == excluded_location
     assert s.postings["acme:1"].status == "removed"
+
+
+def test_assessed_snapshots_include_rejected_jobs_but_not_unchanged_jobs(fake_sites):
+    fake_sites["acme"] = [raw("1", "Forklift Operator")]
+    state = State()
+    llm = StubLLM(relevance="none")
+    first = do_run(cfg("acme"), state, llm=llm)
+    assert len(first.assessed) == 1
+    assert first.assessed[0].classification["relevance"] == "none"
+    assert first.assessed[0] is not state.postings["acme:1"]
+    assert do_run(cfg("acme"), state, hours=2, llm=llm).assessed == []
+
+
+def test_keyword_fallback_is_not_an_ai_assessment(fake_sites):
+    fake_sites["acme"] = [raw("1", "Developer")]
+    result = do_run(cfg("acme"), State(), llm=FailingLLM())
+    assert result.assessed == []
+
+
+def test_new_industrial_job_goes_to_review_digest_not_exact_alert(fake_sites):
+    from jobscraper.workflow import notify
+
+    fake_sites["acme"] = [raw("1", "Robot Programmer")]
+    result = do_run(cfg("acme"), State(), llm=StubLLM(relevance="industrial"))
+    assert [p.key for p in result.digest.new_industrial] == ["acme:1"]
+    assert result.digest.new_exact == [] and result.digest.new_near == []
+    assert not notify.needs_alert(result.digest)
+    assert result.assessed[0].classification["relevance"] == "industrial"

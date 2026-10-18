@@ -224,6 +224,9 @@ def test_prompt_lists_equivalent_titles():
         ("adjacent", "maybe", "senior", None),
         ("adjacent", "core", "unknown", "exact"),
         ("adjacent", "none", "entry", None),
+        ("adjacent", "industrial", "entry", "industrial"),
+        ("strict", "industrial", "mid", "industrial"),
+        ("adjacent", "industrial", "senior", None),
     ],
 )
 def test_match_group(mode, relevance, level, expected):
@@ -241,3 +244,43 @@ def test_keyword_short_terms_match_whole_words_only():
         "a:2": "none",
         "a:3": "core",
     }
+
+
+def test_policy_changes_invalidate_cached_assessments_and_are_stored():
+    from dataclasses import replace
+
+    base = classify.rules_fingerprint(PROFILE, "m")
+    for field, value in [
+        ("screening_rules", "No sales"),
+        ("rules_version", "v2"),
+        ("review_examples", ("robot programming",)),
+    ]:
+        profile = replace(PROFILE, **{field: value})
+        assert classify.rules_fingerprint(profile, "m") != base
+    profile = replace(PROFILE, rules_version="v2")
+    p = posting("a:1", "Robot Programmer")
+    client = fake_client([dict(id=p.key, relevance="industrial", level="mid", score=4)])
+    result = classify.classify_batch([p], profile, ACME, client)[p.key]
+    assert result["policy_version"] == "v2"
+    assert result["relevance"] == "industrial"
+    assert "salary" not in result
+    assert (
+        classify.posting_group(posting("a:2", "PLC programmer", classification=result), profile)
+        == "industrial"
+    )
+    extended = posting("a:3", "PLC programmer", area="extended", classification=result)
+    assert classify.posting_group(extended, profile) is None
+
+
+def test_policy_keyword_fallback_does_not_promote_sales_interns_or_industrial():
+    from jobscraper import config
+
+    profile = config.load().profile
+    jobs = [
+        posting("a:1", "Robot Programmer"),
+        posting("a:2", "Software Developer Intern"),
+        posting("a:3", "Technical Sales Engineer"),
+        posting("a:4", "Software Developer"),
+    ]
+    result = classify.classify_keywords(jobs, profile)
+    assert [result[p.key]["relevance"] for p in jobs] == ["industrial", "none", "none", "core"]

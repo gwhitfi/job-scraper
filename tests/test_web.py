@@ -7,6 +7,7 @@ from pathlib import Path
 import httpx
 import pytest
 
+from jobscraper.classification import jev_triage
 from jobscraper.config import Config, Notifications, Profile
 from jobscraper.models import Company
 from jobscraper.presentation import web
@@ -946,3 +947,147 @@ def test_http_bulk_move_requires_header_and_moves_selection(server, app):
     assert response.status_code == 200
     assert response.json()["moved"] == 2
     assert keys(app, "starred") == ["acme:1", "acme:2"]
+
+
+def test_industrial_is_separate_from_matches_and_can_be_manually_accepted(app):
+    from jobscraper.classification import salaries
+
+    st = app.state()
+    p = posting("acme:controls", "PLC Controls Engineer", relevance="industrial")
+    p.salary = {
+        "estimate": {
+            "minimum": 60000,
+            "maximum": 80000,
+            "period": "year",
+            "currency": "USD",
+            "confidence": "medium",
+        }
+    }
+    st.postings[p.key] = p
+    state.save(st, app.state_dir)
+    assert keys(app, "industrial") == [p.key]
+    assert p.key not in keys(app, "relevant")
+    assert p.key not in keys(app, "exact")
+    assert not salaries.eligible(p, PROFILE)
+    page = app.index({"view": "industrial"})
+    assert 'data-view="industrial"' in page
+    assert "PLC Controls Engineer" in page
+    assert "AI-estimated pay" not in page
+    assert "Use Move" in page
+    app.move([p.key], "near")
+    assert p.key not in keys(app, "industrial")
+    assert p.key in keys(app, "near")
+    assert salaries.eligible(p, PROFILE, marks={"group": "near"})
+    app.move([p.key], "industrial")
+    assert p.key in keys(app, "industrial")
+    assert not salaries.eligible(p, PROFILE, marks={"group": "industrial"})
+
+
+def test_industrial_review_does_not_bypass_geography_or_personal_marks(app):
+    from jobscraper.classification import classify
+
+    st = app.state()
+    p = posting("acme:controls", "Robot Programmer", relevance="industrial")
+    st.postings[p.key] = p
+    state.save(st, app.state_dir)
+    app.mark(p.key, "hidden", True)
+    assert p.key not in keys(app, "industrial")
+    assert p.key in keys(app, "hidden")
+    assert (
+        classify.posting_group(p, PROFILE, type("Scope", (), {"area": lambda self, job: None})())
+        is None
+    )
+
+
+def jev_record(kind, level, version="v1"):
+    from test_jev_triage import triage_response
+
+    return {"response": triage_response(kind, level, version)}
+
+
+@pytest.fixture
+def jev_app(app):
+    jsonfile.write(
+        jev_triage.store_path(app.jev_dir, "v1"),
+        {
+            "acme:1": jev_record("developer", "mid"),
+            "acme:2": jev_record("developer", "entry"),
+            "acme:4": jev_record("helpdesk", "unsure"),
+            "acme:5": jev_record("computing", "unsure"),
+        },
+    )
+    return app
+
+
+def jev_keys(app, view, version="v1"):
+    return sorted(r.posting.key for r in app.rows("jev", version) if app.in_view(r, view))
+
+
+def test_jev_page_groups_by_jev_only(jev_app):
+    assert jev_keys(jev_app, "exact") == ["acme:2"]
+    assert jev_keys(jev_app, "near") == ["acme:5"]  # Sonnet called it senior; Jev doesn't
+    assert jev_keys(jev_app, "maybe") == ["acme:1", "acme:4"]
+    assert keys(jev_app, "exact") == ["acme:1", "mus:9"]  # main page unchanged
+
+
+def test_jev_page_ignores_main_page_moves_but_keeps_marks(jev_app):
+    jev_app.move(["acme:3"], "exact")
+    jev_app.mark("acme:2", "hidden", True)
+    assert jev_keys(jev_app, "exact") == []
+    assert jev_keys(jev_app, "hidden") == ["acme:2"]
+    assert "acme:3" in keys(jev_app, "exact")
+
+
+def test_jev_page_renders_answers_and_links(jev_app):
+    html = jev_app.index({"view": "maybe"}, "jev")
+    assert "Web Developer" in html and "Forklift Operator" in html
+    assert "<strong>Jev:</strong> Developer 90% · Mid 90%" in html
+    assert "<strong>Sonnet:</strong> Exact" in html
+    assert 'href="/jev?view=exact' in html and 'href="/?view' not in html
+    assert "jev=v1" in html  # v2 has no answers yet, so links stay on v1
+    assert 'data-view="companies" ' not in html
+    assert 'id="move-mode"' not in html
+    assert "Jev answered 4 of" in html
+
+
+def test_http_jev_page_and_mark_counts(server, jev_app):
+    assert httpx.get(server + "/jev").status_code == 200
+    body = json.dumps({"key": "acme:2", "field": "starred", "value": True, "page": "/jev"})
+    headers = {"Content-Type": "application/json", "X-Requested-With": "jobscraper"}
+    resp = httpx.post(server + "/api/mark?view=exact", content=body, headers=headers)
+    assert resp.json()["counts"]["exact"] == 0
+    assert "companies" not in resp.json()["counts"]
+
+
+def test_jev_versions_are_separate_and_selectable(jev_app):
+    jsonfile.write(
+        jev_triage.store_path(jev_app.jev_dir, "v2"),
+        {
+            "acme:3": jev_record("industrial_programming", "mid", "v2"),
+            "acme:4": jev_record("code_adjacent", "entry", "v2"),
+        },
+    )
+    assert jev_app.jev_version({}) == "v2"
+    assert jev_keys(jev_app, "industrial", "v2") == ["acme:3"]
+    assert jev_keys(jev_app, "near", "v2") == ["acme:4"]
+    assert jev_keys(jev_app, "exact", "v1") == ["acme:2"]  # v1 answers untouched
+
+    html = jev_app.index({"view": "near"}, "jev")
+    assert "Code-adjacent 90% · Entry 90%" in html
+    assert 'name="jev" value="v2"' in html
+    assert "Jev questions: <a href=" in html and "<strong>v2</strong>" in html
+    v1 = jev_app.index({"view": "exact", "jev": "v1"}, "jev")
+    assert "Web Developer" not in v1 and "Data Analyst" in v1
+
+
+def test_jev_v3_drops_industrial_tab_and_flags_low_confidence(jev_app):
+    record = jev_record("industrial_automation", "entry", "v3")
+    record["response"]["answers"]["kind"]["confidence"] = 0.4
+    jsonfile.write(jev_triage.store_path(jev_app.jev_dir, "v3"), {"acme:3": record})
+    assert jev_app.jev_version({}) == "v3"  # newest version with answers
+    assert jev_keys(jev_app, "maybe", "v3") == ["acme:3"]
+    html = jev_app.index({"view": "maybe"}, "jev")
+    assert 'data-view="industrial" ' not in html
+    assert "Industrial / automation 40% · Entry 90% · Low confidence" in html
+    v2_html = jev_app.index({"view": "exact", "jev": "v1"}, "jev")
+    assert "<strong>v3</strong>" not in v2_html

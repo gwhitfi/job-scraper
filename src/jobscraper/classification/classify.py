@@ -11,7 +11,7 @@ import anthropic
 from pydantic import BaseModel
 
 from jobscraper import activity
-from jobscraper.classification import salaries
+from jobscraper.classification import policy, salaries
 from jobscraper.classification.classification_cache import Checkpoint
 from jobscraper.classification.usage import Usage
 from jobscraper.config import DEFAULT_MODEL, Profile
@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 BATCH_SIZE = 50  # keeps each reply well under max_tokens
 KEYWORD_MODEL = "keywords"  # marks fallback results so they get retried with the LLM
 
-Relevance = Literal["core", "adjacent", "maybe", "none"]
+Relevance = Literal["core", "adjacent", "maybe", "none", "industrial"]
 Level = Literal["intern", "entry", "mid", "senior", "lead", "unknown"]
 Score = Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 EmployerCheck = Literal["ok", "verify"]
@@ -46,21 +46,13 @@ class Results(BaseModel):
     results: list[Result]
 
 
-SYSTEM = """\
-You screen job postings for one job seeker. For each posting, judge mainly from the \
-title, using the company, category, and summary to tell what kind of work it is:
-
-relevance:
-- "core": the target role, or the same job under another name or abbreviation (the \
-seeker lists equivalent titles; treat close variants of those the same way)
-- "adjacent": a related role the seeker listed as acceptable, or one very similar to those
-- "maybe": could plausibly be core or adjacent, but the posting doesn't say enough to tell
-- "none": clearly not a fit, including roles the seeker excluded
-
-Adjacent roles must be in the same field as the target role. Sharing a word with it or \
-with an acceptable role is not enough: for a software target, a manufacturing "QA \
-Engineer" or "Quality Technician" is "none".
-
+SYSTEM = (
+    "You screen job postings for one job seeker.\n\n"
+    + policy.GUIDANCE
+    + "\nRelevance choices:\n"
+    + "\n".join(f'- "{name}": {description}' for name, description in policy.CRITERIA.items())
+    + "\n\n"
+    + """\
 score: how similar the work is to the target role, 1-10, ignoring seniority:
 - 10: the target role or an equivalent title
 - 7-9: mostly the same work (e.g. for software developer: QA automation, DevOps, full-stack)
@@ -85,6 +77,7 @@ employer_note: at most 12 words on why, or "" when "ok".
 For each posting, first write a reason (at most 20 words) saying what kind of work the job \
 is, then give score, relevance, level, employer_note, and employer_check. Return one result \
 per posting, using its id."""
+)
 
 
 SUMMARY_CHARS = 300
@@ -106,6 +99,9 @@ def _prompt(postings: list[Posting], profile: Profile, companies: dict[str, Comp
         f"Acceptable adjacent roles: {', '.join(profile.adjacent_examples) or 'none listed'}",
         f"Excluded roles: {', '.join(profile.exclude_examples) or 'none listed'}",
         f"Helpful keywords: {', '.join(profile.keywords) or 'none listed'}",
+        f"Screening rules version: {profile.rules_version}",
+        f"Screening rules: {profile.screening_rules or 'Use the relevance definitions'}",
+        f"Industrial/controls manual review: {', '.join(profile.review_examples) or 'none listed'}",
         "",
         "Postings:",
     ]
@@ -128,6 +124,9 @@ PROMPT_FIELDS = (
     "adjacent_examples",
     "exclude_examples",
     "keywords",
+    "screening_rules",
+    "review_examples",
+    "rules_version",
 )
 
 
@@ -280,6 +279,7 @@ def classify_batch(
             "employer_note": r.employer_note,
             "model": model,
             "rules": rules,
+            "policy_version": profile.rules_version,
             "classified_at": now,
             **(
                 {"salary": salaries.serialize(r.salary, model)}
@@ -315,16 +315,27 @@ def classify_keywords(postings: list[Posting], profile: Profile) -> dict[str, di
     """Rough title-only fallback for when the LLM is unavailable."""
     core = _words_pattern((profile.target_role, *profile.core_examples, *profile.keywords))
     adjacent = _words_pattern(profile.adjacent_examples)
+    excluded = _words_pattern(profile.exclude_examples)
     now = datetime.now(UTC).isoformat()
     out = {}
     for p in postings:
-        if core.search(p.title):
+        level = next((lvl for lvl, pat in _LEVEL_PATTERNS if pat.search(p.title)), "unknown")
+        if profile.screening_rules and (
+            level == "intern" or re.search(r"\b(?:sales|pre-?sales)\b", p.title, re.I)
+        ):
+            relevance = "none"  # Conservative fallback; AI retries with full eligibility rules.
+        elif profile.review_examples and re.search(
+            r"\b(?:plc|controls?|robot(?:ics)?|scada|industrial automation)\b", p.title, re.I
+        ):
+            relevance = "industrial"
+        elif excluded.search(p.title):
+            relevance = "none"
+        elif core.search(p.title):
             relevance = "core"
         elif adjacent.search(p.title):
             relevance = "adjacent"
         else:
             relevance = "none"
-        level = next((lvl for lvl, pat in _LEVEL_PATTERNS if pat.search(p.title)), "unknown")
         out[p.key] = {
             "relevance": relevance,
             "level": level,
@@ -342,15 +353,15 @@ def needs_classification(posting: Posting, rules: str) -> bool:
     return c is None or c.get("model") == KEYWORD_MODEL or c.get("rules") != rules
 
 
-MATCH_GROUPS = {"core": "exact", "adjacent": "near", "maybe": "maybe"}
+MATCH_GROUPS = {"core": "exact", "adjacent": "near", "maybe": "maybe", "industrial": "industrial"}
 
 
 def match_group(classification: dict | None, profile: Profile) -> str | None:
-    """The group ("exact", "near", "maybe") for postings worth showing; None for the rest."""
+    """A match/review group for postings worth showing; None for excluded jobs."""
     if not classification:
         return None
     group = MATCH_GROUPS.get(classification["relevance"])
-    if group is None or (profile.mode == "strict" and group != "exact"):
+    if group is None or (profile.mode == "strict" and group not in ("exact", "industrial")):
         return None
     # An unknown level isn't evidence of a mismatch, so keep it.
     level = classification["level"]

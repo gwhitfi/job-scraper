@@ -11,8 +11,10 @@ def update(marks: dict[str, dict], key: str, field: str, value) -> dict:
         raise ValueError(f"Unknown field {field!r}")
     if not isinstance(value, FIELDS[field]):
         raise ValueError(f"{field} must be {FIELDS[field].__name__}")
-    if field == "group" and value not in ("", "exact", "near", "maybe"):
-        raise ValueError("Choose Exact, Close, Probably not, or the AI rating")
+    if field == "group" and value not in ("", "exact", "near", "maybe", "industrial"):
+        raise ValueError(
+            "Choose Exact, Close, Probably not, Industrial / controls, or the AI rating"
+        )
     if field == "note":
         value = value.strip()[:MAX_NOTE]
     entry = marks.setdefault(key, {})

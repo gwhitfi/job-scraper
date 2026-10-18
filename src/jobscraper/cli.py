@@ -6,10 +6,18 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import anthropic
+import httpx
 from dotenv import find_dotenv, load_dotenv
 
 from jobscraper import activity, config
-from jobscraper.classification import classification_cache, classify, usage
+from jobscraper.classification import (
+    classification_cache,
+    classify,
+    jev,
+    jev_triage,
+    shadow,
+    usage,
+)
 from jobscraper.geography import locations
 from jobscraper.presentation import web
 from jobscraper.scraping import http
@@ -163,6 +171,10 @@ def _run(args: argparse.Namespace, trace: activity.Trace) -> None:
     if not args.no_email:
         _send_alerts(cfg, result.digest, names, args.state_dir / "email.json")
     checkpoint.finish(st.postings)
+    if not args.no_llm:
+        shadow.run(result.assessed, cfg, os.environ.get("JEV_API_KEY", ""))
+        jev_key = os.environ.get("JEV_API_KEY", "")
+        jev_triage.run(st.postings.values(), cfg, args.data_dir / "jev", jev_key)
 
 
 def _send_alerts(cfg: config.Config, digest: notify.Digest, names: dict, outbox_path: Path) -> None:
@@ -249,6 +261,74 @@ def cmd_serve(args: argparse.Namespace) -> None:
         server.serve_forever()
 
 
+def cmd_compare_jev(args: argparse.Namespace) -> None:
+    if args.limit < 0:
+        raise SystemExit("--limit must be non-negative (0 means all)")
+    published = args.data_dir / "config.toml"
+    path = args.config
+    if path == config.DEFAULT_PATH and published.exists():
+        path = published
+    cfg = company_store.merge(config.load(path), args.data_dir / "companies.json")
+    postings = jev.select_postings(
+        state.load(args.state_dir).postings, args.limit, args.include_removed
+    )
+    if not postings:
+        raise SystemExit("No eligible saved AI evaluations to compare")
+    directory = args.data_dir / "comparisons" / "jev"
+    print(f"Selected {len(postings)} saved evaluations; reports: {directory}", flush=True)
+    if args.dry_run:
+        print("Dry run: no API calls or file writes")
+        return
+    key = os.environ.get("JEV_API_KEY", "").strip()
+    if not key:
+        raise SystemExit("Set JEV_API_KEY in .env or the environment")
+    try:
+        with httpx.Client(headers={"Authorization": f"Bearer {key}"}, timeout=30) as client:
+            report = jev.compare(postings, cfg, directory, client, args.model)
+    except (RuntimeError, ValueError) as exc:
+        raise SystemExit(str(exc)) from None
+    print(f"Agreed: {report['agreed']}/{report['compared']}; new calls: {report['new_calls']}")
+    print(f"Potential missed matches to review: {report['potential_missed_matches']}")
+    print(f"Report: {directory / 'report.md'}")
+
+
+def cmd_jev_triage(args: argparse.Namespace) -> None:
+    if args.limit < 0:
+        raise SystemExit("--limit must be non-negative (0 means all)")
+    published = args.data_dir / "config.toml"
+    path = args.config
+    if path == config.DEFAULT_PATH and published.exists():
+        path = published
+    cfg = company_store.merge(config.load(path), args.data_dir / "companies.json")
+    postings = state.load(args.state_dir).postings
+    store = jev_triage.store_path(args.data_dir / "jev", args.version)
+    waiting = jev_triage.pending(postings.values(), cfg, jsonfile.read(store), args.version)
+    todo = min(len(waiting), args.limit) if args.limit else len(waiting)
+    print(
+        f"Questions {args.version}: {len(waiting)} jobs awaiting Jev; this run asks about "
+        f"{todo}. Store: {store}"
+    )
+    if args.dry_run:
+        print("Dry run: no API calls or file writes")
+        return
+    key = os.environ.get("JEV_API_KEY", "").strip()
+    if not key:
+        raise SystemExit("Set JEV_API_KEY in .env or the environment")
+
+    def progress(done: int, total: int) -> None:
+        if done % 50 == 0 or done == total:
+            print(f"  {done}/{total}", flush=True)
+
+    try:
+        with httpx.Client(headers={"Authorization": f"Bearer {key}"}, timeout=30) as client:
+            done = jev_triage.collect(
+                postings.values(), cfg, store, client, args.limit, progress, args.version
+            )
+    except RuntimeError as exc:
+        raise SystemExit(f"{exc}. Finished answers are saved; rerun to continue.") from None
+    print(f"Saved {done} Jev answers. Compare on the page at /jev?jev={args.version}.")
+
+
 def main() -> None:
     # Real environment variables (e.g. Actions secrets) take precedence over .env.
     load_dotenv(find_dotenv(usecwd=True))
@@ -293,6 +373,25 @@ def main() -> None:
     test.add_argument("company_id")
     test.add_argument("--data-dir", type=Path, default=DATA_DIR)
     test.set_defaults(func=cmd_test)
+
+    compare = sub.add_parser("compare-jev", help="Compare Jev with saved AI relevance evaluations")
+    compare.add_argument("--data-dir", type=Path, default=DATA_DIR)
+    compare.add_argument("--limit", type=int, default=20, help="Balanced sample size; 0 for all")
+    compare.add_argument("--include-removed", action="store_true")
+    compare.add_argument("--model", default=jev.MODEL)
+    compare.add_argument(
+        "--dry-run", action="store_true", help="Select only; no API calls or writes"
+    )
+    compare.set_defaults(func=cmd_compare_jev)
+
+    triage = sub.add_parser(
+        "jev-triage", help="Ask Jev each job's type and level for the /jev page"
+    )
+    triage.add_argument("--data-dir", type=Path, default=DATA_DIR)
+    triage.add_argument("--limit", type=int, default=0, help="Most jobs to ask about; 0 for all")
+    triage.add_argument("--dry-run", action="store_true", help="Count only; no API calls or writes")
+    triage.add_argument("--version", choices=list(jev_triage.VERSIONS), default=jev_triage.LATEST)
+    triage.set_defaults(func=cmd_jev_triage)
 
     args = parser.parse_args()
     if args.state_dir is None:

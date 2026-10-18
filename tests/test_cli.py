@@ -181,3 +181,35 @@ def test_dry_run_writes_no_logs_or_state(setup, monkeypatch):
     )
     assert {p.name: p.read_bytes() for p in state_dir.iterdir()} == before
     assert sent == []
+
+
+def test_shadow_runs_after_state_is_saved_and_is_skipped_for_dry_runs(setup, monkeypatch):
+    from argparse import Namespace
+
+    from test_runner import StubLLM
+
+    state_dir, _, _ = setup
+    monkeypatch.setattr(cli, "_llm_client", lambda enabled: StubLLM() if enabled else None)
+    seen = []
+
+    def shadow(postings, cfg, key):
+        assert "acme:1" in state.load(state_dir).postings
+        seen.append(postings)
+
+    monkeypatch.setattr(cli.shadow, "run", shadow)
+    args = Namespace(
+        config=state_dir.parent / "config.toml",
+        state_dir=state_dir,
+        data_dir=state_dir.parent / "data",
+        dry_run=True,
+        no_llm=False,
+        no_email=True,
+    )
+    cli.cmd_run(args)
+    assert seen == []
+    args.dry_run = False
+    cli.cmd_run(args)
+    assert len(seen) == 1 and [p.key for p in seen[0]] == ["acme:1"]
+    args.no_llm = True
+    cli.cmd_run(args)
+    assert len(seen) == 1

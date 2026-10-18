@@ -2,6 +2,7 @@ import json
 import logging
 import shlex
 import threading
+from collections import Counter
 from dataclasses import dataclass, field, replace
 from datetime import UTC, datetime, timedelta
 from html import escape
@@ -14,7 +15,7 @@ import httpx
 
 from jobscraper import activity, adapters
 from jobscraper import config as config_file
-from jobscraper.classification import classify, salaries, usage
+from jobscraper.classification import classify, jev_triage, salaries, usage
 from jobscraper.config import Config
 from jobscraper.geography import distance, locations
 from jobscraper.presentation import onboarding, tracked
@@ -42,6 +43,7 @@ VIEWS = {
     "exact": "Exact",
     "near": "Close",
     "maybe": "Probably not",
+    "industrial": "Industrial / controls",
     "relevant": "All matches",
     "unverified": "Unverified",
     "starred": "Starred",
@@ -50,6 +52,17 @@ VIEWS = {
     "blocked": "Blocked",
     "companies": "Companies",
 }
+# The /jev page groups by Jev's answers alone, so it has no company tab.
+JEV_VIEWS = {v: label for v, label in VIEWS.items() if v != "companies"}
+
+
+def jev_views(version: str) -> dict[str, str]:
+    if jev_triage.has_industrial_tab(version):
+        return JEV_VIEWS
+    return {v: label for v, label in JEV_VIEWS.items() if v != "industrial"}
+
+
+PAGES = {"sonnet": "/", "jev": "/jev"}
 SOURCES = {"all": "All sources", "companies": "Company sites", "boards": "Job boards"}
 SORTS = {
     "newest": "Newest",
@@ -77,7 +90,9 @@ REVERSE_SORT = dict(
         strict=True,
     )
 )
-MOVE_DESTINATIONS = frozenset(("exact", "near", "maybe", "starred", "applied", "hidden"))
+MOVE_DESTINATIONS = frozenset(
+    ("exact", "near", "maybe", "industrial", "starred", "applied", "hidden")
+)
 EMPLOYER_ACTIONS = {"approve": "approved", "block": "blocked", "clear": None}
 
 
@@ -93,6 +108,10 @@ class Row:
     # Where else this job is listed, as (board name, url).
     also_on: list[tuple[str, str]] = field(default_factory=list)
     miles: float | None = None  # from [web] home; None for remote or unknown places
+    evaluator: str = "sonnet"  # which page grouped this row
+    jev: dict | None = None  # Jev triage record, on the /jev page
+    jev_version: str = jev_triage.LATEST
+    sonnet_group: str | None = None  # Sonnet's group, shown on /jev for comparison
 
 
 class App:
@@ -108,6 +127,8 @@ class App:
         self.marks_path = marks_path
         self.employers_path = employers_path
         self.companies_path = marks_path.parent / "companies.json"
+        self.jev_dir = marks_path.parent / "jev"
+        self._triage: dict[str, tuple[int, dict]] = {}
         self.discovery_lock = threading.Lock()
         self._base_cfg = cfg
         self.config_path = config_path  # reloaded when it changes, if given
@@ -215,8 +236,32 @@ class App:
             self._cache = (mtime, state.load(self.state_dir))
         return self._cache[1]
 
-    def rows(self) -> list[Row]:
+    def triage(self, version: str) -> dict:
+        path = jev_triage.store_path(self.jev_dir, version)
+        mtime = path.stat().st_mtime_ns if path.exists() else 0
+        if version not in self._triage or self._triage[version][0] != mtime:
+            self._triage[version] = (mtime, jsonfile.read(path))
+        return self._triage[version][1]
+
+    def jev_versions(self) -> list[str]:
+        """Question versions with saved answers; the latest one is shown even before then."""
+        return [
+            v
+            for v in jev_triage.VERSIONS
+            if v == jev_triage.LATEST or jev_triage.store_path(self.jev_dir, v).exists()
+        ]
+
+    def jev_version(self, query: dict[str, str]) -> str:
+        if query.get("jev") in self.jev_versions():
+            return query["jev"]
+        started = [
+            v for v in jev_triage.VERSIONS if jev_triage.store_path(self.jev_dir, v).exists()
+        ]
+        return started[-1] if started else jev_triage.LATEST
+
+    def rows(self, evaluator: str = "sonnet", version: str = jev_triage.LATEST) -> list[Row]:
         st = self.state()
+        triage = self.triage(version) if evaluator == "jev" else {}
         marks = jsonfile.read(self.marks_path)
         decisions = jsonfile.read(self.employers_path)
         duplicates: dict[str, list[tuple[str, str]]] = {}
@@ -231,7 +276,11 @@ class App:
             personal = marks.get(p.key, {})
             scope = self.scopes.get(p.company_id)
             group = classify.posting_group(p, self.cfg.profile, scope)
-            if (
+            sonnet_group = group
+            if evaluator == "jev":
+                # Moves made on the main page are judgments of Sonnet's tabs, so they don't apply.
+                group = jev_triage.posting_group(p, triage.get(p.key), scope, version)
+            elif (
                 personal.get("group")
                 and not p.duplicate_of
                 and (scope is None or scope.area(p) is not None)
@@ -248,6 +297,10 @@ class App:
                     employer_key=employers.employer_key(p),
                     also_on=duplicates.get(p.key, []),
                     miles=distance.miles_from(self.home, p.location),
+                    evaluator=evaluator,
+                    jev=triage.get(p.key),
+                    jev_version=version,
+                    sonnet_group=sonnet_group,
                 )
             )
         return out
@@ -287,14 +340,16 @@ class App:
         ):
             raise ValueError("Select between 1 and 500 postings")
         if destination not in MOVE_DESTINATIONS:
-            raise ValueError("Choose Exact, Close, Probably not, Starred, Applied, or Hidden")
+            raise ValueError(
+                "Choose a match tab, Industrial / controls, Starred, Applied, or Hidden"
+            )
         self.reload_config()
         keys = list(dict.fromkeys(keys))
         rows = {r.posting.key: r for r in self.rows()}
         for key in keys:
             if key not in rows:
                 raise KeyError(key)
-            if destination in ("exact", "near", "maybe"):
+            if destination in ("exact", "near", "maybe", "industrial"):
                 row = rows[key]
                 p = row.posting
                 scope = self.scopes.get(p.company_id)
@@ -311,7 +366,7 @@ class App:
         with self.lock:
             marks = jsonfile.read(self.marks_path)
             for key in keys:
-                if destination in ("exact", "near", "maybe"):
+                if destination in ("exact", "near", "maybe", "industrial"):
                     userdata.update(marks, key, "group", destination)
                     for field in ("hidden", "starred", "applied"):
                         userdata.update(marks, key, field, False)
@@ -348,7 +403,7 @@ class App:
         # Starred jobs move to the Starred tab instead of the match tabs.
         if starred or r.employer_status in ("unverified", "blocked"):
             return False
-        return view == "relevant" or r.group == view
+        return (view == "relevant" and r.group != "industrial") or r.group == view
 
     @staticmethod
     def in_source(r: Row, source: str) -> bool:
@@ -368,6 +423,15 @@ class App:
         added = -p.first_seen.timestamp()
         posted = -(p.posted_date.toordinal() if p.posted_date else 0)
         title = p.title.casefold()
+        if sort in ("relevant", "least_relevant") and r.evaluator == "jev":
+            probs = r.jev["response"]["answers"]["kind"]["probabilities"] if r.jev else {}
+            sign = 1 if sort == "least_relevant" else -1
+            return (
+                not probs,
+                *(sign * probs.get(k, 0) for k in jev_triage.VERSIONS[r.jev_version].sort_kinds),
+                added,
+                title,
+            )
         if sort in ("relevant", "least_relevant"):
             score = (p.classification or {}).get("score")
             return (
@@ -386,7 +450,11 @@ class App:
         if sort in ("salary", "salary_lowest"):
             salary = (
                 salaries.annual_floor(p)
-                if (r.group and not r.marks.get("hidden") and r.employer_status != "blocked")
+                if (
+                    r.group in ("exact", "near", "maybe")
+                    and not r.marks.get("hidden")
+                    and r.employer_status != "blocked"
+                )
                 else None
             )
             return (
@@ -432,14 +500,24 @@ class App:
 
     # --- pages ---
 
-    def select(self, query: dict[str, str]) -> tuple[list[Row], dict[str, int]]:
+    def select(
+        self, query: dict[str, str], evaluator: str = "sonnet"
+    ) -> tuple[list[Row], dict[str, int]]:
         """Rows in the selected tab and counts for every tab, using the same filters."""
         self.reload_config()
-        view = query.get("view") if query.get("view") in VIEWS else "exact"
+        views = jev_views(self.jev_version(query)) if evaluator == "jev" else VIEWS
+        view = query.get("view") if query.get("view") in views else "exact"
         source = query.get("source") if query.get("source") in SOURCES else "all"
         q = query.get("q", "").strip()
-        scoped = [r for r in self.rows() if self.in_source(r, source) and self.matches_query(r, q)]
-        counts = {v: sum(self.in_view(r, v) for r in scoped) for v in VIEWS}
+        version = self.jev_version(query)
+        scoped = [
+            r
+            for r in self.rows(evaluator, version)
+            if self.in_source(r, source) and self.matches_query(r, q)
+        ]
+        counts = {v: sum(self.in_view(r, v) for r in scoped) for v in views}
+        if evaluator == "jev":
+            return [r for r in scoped if self.in_view(r, view)], counts
         counts["companies"] = len(self.directory_companies(source, q, scoped))
         if view == "companies":
             return [
@@ -449,14 +527,36 @@ class App:
             ], counts
         return [r for r in scoped if self.in_view(r, view)], counts
 
-    def index(self, query: dict[str, str]) -> str:
-        view = query.get("view") if query.get("view") in VIEWS else "exact"
+    def index(self, query: dict[str, str], evaluator: str = "sonnet") -> str:
+        views = jev_views(self.jev_version(query)) if evaluator == "jev" else VIEWS
+        view = query.get("view") if query.get("view") in views else "exact"
         source = query.get("source") if query.get("source") in SOURCES else "all"
         sort = query.get("sort") if query.get("sort") in SORTS else "newest"
         q = query.get("q", "").strip()
-        shown, counts = self.select(query)
+        shown, counts = self.select(query, evaluator)
         shown.sort(key=lambda r: self.sort_key(r, sort))
-        return render_page(self, view, source, q, sort, counts, shown, query.get("company", ""))
+        return render_page(
+            self,
+            view,
+            source,
+            q,
+            sort,
+            counts,
+            shown,
+            query.get("company", ""),
+            evaluator,
+            self.jev_version(query),
+        )
+
+    def jev_comparison(self, version: str) -> tuple[Counter, int]:
+        """Jev's group against Sonnet's for in-scope active jobs, ignoring personal marks."""
+        scopes = self.scopes
+        matrix: Counter = Counter()
+        for r in self.rows("jev", version):
+            if jev_triage.in_scope(r.posting, scopes):
+                jev_group = (r.group or "hidden") if r.jev else "pending"
+                matrix[jev_group, r.sonnet_group or "hidden"] += 1
+        return matrix, sum(n for (j, _), n in matrix.items() if j == "pending")
 
 
 def matches_text(hay: str, query: str) -> bool:
@@ -526,13 +626,23 @@ def _font_select(slot: str, label: str) -> str:
     )
 
 
-def _link(view: str, source: str, q: str, sort: str, company: str = "") -> str:
+def _link(
+    view: str,
+    source: str,
+    q: str,
+    sort: str,
+    company: str = "",
+    base: str = "/",
+    version: str = "",
+) -> str:
     params = {"view": view, "source": source, "sort": sort}
+    if version:
+        params["jev"] = version
     if company:
         params["company"] = company
     if q:
         params["q"] = q
-    return "/?" + urlencode(params)
+    return base + "?" + urlencode(params)
 
 
 def _last_update(app: App) -> datetime | None:
@@ -635,18 +745,22 @@ def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
         badges.append('<span class="badge closed">Closed</span>')
     if p.area == "extended":
         badges.append('<span class="badge outside">Outside Upstate</span>')
-    score = c.get("score")
+    jev_page = r.evaluator == "jev"
+    # On /jev the score, level and reason are Sonnet's, so they're shown labeled instead.
+    score = None if jev_page else c.get("score")
     tier = score_tier(score)
     score_html = (
         f'<span class="score" title="Similarity to target role">{score}/10</span>' if score else ""
     )
     when = f"posted {p.posted_date:%b %-d}" if p.posted_date else "posting date unknown"
-    level = c.get("level", "unknown")
+    level = "unknown" if jev_page else c.get("level", "unknown")
     far = f"{r.miles:.0f} mi" if r.miles is not None else ""
     meta_parts = [escape(x) for x in (p.location, far, level if level != "unknown" else "") if x]
     meta_parts.append(f'<span class="posted">{escape(when)}</span>')
     meta = " · ".join(meta_parts)
     reason = escape(c.get("reason", ""))
+    if jev_page and reason:
+        reason = f"<strong>Sonnet:</strong> {reason}"
     note = escape(r.marks.get("note", ""))
     key = escape(p.key)
     href = escape(notify.safe_url(p.url))
@@ -678,11 +792,14 @@ def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
   <p class="meta">{meta}</p>
   {
         salaries.card(p)
-        if r.group and not r.marks.get("hidden") and r.employer_status != "blocked"
+        if r.group in ("exact", "near", "maybe")
+        and not r.marks.get("hidden")
+        and r.employer_status != "blocked"
         else ""
     }
   {f'<div class="badges">{"".join(badges)}</div>' if badges else ""}
   {_also_on(r)}
+  {_jev_line(r) if jev_page else ""}
   {f'<p class="reason">{reason}</p>' if reason else ""}
   {_employer_panel(r)}
   <div class="actions">
@@ -696,6 +813,62 @@ def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
     <span class="saved" aria-live="polite"></span>
   </details>
 </article>"""
+
+
+def _jev_line(r: Row) -> str:
+    """Jev's two answers with confidence, next to Sonnet's call on the same job."""
+    c = r.posting.classification or {}
+    sonnet = VIEWS[r.sonnet_group] if r.sonnet_group else "Not shown"
+    if c.get("score"):
+        sonnet += f" ({c['score']}/10"
+        sonnet += f", {c['level']})" if c.get("level", "unknown") != "unknown" else ")"
+    if not r.jev:
+        jev = "pending"
+    else:
+        answers = r.jev["response"]["answers"]
+        kind, level = answers["kind"], answers["level"]
+        jev = (
+            f"{jev_triage.VERSIONS[r.jev_version].kind_labels[kind['choice']]} "
+            f"{kind['confidence']:.0%} · "
+            f"{jev_triage.LEVEL_LABELS[level['choice']]} {level['confidence']:.0%}"
+        )
+        if kind["confidence"] < jev_triage.LOW_CONFIDENCE:
+            jev += " · Low confidence"
+    return (
+        f'<p class="jev-line"><span><strong>Jev:</strong> {escape(jev)}</span>'
+        f"<span><strong>Sonnet:</strong> {escape(sonnet)}</span></p>"
+    )
+
+
+def _jev_summary(app: App, version: str, view: str, source: str, q: str, sort: str) -> str:
+    picker = " · ".join(
+        f"<strong>{v}</strong>"
+        if v == version
+        else f'<a href="{escape(_link(view, source, q, sort, base="/jev", version=v))}">{v}</a>'
+        for v in app.jev_versions()
+    )
+    matrix, waiting = app.jev_comparison(version)
+    rows = ("exact", "near", "maybe", "industrial", "hidden", "pending")
+    if not jev_triage.has_industrial_tab(version):
+        rows = tuple(j for j in rows if j != "industrial")
+    cols = ("exact", "near", "maybe", "industrial", "hidden")
+    label = VIEWS | {"hidden": "Not shown", "pending": "Awaiting Jev"}
+    head = "".join(f"<th>{label[c]}</th>" for c in cols)
+    body = "".join(
+        f"<tr><th>{label[j]}</th>" + "".join(f"<td>{matrix[j, c]}</td>" for c in cols) + "</tr>"
+        for j in rows
+    )
+    total = sum(matrix.values())
+    return (
+        '<details class="jev-summary"><summary>Jev answered '
+        f"{total - waiting} of {total} current jobs"
+        + (f" · {waiting} awaiting Jev" if waiting else "")
+        + " · compare with Sonnet</summary>"
+        "<table><thead><tr><th>Jev ↓ / Sonnet →</th>"
+        f"{head}</tr></thead><tbody>{body}</tbody></table>"
+        "<p>Counts ignore stars, hides and moves. Neither answer is ground truth.</p></details>"
+        f'<p class="jev-versions">Jev questions: {picker}</p>'
+    )
 
 
 def _also_on(r: Row) -> str:
@@ -759,15 +932,22 @@ def render_page(
     counts: dict[str, int],
     shown: list[Row],
     company: str = "",
+    evaluator: str = "sonnet",
+    version: str = jev_triage.LATEST,
 ) -> str:
     now = datetime.now(UTC)
     latest_check = _last_update(app)
+    jev_page = evaluator == "jev"
+    base = PAGES[evaluator]
+    link_version = version if jev_page else ""
+    views = jev_views(version) if jev_page else VIEWS
     tabs = "".join(
         f'<a class="tab{" active" if v == view else ""}" data-view="{v}" '
         f"{'aria-current=page ' if v == view else ''}"
-        f'data-move-target="{v if v in MOVE_DESTINATIONS else ""}" '
-        f'href="{escape(_link(v, source, q, sort))}">{label} <span>{counts[v]}</span></a>'
-        for v, label in VIEWS.items()
+        f'data-move-target="{v if v in MOVE_DESTINATIONS and not jev_page else ""}" '
+        f'href="{escape(_link(v, source, q, sort, base=base, version=link_version))}">'
+        f"{label} <span>{counts[v]}</span></a>"
+        for v, label in views.items()
     )
     source_opts = "".join(
         f'<option value="{s}"{" selected" if s == source else ""}>{label}</option>'
@@ -778,6 +958,16 @@ def render_page(
         for k, label in SORTS.items()
     )
     cards = "".join(_card(r, now, latest_check) for r in shown)
+    if view == "industrial" and jev_page:
+        cards = (
+            '<p class="review-intro">Industrial programming, automation and controls jobs Jev '
+            "found, listed so you can see they exist.</p>"
+        ) + cards
+    elif view == "industrial":
+        cards = (
+            '<p class="review-intro">Industrial programming, automation and controls roles '
+            "for your review. Use Move to mark a job Exact or Close, or Hide it.</p>"
+        ) + cards
     if view == "companies":
         if company in app.companies:
             name = app.cfg.health_names()[company]
@@ -790,6 +980,8 @@ def render_page(
         else:
             cards = company_directory(app, source, q, sort)
     cards = cards or '<p class="empty">Nothing here.</p>'
+    if jev_page:
+        cards = _jev_summary(app, version, view, source, q, sort) + cards
     return PAGE.format(
         head_script=HEAD_SCRIPT,
         onboarding_form=onboarding.FORM.format(
@@ -805,10 +997,16 @@ def render_page(
         font_head=_font_select("head", "Company &amp; position"),
         font_body=_font_select("body", "Rest of page"),
         updated=escape(_updated(app)),
+        title="Job Scraper · Jev" if jev_page else "Job Scraper",
+        page_link=(
+            '<a class="btn" href="/">Main page</a>'
+            if jev_page
+            else '<a class="btn" href="/jev">Jev page</a>'
+        ),
         banner=_banners(app, now),
         tabs=tabs,
         view=escape(view),
-        view_label=escape(VIEWS[view]),
+        view_label=escape(views[view]),
         source_opts=source_opts,
         sort_opts=sort_opts,
         q=escape(q),
@@ -819,16 +1017,26 @@ def render_page(
             '<span id="move-count" aria-live="polite">0 selected</span>'
             '<button type="button" class="btn" id="select-all">Select all</button></div>'
             '<p id="move-status" role="status" hidden></p></div>'
-            if shown
+            if shown and not jev_page
             else ""
         ),
         company_input=(
             f'<input type="hidden" name="company" value="{escape(company, quote=True)}">'
             if view == "companies" and company in app.companies
+            else f'<input type="hidden" name="jev" value="{escape(version)}">'
+            if jev_page
             else ""
         ),
         reverse_link=escape(
-            _link(view, source, q, REVERSE_SORT[sort], company if view == "companies" else "")
+            _link(
+                view,
+                source,
+                q,
+                REVERSE_SORT[sort],
+                company if view == "companies" else "",
+                base,
+                link_version,
+            )
         ),
         reverse_label=escape(SORTS[REVERSE_SORT[sort]]),
         footer=escape(usage.summary(jsonfile.read(app.state_dir / "usage.json"), now)),
@@ -874,7 +1082,7 @@ PAGE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Job Scraper</title>
+<title>{title}</title>
 {head_script}
 <style>
 :root {{
@@ -959,6 +1167,7 @@ nav.tabs.dragging, nav.tabs.dragging .tab {{ cursor: grabbing; }}
 .tab[data-view="exact"] {{ --tab-tone: var(--tab-green); }}
 .tab[data-view="near"], .tab[data-view="unverified"] {{ --tab-tone: var(--tab-amber); }}
 .tab[data-view="relevant"] {{ --tab-tone: var(--tab-blue); }}
+.tab[data-view="industrial"] {{ --tab-tone: #ab98c8; }}
 .tab[data-view="starred"] {{ --tab-tone: var(--tab-gold); }}
 .tab[data-view="applied"] {{ --tab-tone: var(--tab-teal); }}
 .tab[data-view="blocked"] {{ --tab-tone: var(--tab-rose); }}
@@ -1073,6 +1282,7 @@ main {{ max-width: 992px; margin: 0 auto; padding: 12px 16px 48px; }}
   padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; }}
 .g-exact {{ color: var(--exact); }} .g-near {{ color: var(--near); }}
 .g-maybe {{ color: var(--maybe); }}
+.g-industrial {{ color: #ab98c8; }}
 .new {{ border-color: transparent; }}
 .new.latest {{ background: #d1242f; color: #fff; }}
 .new.recent {{ background: #f08c00; color: #1f1300; }}
@@ -1080,6 +1290,17 @@ main {{ max-width: 992px; margin: 0 auto; padding: 12px 16px 48px; }}
 .closed {{ color: var(--warn); }} .outside {{ color: var(--muted); }}
 .reason {{ font-size: .9rem; line-height: 1.5; margin: 10px 0 0; padding-top: 10px;
   border-top: 1px solid var(--line); }}
+.jev-line {{ display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .88rem;
+  margin: 10px 0 0; }}
+.jev-summary {{ background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 14px; margin-bottom: 12px; font-size: .88rem; }}
+.jev-summary summary {{ cursor: pointer; }}
+.jev-summary table {{ border-collapse: collapse; margin-top: 10px; width: 100%; }}
+.jev-summary th, .jev-summary td {{ border-bottom: 1px solid var(--line); padding: 4px 8px;
+  text-align: right; }}
+.jev-summary th:first-child {{ text-align: left; }}
+.jev-summary p {{ color: var(--muted); margin: 8px 0 0; }}
+.jev-versions {{ font-size: .88rem; margin: -4px 0 12px; }}
 .also-on {{ font-size: .82rem; color: var(--muted); margin: 4px 0 0; }}
 
 /* Controls */
@@ -1143,7 +1364,7 @@ dialog input, dialog select {{ display: block; width: 100%; height: 42px;
   <div class="header-inner">
   <div class="top">
     <div class="brand">
-      <h1>Job Scraper</h1>
+      <h1>{title}</h1>
       <span class="updated">{updated}</span>
       <span class="current-view">{view_label}</span>
     </div>
@@ -1161,6 +1382,7 @@ dialog input, dialog select {{ display: block; width: 100%; height: 42px;
     <nav class="header-actions" aria-label="Manage job search">
       <a class="btn" href="/companies">Tracked companies</a>
       <a class="btn" href="/logs">Crawl logs</a>
+      {page_link}
       <button type="button" class="btn primary" id="open-company">Add company</button>
     </nav>
   {banner}
@@ -1330,7 +1552,7 @@ document.addEventListener("click", async (e) => {{
   btn.disabled = true;
   try {{
     const result = await post("/api/mark", {{
-      key: card.dataset.key, field: btn.dataset.field, value,
+      key: card.dataset.key, field: btn.dataset.field, value, page: location.pathname,
     }});
     btn.setAttribute("aria-pressed", String(value));
     btn.classList.toggle("on", value);
@@ -1375,7 +1597,7 @@ if (moveButton) {{
     status.hidden = !moveMode;
     status.classList.remove("error");
     status.textContent = "Select cards, then click Exact, Close, Probably not, " +
-      "Starred, Applied, or Hidden.";
+      "Industrial / controls, Starred, Applied, or Hidden.";
     document.querySelectorAll(".card-check").forEach(box => box.checked = false);
     updateMoveSelection();
   }});
@@ -1500,6 +1722,8 @@ def make_server(app: App, host: str, port: int) -> ThreadingHTTPServer:
             query = {k: v[0] for k, v in parse_qs(url.query).items()}
             if url.path == "/":
                 self._send(HTTPStatus.OK, app.index(query), "text/html")
+            elif url.path == "/jev":
+                self._send(HTTPStatus.OK, app.index(query, "jev"), "text/html")
             elif url.path == "/companies":
                 app.reload_config()
                 self._send(
@@ -1550,7 +1774,8 @@ def make_server(app: App, host: str, port: int) -> ThreadingHTTPServer:
                 else:
                     entry = app.mark(body["key"], body["field"], body["value"])
                     query = {k: v[0] for k, v in parse_qs(url.query).items()}
-                    shown, counts = app.select(query)
+                    evaluator = "jev" if body.get("page") == PAGES["jev"] else "sonnet"
+                    shown, counts = app.select(query, evaluator)
                     entry = entry | {
                         "counts": counts,
                         "visible": any(r.posting.key == body["key"] for r in shown),

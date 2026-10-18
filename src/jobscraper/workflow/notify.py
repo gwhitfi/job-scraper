@@ -24,6 +24,7 @@ class Digest:
     new_exact: list[Posting] = field(default_factory=list)
     new_near: list[Posting] = field(default_factory=list)
     new_maybe: list[Posting] = field(default_factory=list)
+    new_industrial: list[Posting] = field(default_factory=list)
     removed: list[Posting] = field(default_factory=list)
     health: list[HealthEvent] = field(default_factory=list)
     # Reminder only; doesn't trigger an email by itself.
@@ -37,6 +38,7 @@ class Digest:
             ("New exact matches", self.new_exact),
             ("New near matches", self.new_near),
             ("New probably-not matches (Claude unsure)", self.new_maybe),
+            ("New industrial / controls jobs (manual review)", self.new_industrial),
             ("Still available exact matches", self.still_available),
         ]
         return [(title, postings) for title, postings in sections if postings]
@@ -91,6 +93,7 @@ def subject(d: Digest) -> str:
             ("exact", d.new_exact),
             ("near", d.new_near),
             ("maybe", d.new_maybe),
+            ("industrial review", d.new_industrial),
             ("removed", d.removed),
         )
         if postings

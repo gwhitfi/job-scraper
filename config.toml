@@ -1,7 +1,7 @@
 [profile]
 target_role = "software developer"
 mode = "adjacent"                      # "strict" (exact only) | "adjacent" (exact, near, maybe)
-# Other names for the target role; always exact matches
+# Equivalent titles; duties and screening rules still determine the fit.
 core_examples = [
   "software engineer",
   "developer",
@@ -16,18 +16,47 @@ adjacent_examples = [
   "IT support",
   "data analyst",
   "software QA/test",
-  "general internship programs",
-  "partner/customer escalation support",
+  "help desk and computer technician",
+  "network engineering and administration",
+  "cybersecurity and cloud security",
+  "enterprise application administration and support",
 ]
 exclude_examples = [
   "product manager",
   "project manager",
   "manufacturing quality",
   "mechanical/electrical engineering",
-  "PLC/controls technician",
+  "direct sales",
+  "presales and technical sales",
+  "business-only customer/partner escalation coordination",
 ]
 levels = ["intern", "entry", "mid"]    # allowed: intern, entry, mid, senior, lead
 keywords = ["programming", "software", "developer"]
+rules_version = "software-fit-v2"
+review_examples = [
+  "industrial programming",
+  "PLC/controls programming",
+  "robot programming",
+  "industrial automation and control-system engineering",
+]
+screening_rules = """
+Exact means actual software development: writing code as a programmer, developer,
+or software engineer. Judge the work, not the employer's industry. Enterprise-platform
+software development (including Salesforce) can be exact when it actually involves coding.
+Close means practical IT alternatives acceptable for a first job: help desk, computer
+technician, application support/administration, networking, security, and related IT work.
+These are never exact merely because they are technical.
+Exclude work directly in sales, including presales, technical sales and sales-focused
+consulting/solutions architecture. Do not reject all consulting by title; determine whether
+the duties involve sales. If consulting duties are unclear, use maybe.
+Exclude internships unless the posting explicitly says both that it is available to start
+immediately and that it is open to non-students. Missing evidence does not meet either rule.
+Industrial programming, PLC/robot programming and automation/control-system engineering
+belong in industrial for manual review, not Exact or Close. This review exception overrides
+the broad mechanical/electrical/controls exclusions only for that programming/controls work;
+it does not admit generic manufacturing quality, machine operators or unrelated engineering.
+Apply sales and internship exclusions before the industrial review exception.
+"""
 
 # Named city lists usable in a company's `locations`.
 [regions]
