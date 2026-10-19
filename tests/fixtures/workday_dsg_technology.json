@@ -1,0 +1,301 @@
+{
+  "total": 9,
+  "jobPostings": [
+    {
+      "title": "Domain Architect (Technology Integration Management Office)",
+      "externalPath": "/job/Remote---US/Domain-Architect--Technology-Integration-Management-Office-_202626126",
+      "locationsText": "Remote - US",
+      "postedOn": "Posted 3 Days Ago",
+      "bulletFields": [
+        "202626126"
+      ]
+    },
+    {
+      "title": "Director, Network Engineering",
+      "externalPath": "/job/Remote---US/Director--Network-Engineering_202635190",
+      "locationsText": "Remote - US",
+      "postedOn": "Posted 5 Days Ago",
+      "bulletFields": [
+        "202635190"
+      ]
+    },
+    {
+      "title": "Lead Software Engineer - Merchandising Technology (REMOTE)",
+      "externalPath": "/job/Remote---US/Lead-Software-Engineer---Merchandising-Technology--REMOTE-_202603675",
+      "locationsText": "Remote - US",
+      "postedOn": "Posted 12 Days Ago",
+      "bulletFields": [
+        "202603675"
+      ]
+    },
+    {
+      "title": "Group Product Manager - BI and Data Science - Merchandising & Store Operations",
+      "externalPath": "/job/Remote---US/Group-Product-Manager---BI-and-Data-Science---Merchandising---Store-Operations_202632163-1",
+      "locationsText": "Remote - US",
+      "postedOn": "Posted 17 Days Ago",
+      "bulletFields": [
+        "202632163"
+      ]
+    },
+    {
+      "title": "Data Engineering Manager - Customer Data (REMOTE)",
+      "externalPath": "/job/Remote---US/Data-Engineering-Manager---Customer-Data--REMOTE-_202628440",
+      "locationsText": "Remote - US",
+      "postedOn": "Posted 26 Days Ago",
+      "bulletFields": [
+        "202628440"
+      ]
+    },
+    {
+      "title": "Data Engineering Manager \u2013 eCommerce & Fulfillment",
+      "externalPath": "/job/Remote---US/Data-Engineering-Manager---eCommerce---Fulfillment_202628438",
+      "locationsText": "Remote - US",
+      "postedOn": "Posted 26 Days Ago",
+      "bulletFields": [
+        "202628438"
+      ]
+    },
+    {
+      "title": "Senior Cybersecurity Engineer - CIAM (REMOTE)",
+      "externalPath": "/job/Senior-Cybersecurity-Engineer_202622444",
+      "postedOn": "Posted 30 Days Ago",
+      "bulletFields": [
+        "202622444"
+      ]
+    },
+    {
+      "title": "Senior Software Engineer - Supply Chain (REMOTE)",
+      "externalPath": "/job/Remote---US/Senior-Software-Engineer---Supply-Chain--REMOTE-_202632179",
+      "locationsText": "Remote - US",
+      "postedOn": "Posted 30+ Days Ago",
+      "bulletFields": [
+        "202632179"
+      ]
+    },
+    {
+      "title": "Engineering Manager \u2013 Product Development & Vertical Brands (REMOTE)",
+      "externalPath": "/job/Remote---US/Engineering-Manager---Product-Development---Vertical-Brands--REMOTE-_202602520",
+      "locationsText": "Remote - US",
+      "postedOn": "Posted 30+ Days Ago",
+      "bulletFields": [
+        "202602520"
+      ]
+    }
+  ],
+  "facets": [
+    {
+      "facetParameter": "CF_-_Location_Type__EEB__Extended",
+      "descriptor": "Brand",
+      "values": [
+        {
+          "descriptor": "DICK'S Sporting Goods",
+          "id": "451b0d7174c41003d266ba944a180000",
+          "count": 9
+        }
+      ]
+    },
+    {
+      "facetParameter": "timeType",
+      "descriptor": "Time Type",
+      "values": [
+        {
+          "descriptor": "Full time",
+          "id": "7dfabcc1299810298d2f6b838baa0000",
+          "count": 9
+        }
+      ]
+    },
+    {
+      "facetParameter": "workerSubType",
+      "descriptor": "Job Type",
+      "values": [
+        {
+          "descriptor": "Regular",
+          "id": "451b0d7174c41003d22e078588680000",
+          "count": 9
+        }
+      ]
+    },
+    {
+      "facetParameter": "jobFamily",
+      "descriptor": "Job Family",
+      "values": [
+        {
+          "descriptor": "Corporate - Tech Management",
+          "id": "451b0d7174c41003d1f1e55edac60000",
+          "count": 6
+        },
+        {
+          "descriptor": "Corporate - Tech Teammate",
+          "id": "451b0d7174c41003d1f1e39173420001",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "facetParameter": "CF_-_Job_Requisition_Job_Category__LRV__Extended",
+      "descriptor": "Job Category",
+      "values": [
+        {
+          "descriptor": "Store Hourly",
+          "id": "451b0d7174c41003d1e5f4c363070000",
+          "count": 3109
+        },
+        {
+          "descriptor": "Sales Managers",
+          "id": "451b0d7174c41003d1e5e3de58060000",
+          "count": 356
+        },
+        {
+          "descriptor": "Store Hourly Golf",
+          "id": "451b0d7174c41003d1e5e206bcca0000",
+          "count": 131
+        },
+        {
+          "descriptor": "Store Management",
+          "id": "451b0d7174c41003d1e5e2a9df720000",
+          "count": 25
+        },
+        {
+          "descriptor": "Golf Professional",
+          "id": "e4c34dc7df451000c034b0477eda0000",
+          "count": 25
+        },
+        {
+          "descriptor": "Merchandising",
+          "id": "451b0d7174c41003d1e5f106f3b70000",
+          "count": 18
+        },
+        {
+          "descriptor": "Distribution/Fulfillment",
+          "id": "451b0d7174c41003d1e5f106f3b70001",
+          "count": 16
+        },
+        {
+          "descriptor": "Loss Prevention",
+          "id": "451b0d7174c41003d1e61d575ccd0000",
+          "count": 13
+        },
+        {
+          "descriptor": "Loss Prevention - Stores",
+          "id": "451b0d7174c41003d1e5e3de58060001",
+          "count": 12
+        },
+        {
+          "descriptor": "Legal",
+          "id": "451b0d7174c41003d1e5f1a0d3580000",
+          "count": 10
+        },
+        {
+          "descriptor": "Technology",
+          "id": "451b0d7174c41003d1e5ef1fc89d0000",
+          "count": 9
+        },
+        {
+          "descriptor": "Students and Recent Grads",
+          "id": "451b0d7174c41003d1e5e478cb360000",
+          "count": 9
+        },
+        {
+          "descriptor": "Facilities",
+          "id": "451b0d7174c41003d1e5fc1055cf0000",
+          "count": 7
+        },
+        {
+          "descriptor": "Advertising/Marketing",
+          "id": "451b0d7174c41003d1e5e95560b80001",
+          "count": 7
+        },
+        {
+          "descriptor": "Product Development",
+          "id": "451b0d7174c41003d1e607b69efb0000",
+          "count": 6
+        },
+        {
+          "descriptor": "Supply Chain Logistics",
+          "id": "e4c34dc7df451000c091390da8950000",
+          "count": 4
+        },
+        {
+          "descriptor": "District Managers",
+          "id": "451b0d7174c41003d1e5e712f4cc0000",
+          "count": 4
+        },
+        {
+          "descriptor": "Planning/Allocations",
+          "id": "451b0d7174c41003d1e5edd271010000",
+          "count": 3
+        },
+        {
+          "descriptor": "Internal Audit",
+          "id": "451b0d7174c41003d1e5ee8621880000",
+          "count": 3
+        },
+        {
+          "descriptor": "Human Resources",
+          "id": "451b0d7174c41003d1e616a8daf60000",
+          "count": 3
+        },
+        {
+          "descriptor": "eCommerce",
+          "id": "451b0d7174c41003d1e6024948b20000",
+          "count": 1
+        },
+        {
+          "descriptor": "Risk/Compliance",
+          "id": "451b0d7174c41003d1e5e95560b80000",
+          "count": 1
+        },
+        {
+          "descriptor": "Operations",
+          "id": "451b0d7174c41003d1e5f38cce130000",
+          "count": 1
+        },
+        {
+          "descriptor": "Finance",
+          "id": "451b0d7174c41003d1e6104f42320000",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "facetParameter": "CF_-_Job_Posting_Location_Type__LRV__Extended",
+      "descriptor": "Location Type",
+      "values": [
+        {
+          "descriptor": "CSC/Corporate",
+          "id": "451b0d7174c41003d1fed2f1c3fb0000",
+          "count": 9
+        }
+      ]
+    },
+    {
+      "facetParameter": "locationMainGroup",
+      "values": [
+        {
+          "facetParameter": "locationRegionStateProvince",
+          "descriptor": "Location - State",
+          "values": [
+            {
+              "descriptor": "Pennsylvania",
+              "id": "f620a79f2dc44473828b42881312de2b",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "facetParameter": "locations",
+          "descriptor": "Locations",
+          "values": [
+            {
+              "descriptor": "Remote - US",
+              "id": "451b0d7174c41003d334904590220000",
+              "count": 8
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "userAuthenticated": false
+}

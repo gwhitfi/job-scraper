@@ -11,6 +11,9 @@ from jobscraper.geography.locations import STATE_CODES, places, us_country
 from jobscraper.models import Company, RawPosting
 
 FACETS = {
+    "CF_-_Job_Requisition_Job_Category__LRV__Extended",
+    "distance",
+    "geotagText",
     "locations",
     "locationCountry",
     "jobFamilyGroup",
@@ -22,6 +25,7 @@ FACETS = {
     "State",
     "Location_Country",
     "Location_Region_State_Province",
+    "locationRegionStateProvince",
     "primaryLocation",
 }
 
@@ -64,6 +68,8 @@ def fetch(company: Company, client: httpx.Client) -> list[RawPosting]:
     unknown = {k for k in unknown if not k.startswith("utm_")}
     if unknown:
         raise ValueError("Unsupported Workday search filters: " + ", ".join(sorted(unknown)))
+    if ("distance" in query) != ("geotagText" in query):
+        raise ValueError("Workday distance searches require both distance and geotagText.")
     body = {
         "appliedFacets": {k: v for k, v in query.items() if k in FACETS},
         "searchText": query.get("q", [""])[0],
@@ -96,13 +102,20 @@ def fetch(company: Company, client: httpx.Client) -> list[RawPosting]:
         }
         scopes = [(body, None, False)]
     if states and not any(
-        k in body["appliedFacets"] for k in ("State", "Location_Region_State_Province")
+        k in body["appliedFacets"]
+        for k in (
+            "State",
+            "Location_Region_State_Province",
+            "locationRegionStateProvince",
+            "distance",
+        )
     ):
         state_facet = next(
             (
                 f
                 for f in facets
-                if f.get("facetParameter") in ("State", "Location_Region_State_Province")
+                if f.get("facetParameter")
+                in ("State", "Location_Region_State_Province", "locationRegionStateProvince")
             ),
             None,
         )

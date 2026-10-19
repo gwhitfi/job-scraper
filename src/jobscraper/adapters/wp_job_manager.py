@@ -1,5 +1,6 @@
 """WordPress Job Manager public listings feed (HTML cards in a JSON envelope)."""
 
+import json
 import re
 from urllib.parse import parse_qsl, urljoin, urlsplit
 
@@ -16,12 +17,14 @@ def fetch(company: Company, client: httpx.Client) -> list[RawPosting]:
     response.raise_for_status()
     soup = BeautifulSoup(response.text, "html.parser")
     container = soup.select_one("div.job_listings")
-    match = re.search(r'"ajax_url"\s*:\s*"([^"\n]+)"', response.text)
+    match = re.search(r"\bjob_manager_ajax_filters\s*=\s*(?=\{)", response.text)
     if not container or not match:
         raise ValueError("WordPress Job Manager settings are missing from the careers page.")
-    endpoint = urljoin(
-        company.url, match[1].replace("\\/", "/").replace("%%endpoint%%", "get_listings")
-    )
+    settings, _ = json.JSONDecoder().raw_decode(response.text[match.end() :])
+    ajax_url = settings.get("ajax_url")
+    if not isinstance(ajax_url, str) or not ajax_url:
+        raise ValueError("WordPress Job Manager listings endpoint is missing.")
+    endpoint = urljoin(company.url, ajax_url.replace("%%endpoint%%", "get_listings"))
     if urlsplit(endpoint).netloc != urlsplit(company.url).netloc:
         raise ValueError("Job Manager feed must remain on the careers host.")
     query = dict(parse_qsl(urlsplit(company.url).query))
@@ -35,7 +38,7 @@ def fetch(company: Company, client: httpx.Client) -> list[RawPosting]:
     }
     by_id = {}
     for page in range(1, 31):
-        response = client.get(endpoint, params=params | {"page": page})
+        response = client.post(endpoint, data=params | {"page": page})
         response.raise_for_status()
         data = response.json()
         if not isinstance(data, dict) or not isinstance(data.get("html"), str):

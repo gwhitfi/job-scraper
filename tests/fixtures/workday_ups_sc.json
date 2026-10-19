@@ -1,0 +1,535 @@
+{
+  "total": 12,
+  "jobPostings": [
+    {
+      "title": "Seasonal Helper Coordinator",
+      "externalPath": "/job/US---AIKEN-CENTER-SCAIK/Seasonal-Helper-Coordinator_R26036919",
+      "locationsText": "US - AIKEN CENTER (SCAIK)",
+      "postedOn": "Posted 2 Days Ago",
+      "bulletFields": [
+        "R26036919",
+        "Early Morning (United States of America)"
+      ]
+    },
+    {
+      "title": "PT PRELOAD SUPERVISOR",
+      "externalPath": "/job/US---AIKEN-CENTER-SCAIK/PT-PRELOAD-SUPERVISOR_R26036936",
+      "locationsText": "US - AIKEN CENTER (SCAIK)",
+      "postedOn": "Posted 2 Days Ago",
+      "bulletFields": [
+        "R26036936",
+        "Early Morning (United States of America)"
+      ]
+    },
+    {
+      "title": "Automotive Technician in Beaufort, South Carolina",
+      "externalPath": "/job/US---PARRIS-ISLAND-CENTER-SCBEA/Automotive-Technician-in-Beaufort--South-Carolina_R26036507",
+      "locationsText": "US - PARRIS ISLAND CENTER (SCBEA)",
+      "postedOn": "Posted 3 Days Ago",
+      "bulletFields": [
+        "R26036507"
+      ]
+    },
+    {
+      "title": "Customs Brokerage Representative III  (Mon-Fri; 8am-4:30pm EST) *REMOTE - MUST BE LOCAL*",
+      "externalPath": "/job/US---AIKEN-CENTENNIAL-BLDG-1-SCAKN/XMLNAME----Remote-must-be-local----Admin-Associate-II--Brokerage-Operations---Trade-Compliance--Mon-Fri--8am-4-30pm-EST-_R26037550",
+      "locationsText": "US - AIKEN-CENTENNIAL BLDG 1 (SCAKN)",
+      "postedOn": "Posted 3 Days Ago",
+      "bulletFields": [
+        "R26037550",
+        "1st Shift - Day (SCS) (United States of America)"
+      ]
+    },
+    {
+      "title": "SEASONAL PT OPERATIONS SUP",
+      "externalPath": "/job/US---FLORENCE-CENTER-SCFLO/SEASONAL-PT-OPERATIONS-SUP_R26036467",
+      "locationsText": "US - FLORENCE CENTER (SCFLO)",
+      "postedOn": "Posted 4 Days Ago",
+      "bulletFields": [
+        "R26036467"
+      ]
+    },
+    {
+      "title": "PT Preload Supervisor",
+      "externalPath": "/job/US---FLORENCE-CENTER-SCFLO/PT-Preload-Supervisor_R26035069",
+      "locationsText": "US - FLORENCE CENTER (SCFLO)",
+      "postedOn": "Posted 6 Days Ago",
+      "bulletFields": [
+        "R26035069",
+        "Early Morning (United States of America)"
+      ]
+    },
+    {
+      "title": "PT Hub Supervisor",
+      "externalPath": "/job/US---COLUMBIA-AIR-HUB-SCCAH/PT-Hub-Supervisor_R26036312",
+      "locationsText": "US - COLUMBIA AIR HUB (SCCAH)",
+      "postedOn": "Posted 6 Days Ago",
+      "bulletFields": [
+        "R26036312",
+        "Night (United States of America)"
+      ]
+    },
+    {
+      "title": "PT Hub Supervisor",
+      "externalPath": "/job/US---COLUMBIA-AIR-HUB-SCCAH/PT-Hub-Supervisor_R26036316",
+      "locationsText": "US - COLUMBIA AIR HUB (SCCAH)",
+      "postedOn": "Posted 9 Days Ago",
+      "bulletFields": [
+        "R26036316",
+        "Night (United States of America)"
+      ]
+    },
+    {
+      "title": "preload supervisor-2",
+      "externalPath": "/job/US---MYRTLE-BEACH-CENTER-SCMYR/preload-supervisor-2_R26036206",
+      "locationsText": "US - MYRTLE BEACH CENTER (SCMYR)",
+      "postedOn": "Posted 9 Days Ago",
+      "bulletFields": [
+        "R26036206",
+        "Early Morning (United States of America)"
+      ]
+    },
+    {
+      "title": "HELPER/SSD COORDINATOR",
+      "externalPath": "/job/US---ROCK-HILL-CENTER-SCROC/HELPER-SSD-COORDINATOR_R26034791",
+      "locationsText": "US - ROCK HILL CENTER (SCROC)",
+      "postedOn": "Posted 16 Days Ago",
+      "bulletFields": [
+        "R26034791"
+      ]
+    },
+    {
+      "title": "Seasonal PT Helper Coordinator North (Spartanburg, SC)",
+      "externalPath": "/job/US---SPARTANBURG-CENTER-SCSPA/Seasonal-PT-Helper-Coordinator-North--Spartanburg--SC-_R26034229",
+      "locationsText": "US - SPARTANBURG CENTER (SCSPA)",
+      "postedOn": "Posted 17 Days Ago",
+      "bulletFields": [
+        "R26034229"
+      ]
+    },
+    {
+      "title": "Automotive Technician",
+      "externalPath": "/job/US---SUMMERVILLE-CENTER-SCSMV/Automotive-Technician_R26032470",
+      "locationsText": "US - SUMMERVILLE CENTER (SCSMV)",
+      "postedOn": "Posted 24 Days Ago",
+      "bulletFields": [
+        "R26032470"
+      ]
+    }
+  ],
+  "facets": [
+    {
+      "facetParameter": "Work_Shift",
+      "descriptor": "Work Shift",
+      "values": [
+        {
+          "descriptor": "Early Morning (United States of America)",
+          "id": "7cabaa1904fa019ee504414904011665",
+          "count": 4
+        },
+        {
+          "descriptor": "Night (United States of America)",
+          "id": "7cabaa1904fa019a2f77414904011865",
+          "count": 2
+        },
+        {
+          "descriptor": "1st Shift - Day (SCS) (United States of America)",
+          "id": "17975350d6971001fdea58e81f460000",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "facetParameter": "jobFamilyGroup",
+      "descriptor": "Job Category",
+      "values": [
+        {
+          "descriptor": "Package Operations",
+          "id": "7cabaa1904fa01776bbf3889f9007e44",
+          "count": 7
+        },
+        {
+          "descriptor": "Transportation Operations",
+          "id": "7cabaa1904fa012e69563189f9007044",
+          "count": 2
+        },
+        {
+          "descriptor": "Engineering",
+          "id": "7cabaa1904fa014b66bf2b89f9006644",
+          "count": 1
+        },
+        {
+          "descriptor": "Customs Brokerage",
+          "id": "7cabaa1904fa018c364b2189f9005444",
+          "count": 1
+        },
+        {
+          "descriptor": "Automotive (Inactive)",
+          "id": "7cabaa1904fa01e366852089f9005244",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "facetParameter": "workerSubType",
+      "descriptor": "Job Type",
+      "values": [
+        {
+          "descriptor": "Permanent",
+          "id": "7cabaa1904fa0191b1a6582fa700cf03",
+          "count": 7
+        },
+        {
+          "descriptor": "Seasonal (Seasonal)",
+          "id": "7cabaa1904fa01eec775582fa700cd03",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "facetParameter": "timeType",
+      "descriptor": "Time Type",
+      "values": [
+        {
+          "descriptor": "Part time",
+          "id": "8f3840fff0b401cc32485a74840e5800",
+          "count": 9
+        },
+        {
+          "descriptor": "Full time",
+          "id": "8f3840fff0b4014681685a74840e5900",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "facetParameter": "locationMainGroup",
+      "values": [
+        {
+          "facetParameter": "locationCountry",
+          "descriptor": "Country",
+          "values": [
+            {
+              "descriptor": "United States of America",
+              "id": "bc33aa3152ec42d4995f4791a106ed09",
+              "count": 12
+            }
+          ]
+        },
+        {
+          "facetParameter": "locationRegionStateProvince",
+          "descriptor": "State/Province/Region",
+          "values": [
+            {
+              "descriptor": "Texas",
+              "id": "fc77e3a1ab36487f9646d14f7242dd77",
+              "count": 94
+            },
+            {
+              "descriptor": "Ontario",
+              "id": "218a720b28a74c67b5c6d42c00bdadfa",
+              "count": 82
+            },
+            {
+              "descriptor": "Pennsylvania",
+              "id": "f620a79f2dc44473828b42881312de2b",
+              "count": 77
+            },
+            {
+              "descriptor": "California",
+              "id": "ec3d210e4240442e99a28fa70419aec5",
+              "count": 77
+            },
+            {
+              "descriptor": "Georgia",
+              "id": "dec8eabbb13d45bdb159b8e25d896110",
+              "count": 63
+            },
+            {
+              "descriptor": "Kentucky",
+              "id": "66d386e70a2946b695835e59cebcd7b2",
+              "count": 51
+            },
+            {
+              "descriptor": "Illinois",
+              "id": "d8bb292ed9fe44a2899a990ad569538c",
+              "count": 51
+            },
+            {
+              "descriptor": "North Carolina",
+              "id": "1486a0a4a8464c3b9ec482d4038deb99",
+              "count": 48
+            },
+            {
+              "descriptor": "Maryland",
+              "id": "586509e6daa741808206b095fee97e8f",
+              "count": 42
+            },
+            {
+              "descriptor": "Massachusetts",
+              "id": "c66d738416b74fb180376cf59cc7ec8f",
+              "count": 39
+            },
+            {
+              "descriptor": "Ohio",
+              "id": "41493c81d9214eb190fd14067c7d974d",
+              "count": 38
+            },
+            {
+              "descriptor": "New York",
+              "id": "9819bf0148e54f89adb255aa7bead635",
+              "count": 37
+            },
+            {
+              "descriptor": "Quebec",
+              "id": "ef8a53af14534128b795fd55d75ec08b",
+              "count": 36
+            },
+            {
+              "descriptor": "Virginia",
+              "id": "e0889a76c58d4fff9b54b80dadc49000",
+              "count": 34
+            },
+            {
+              "descriptor": "Kansas",
+              "id": "975ef5fd66c048909a4d64b64b762836",
+              "count": 31
+            },
+            {
+              "descriptor": "Connecticut",
+              "id": "bffb3e4c9a4a4542bc6bd075a4c26247",
+              "count": 31
+            },
+            {
+              "descriptor": "British Columbia",
+              "id": "cb76ca97a13347548a188f23caa96b17",
+              "count": 31
+            },
+            {
+              "descriptor": "New South Wales",
+              "id": "c7cff0e46d864ae49ef40b4ba71e7e5c",
+              "count": 28
+            },
+            {
+              "descriptor": "Utah",
+              "id": "9bf006cfb5a44c51b84138e1a0e7d805",
+              "count": 27
+            },
+            {
+              "descriptor": "New Jersey",
+              "id": "9b56fe16bdf74b2cbad8b644cdf6015a",
+              "count": 27
+            },
+            {
+              "descriptor": "Alberta",
+              "id": "588eb24f950e4c5b93d5ad3f37aebad2",
+              "count": 25
+            },
+            {
+              "descriptor": "Wisconsin",
+              "id": "96f29b3353ac4653b1a860751618e36b",
+              "count": 24
+            },
+            {
+              "descriptor": "Michigan",
+              "id": "b8372eef6b5341a39cdc95ac32790cba",
+              "count": 24
+            },
+            {
+              "descriptor": "Florida",
+              "id": "9c1a239b35bd4598856e5393b249b8a1",
+              "count": 22
+            },
+            {
+              "descriptor": "Indiana",
+              "id": "28489665bcac44028a70d0642c932be4",
+              "count": 20
+            },
+            {
+              "descriptor": "Minnesota",
+              "id": "02f3984b69ba450080e456fe733f6741",
+              "count": 19
+            },
+            {
+              "descriptor": "Washington",
+              "id": "de9b48948ef8421db97ddf4ea206e931",
+              "count": 17
+            },
+            {
+              "descriptor": "Oregon",
+              "id": "6fcc4198762c4a7c807486c849fe94dd",
+              "count": 16
+            },
+            {
+              "descriptor": "Tokyo",
+              "id": "6534030e79d54ac897646438ed66ac9a",
+              "count": 16
+            },
+            {
+              "descriptor": "Manitoba",
+              "id": "8a973097230449ff9c006a64a8957db0",
+              "count": 14
+            },
+            {
+              "descriptor": "New Brunswick",
+              "id": "76be59a0b2e14040a3a795ff615acbef",
+              "count": 14
+            },
+            {
+              "descriptor": "Colorado",
+              "id": "a83d6eabae3b49718c4ce09eeb66fd0b",
+              "count": 13
+            },
+            {
+              "descriptor": "Tennessee",
+              "id": "00044a0287144032bca6973ac0eedb3e",
+              "count": 12
+            },
+            {
+              "descriptor": "South Carolina",
+              "id": "1d2632a43d204a2799bcd38b57e8a26e",
+              "count": 12
+            },
+            {
+              "descriptor": "New Mexico",
+              "id": "32c182efea294964a9000772bc740672",
+              "count": 12
+            },
+            {
+              "descriptor": "Arizona",
+              "id": "c7b20b0d4bc04711a00900569e9afabd",
+              "count": 12
+            },
+            {
+              "descriptor": "Nova Scotia",
+              "id": "7f87ec5a66494630b4ed3080db17b649",
+              "count": 12
+            },
+            {
+              "descriptor": "Nebraska",
+              "id": "3a652942d5f84071a48bc94a2b17d331",
+              "count": 11
+            },
+            {
+              "descriptor": "S\u00e3o Paulo",
+              "id": "6177762425c54ca8aa31aac74fb08fad",
+              "count": 11
+            },
+            {
+              "descriptor": "Iowa",
+              "id": "a9be12393ccd460ea46d08c249ce6c8b",
+              "count": 10
+            },
+            {
+              "descriptor": "Oklahoma",
+              "id": "205ef21c556342268847466c48ec5a8c",
+              "count": 9
+            },
+            {
+              "descriptor": "Nevada",
+              "id": "33e7c3874e0e4d28a8047926aa4a1d21",
+              "count": 9
+            },
+            {
+              "descriptor": "Pulau Pinang (Penang)",
+              "id": "05b047780403433b9a3b8f92e8ad0dd5",
+              "count": 9
+            },
+            {
+              "descriptor": "M\u00e9xico",
+              "id": "85d60fd3574542f8be5c31f6fb5ae313",
+              "count": 9
+            },
+            {
+              "descriptor": "Selangor",
+              "id": "1cd0701fc5b0456399ccf4865051a8e5",
+              "count": 8
+            },
+            {
+              "descriptor": "Delaware",
+              "id": "18b4cf9ddb4e4542a39614cb55b4dde7",
+              "count": 8
+            },
+            {
+              "descriptor": "Victoria",
+              "id": "ab28d9dc175e444fa11c7c0f28f52e2c",
+              "count": 8
+            },
+            {
+              "descriptor": "Missouri",
+              "id": "790e3c3ddfaa4123905237a05f1df9e9",
+              "count": 7
+            },
+            {
+              "descriptor": "Idaho",
+              "id": "b1c017b8f6294b0e82773aaca1dce33e",
+              "count": 7
+            },
+            {
+              "descriptor": "Alaska",
+              "id": "c8891443252c4c4ea9427be64d755b9f",
+              "count": 7
+            },
+            {
+              "descriptor": "Milano",
+              "id": "15666db5b54343c1ac41344d81e951eb",
+              "count": 6
+            },
+            {
+              "descriptor": "Newfoundland and Labrador",
+              "id": "bc68f86b471c4b29b2448a63b8f569c7",
+              "count": 6
+            },
+            {
+              "descriptor": "Arkansas",
+              "id": "cea6c5355e1b4983b5fd0640310385b5",
+              "count": 6
+            },
+            {
+              "descriptor": "Anhui",
+              "id": "75fdf1c4ee6f425e935f84a6e540e2e6",
+              "count": 6
+            },
+            {
+              "descriptor": "Alabama",
+              "id": "31475924e5494080a8a458bf4fa293ed",
+              "count": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "facetParameter": "distance",
+      "descriptor": "Distance",
+      "values": [
+        {
+          "descriptor": "10 miles",
+          "id": "a538cdb60a631000078a2c60ed1700f3",
+          "count": 1
+        },
+        {
+          "descriptor": "25 miles",
+          "id": "a538cdb60a631000078a2c6a410300f4",
+          "count": 1
+        },
+        {
+          "descriptor": "50 miles",
+          "id": "a538cdb60a631000078a2c6eadd300f5",
+          "count": 1
+        },
+        {
+          "descriptor": "100 miles",
+          "id": "a538cdb60a631000078a2c71efcc00f6",
+          "count": 1
+        },
+        {
+          "descriptor": "Any Distance",
+          "id": "a538cdb60a631000078a2c74f73b00f7",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "userAuthenticated": false
+}

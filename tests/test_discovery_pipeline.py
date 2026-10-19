@@ -120,7 +120,8 @@ def test_wordpress_job_manager_live_fixture_discovers_public_feed():
         if request.url.path == "/careers/":
             return httpx.Response(200, text=fixture_text("wp_job_manager_shell.html"))
         assert request.url.path == "/jm-ajax/get_listings/"
-        assert request.url.params["page"] == "1"
+        assert request.method == "POST"
+        assert b"page=1" in request.content
         return httpx.Response(200, json=json.loads(fixture_text("wp_job_manager_listings.json")))
 
     client = crawl.Client(mock_client(handler), validate=lambda u: None, sleep=lambda d: None)
@@ -130,6 +131,30 @@ def test_wordpress_job_manager_live_fixture_discovers_public_feed():
     assert result.postings[0].source_id == "14179"
     assert result.postings[0].posted_date == date(2026, 10, 12)
     assert len([r for r in requests if r.url.path == "/careers/"]) == 1
+
+
+def test_wordpress_job_manager_ignores_woocommerce_ajax_endpoint():
+    url = "https://flexonhose.com/careers/"
+    shell = (
+        "<script>var wc_add_to_cart_params = "
+        '{"ajax_url":"/wp-admin/admin-ajax.php"};</script>'
+        + fixture_text("wp_job_manager_shell.html")
+    )
+
+    def handler(request):
+        if request.url.path == "/robots.txt":
+            return httpx.Response(404)
+        if request.url.path == "/careers/":
+            return httpx.Response(200, text=shell)
+        assert request.url.path == "/jm-ajax/get_listings/"
+        assert request.method == "POST"
+        return httpx.Response(200, json=json.loads(fixture_text("wp_job_manager_flexon.json")))
+
+    client = crawl.Client(mock_client(handler), validate=lambda u: None, sleep=lambda d: None)
+    result = discovery.inspect(url, client)
+    assert result.status == "added"
+    assert len(result.postings) == 6
+    assert sum(p.location == "Anderson, SC" for p in result.postings) == 3
 
 
 def test_generic_empty_browser_shell_does_not_become_false_empty_success():

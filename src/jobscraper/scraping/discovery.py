@@ -32,6 +32,12 @@ def identify(url: str, html: str = "") -> tuple[str, str, dict] | None:
     path = parts.path
     soup = BeautifulSoup(html, "html.parser")
     token = path.strip("/").split("/")[0]
+    if (
+        host == "www.applitrack.com"
+        and "/onlineapp/" in path.lower()
+        and re.search(r'\bvar\s+targetURL\s*=\s*[\'"]jobpostings/Output\.asp[\'"]', html)
+    ):
+        return "applitrack", url, {}
     if soup.select_one("div.job_listings") and "job_manager_ajax_filters" in html:
         return "wp_job_manager", url, {}
     if workday.site_url(url):

@@ -3,6 +3,7 @@ from collections.abc import Callable
 import httpx
 
 from jobscraper.adapters import (
+    applitrack,
     auto,
     bamboohr,
     bmw,
@@ -26,6 +27,7 @@ Adapter = Callable[[Company, httpx.Client], list[RawPosting]]
 
 ADAPTERS: dict[str, Adapter] = {
     "auto": auto.fetch,
+    "applitrack": applitrack.fetch,
     "generic": generic.fetch,
     "bamboohr": bamboohr.fetch,
     "bmw": bmw.fetch,
