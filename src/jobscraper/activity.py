@@ -171,7 +171,8 @@ def page(paths: list[Path], selected: str = "") -> str:
         '</style></head><body><main><div class="page-top"><a href="/">← Jobs</a>',
         '<button class="button" onclick="location.reload()">Refresh logs</button></div>',
         '<h1>Crawl logs</h1><p class="hint">Crawl outcomes, source health, and progress. '
-        "Latest 50 crawls and 50 add-company attempts. Times shown in US Eastern (EST/EDT).</p>",
+        "Latest 50 runs of each type: crawls, description collection, and add-company attempts. "
+        "Times shown in US Eastern (EST/EDT).</p>",
     ]
     if not records:
         parts.append("<p>No logs yet. Logs appear after the next crawl or add-company attempt.</p>")

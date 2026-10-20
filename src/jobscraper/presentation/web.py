@@ -1737,6 +1737,7 @@ def make_server(app: App, host: str, port: int) -> ThreadingHTTPServer:
                     activity.page(
                         [
                             app.state_dir / "crawl-history.json",
+                            app.state_dir / "description-history.json",
                             app.marks_path.parent / "discovery-history.json",
                         ],
                         query.get("id", ""),

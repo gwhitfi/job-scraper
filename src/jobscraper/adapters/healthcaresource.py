@@ -43,12 +43,13 @@ def parse(data: dict, site: str) -> tuple[list[RawPosting], int]:
         address = (job.get("jobLocation") or {}).get("address") or {}
         posted = job.get("datePosted")
         req_id = extra.get("requisitionID") or hit["_id"]
+        posting_id = extra.get("jobPostingID") or req_id
         postings.append(
             RawPosting(
                 source_id=str(req_id),
                 title=" ".join(job["title"].split()),
                 location=address.get("addressLocalityRegion") or "",
-                url=f"https://pm.healthcaresource.com/cs/{site}#/job/{req_id}",
+                url=f"https://pm.healthcaresource.com/cs/{site}#/job/{posting_id}",
                 posted_date=datetime.fromisoformat(posted[:10]).date() if posted else None,
                 category=job.get("occupationalCategory") or "",
             )

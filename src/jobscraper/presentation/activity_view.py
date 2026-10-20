@@ -31,6 +31,8 @@ def tone(event: dict) -> str:
         return "error"
     if event.get("status") == "partial_failure":
         return "warning"
+    if event.get("status") in ("blocked", "unavailable"):
+        return "warning"
     if event.get("error") or "failed" in stage or stage == "error":
         return "error"
     if event.get("status_code", 0) >= 400:
@@ -64,7 +66,9 @@ def render_record(r: dict, selected: str) -> str:
     label, color = labels.get(status, (status.replace("_", " ").title(), "info"))
     if status == "completed" and failed:
         label, color = "Completed with issues", "warning"
-    kind = "Scheduled crawl" if r["kind"] == "crawl" else "Add company"
+    kind = {"crawl": "Scheduled crawl", "descriptions": "Description collection"}.get(
+        r["kind"], "Add company"
+    )
     opened = " open" if r["id"] == selected else ""
     parts = [
         f'<details class="run" id="{rid}"{opened}><summary>',
@@ -80,6 +84,15 @@ def render_record(r: dict, selected: str) -> str:
         (str(requests), "Requests", "info"),
         (str(http_errors), "HTTP errors", "error" if http_errors else "muted"),
     ]
+    if r["kind"] == "descriptions":
+        outcomes = [e for e in events if e["stage"] == "description_completed"]
+        ready = sum(e.get("status") == "ready" for e in outcomes)
+        stats = [
+            (duration(r.get("seconds")), "Duration", "info"),
+            (str(ready), "Descriptions collected", "success"),
+            (str(len(outcomes) - ready), "Descriptions unavailable", "warning"),
+            (str(requests), "Requests", "info"),
+        ]
     parts.append(
         '<div class="metrics">'
         + "".join(

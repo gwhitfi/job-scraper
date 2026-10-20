@@ -179,6 +179,8 @@ def test_healthcaresource():
     )
     assert total == 254
     assert postings[0].location == "Anderson, SC"
+    assert postings[0].source_id == "19380"
+    assert postings[0].url == "https://pm.healthcaresource.com/cs/anmed#/job/24064"
 
 
 def test_healthcaresource_filters_categories():

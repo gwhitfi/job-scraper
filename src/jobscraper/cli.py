@@ -20,7 +20,7 @@ from jobscraper.classification import (
 )
 from jobscraper.geography import locations
 from jobscraper.presentation import web
-from jobscraper.scraping import http
+from jobscraper.scraping import descriptions, http
 from jobscraper.storage import company_store, jsonfile, state
 from jobscraper.workflow import notify, runner, scheduling, tracker
 
@@ -171,6 +171,7 @@ def _run(args: argparse.Namespace, trace: activity.Trace) -> None:
     if not args.no_email:
         _send_alerts(cfg, result.digest, names, args.state_dir / "email.json")
     checkpoint.finish(st.postings)
+    descriptions.run(st.postings.values(), cfg, args.state_dir / "descriptions.json")
     if not args.no_llm:
         shadow.run(result.assessed, cfg, os.environ.get("JEV_API_KEY", ""))
         jev_key = os.environ.get("JEV_API_KEY", "")
@@ -329,6 +330,67 @@ def cmd_jev_triage(args: argparse.Namespace) -> None:
     print(f"Saved {done} Jev answers. Compare on the page at /jev?jev={args.version}.")
 
 
+def cmd_collect_descriptions(args: argparse.Namespace) -> None:
+    """Collect source text only; no classification, notification, or posting-state writes."""
+    if args.limit < 0 or args.max_seconds <= 0:
+        raise SystemExit("Use a nonnegative limit and a positive time budget")
+    published = args.data_dir / "config.toml"
+    config_path = args.config
+    if config_path == config.DEFAULT_PATH and published.exists():
+        config_path = published
+    with (
+        scheduling.run_lock(args.data_dir)
+        if not (args.dry_run or args.status)
+        else contextlib.nullcontext()
+    ):
+        cfg = company_store.merge(config.load(config_path), args.data_dir / "companies.json")
+        postings = list(state.load(args.state_dir).postings.values())
+        if args.company:
+            cfg.company(args.company)
+            postings = [p for p in postings if p.company_id == args.company]
+        path = args.state_dir / "descriptions.json"
+        records = jsonfile.read(path)
+        retry_unavailable = getattr(args, "retry_unavailable", False)
+        waiting = descriptions.pending(
+            postings, cfg, records, datetime.now(UTC), retry_unavailable=retry_unavailable
+        )
+        print(f"Descriptions: {len(waiting)} jobs awaiting collection. Store: {path}")
+        if args.status:
+            from collections import Counter
+
+            keys = {p.key for p in postings}
+            counts = Counter(r["status"] for key, r in records.items() if key in keys)
+            print("Saved: " + ", ".join(f"{k}={v}" for k, v in sorted(counts.items())))
+            return
+        if args.dry_run:
+            print("Dry run: no HTTP requests or file writes")
+            return
+        if not waiting:
+            print("Nothing is due for collection.")
+            return
+
+        def progress(posting, record):
+            print(f"  {record['status']}: {posting.key}", flush=True)
+
+        with (
+            activity.Trace(args.state_dir / "description-history.json", "descriptions") as trace,
+            http.client() as client,
+        ):
+            counts = descriptions.collect(
+                postings,
+                cfg,
+                path,
+                client,
+                limit=args.limit,
+                max_seconds=args.max_seconds,
+                progress=progress,
+                retry_unavailable=retry_unavailable,
+            )
+            if any(counts.get(s) for s in ("failed", "blocked", "unavailable")):
+                trace.record["status"] = "partial_failure"
+        print("Descriptions: " + ", ".join(f"{k}={v}" for k, v in sorted(counts.items())))
+
+
 def main() -> None:
     # Real environment variables (e.g. Actions secrets) take precedence over .env.
     load_dotenv(find_dotenv(usecwd=True))
@@ -392,6 +454,31 @@ def main() -> None:
     triage.add_argument("--dry-run", action="store_true", help="Count only; no API calls or writes")
     triage.add_argument("--version", choices=list(jev_triage.VERSIONS), default=jev_triage.LATEST)
     triage.set_defaults(func=cmd_jev_triage)
+
+    descriptions_parser = sub.add_parser(
+        "collect-descriptions",
+        help="Cache full job descriptions without calling AI or sending email",
+    )
+    descriptions_parser.add_argument("--data-dir", type=Path, default=DATA_DIR)
+    descriptions_parser.add_argument("--company", help="Only this company ID")
+    descriptions_parser.add_argument(
+        "--limit", type=int, default=50, help="Attempts per run; 0 for all"
+    )
+    descriptions_parser.add_argument(
+        "--max-seconds", type=float, default=120, help="Time budget per run"
+    )
+    descriptions_parser.add_argument(
+        "--dry-run", action="store_true", help="Count only; no requests or writes"
+    )
+    descriptions_parser.add_argument(
+        "--status", action="store_true", help="Show cache status without requests"
+    )
+    descriptions_parser.add_argument(
+        "--retry-unavailable",
+        action="store_true",
+        help="Retry cached unavailable/failed jobs only; skip ready and blocked jobs",
+    )
+    descriptions_parser.set_defaults(func=cmd_collect_descriptions)
 
     args = parser.parse_args()
     if args.state_dir is None:
