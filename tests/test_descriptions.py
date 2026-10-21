@@ -291,6 +291,93 @@ def test_closed_notice_prevents_accepting_stale_structured_description(notice):
         descriptions.parse_html(page() + notice, posting())
 
 
+@pytest.mark.parametrize(
+    "wrapper",
+    [
+        '<div class="phw-d-none job-expired-view">{}</div>',
+        "<div hidden>{}</div>",
+        '<div aria-hidden="true">{}</div>',
+        '<div style="color: red; display: none !important;">{}</div>',
+        '<div style="visibility: hidden">{}</div>',
+        "<template>{}</template>",
+    ],
+)
+def test_hidden_expired_template_does_not_reject_an_active_job(wrapper):
+    notice = "<h2>This job posting is no longer active</h2>"
+    text, _ = descriptions.parse_html(page() + wrapper.format(notice), posting())
+    assert text == "Build software."
+
+
+def test_saved_phenom_active_job_with_hidden_expired_template():
+    p = posting(
+        title="Director of Construction and Renovation",
+        source_id="SRHSRHUSP108730EXTERNALENUS",
+    )
+    source = fixture_text("description_phenom_hidden_expired.html")
+    text, method = descriptions.parse_html(source, p)
+    assert method == "schema.org/JobPosting"
+    assert "Associate’s degree" in text
+    assert "General Contractors License" in text
+    # Making the same notice visible must still reject stale structured data.
+    with pytest.raises(descriptions.Unavailable, match="expired or no longer active"):
+        descriptions.parse_html(source.replace("phw-d-none", ""), p)
+
+
+def test_phenom_canonical_job_id_matches_an_abbreviated_schema_title():
+    p = posting(
+        title="Radiology Tech Evenings",
+        source_id="SRHSRHUSP108781EXTERNALENUS",
+        url="https://careers.spartanburgregional.com/us/en/job/P-108781/radiology-tech-evenings",
+    )
+    source = fixture_text("description_phenom_canonical_job.html")
+    text, method = descriptions.parse_html(source, p)
+    assert method == "schema.org/JobPosting"
+    assert "radiologic" in text.lower()
+    for other in (
+        replace(p, source_id="SRHSRHUSP999999EXTERNALENUS"),
+        replace(p, url="https://different.example/job/P-108781/radiology-tech-evenings"),
+    ):
+        with pytest.raises(descriptions.Unavailable, match="No matching job title"):
+            descriptions.parse_html(source, other)
+
+
+def test_phenom_rendered_job_data_recovers_missing_search_engine_markup():
+    data = json.loads(fixture_text("description_phenom_rendered.json"))
+    job = data["jobDetail"]["data"]["job"]
+    p = posting(title=job["title"], source_id=job["jobSeqNo"])
+    source = "<script>phApp.ddo = " + json.dumps(data) + ";</script>"
+    source += '<script type="application/ld+json">invalid schema data</script>'
+    text, method = descriptions.parse_html(source, p)
+    assert method == "phenom/jobDetail.description"
+    assert len(text) > 2000
+    assert "Bachelor" in text
+    assert "Review and test new software releases" in text
+
+
+@pytest.mark.parametrize("problem", ["id", "title", "internal", "visibility", "closed", "empty"])
+def test_phenom_rendered_data_rejects_wrong_internal_closed_or_empty_jobs(problem):
+    data = json.loads(fixture_text("description_phenom_rendered.json"))
+    detail = data["jobDetail"]
+    job = detail["data"]["job"]
+    p = posting(title=job["title"], source_id=job["jobSeqNo"])
+    if problem == "id":
+        job["jobSeqNo"] = "OTHER"
+    elif problem == "title":
+        job["title"] = "Other job"
+    elif problem == "internal":
+        job["siteType"] = "internal"
+    elif problem == "visibility":
+        job["jobVisibility"] = ["internal"]
+    elif problem == "closed":
+        detail["hits"] = 0
+    else:
+        job["description"] = ""
+    source = "<script>phApp.ddo = " + json.dumps(data) + ";</script>"
+    source += page(title=p.title, description="Stale schema description")
+    with pytest.raises(descriptions.Unavailable):
+        descriptions.parse_html(source, p)
+
+
 def test_oracle_qualifications_are_kept_separate_from_short_teaser(cfg, tmp_path):
     company = replace(cfg.companies[0], adapter="oracle_hcm")
     cfg = replace(cfg, companies=[company])

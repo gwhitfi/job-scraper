@@ -17,7 +17,7 @@ from jobscraper.models import Company, RawPosting
 from jobscraper.scraping import crawl
 from jobscraper.storage import employers
 from jobscraper.storage.state import Posting, State
-from jobscraper.workflow import dedupe, tracker
+from jobscraper.workflow import closures, dedupe, tracker
 from jobscraper.workflow.notify import Digest
 
 log = logging.getLogger(__name__)
@@ -184,10 +184,12 @@ def run(
     sleep: Callable[[float], None] = time.sleep,
     decisions: dict[str, dict] | None = None,
     checkpoint: Checkpoint | None = None,
+    verified_closures: dict[str, dict] | None = None,
 ) -> RunResult:
     """`decisions` are my approve/block calls on job-board employers (employers.json)."""
     now = now or datetime.now(UTC)
     decisions = decisions or {}
+    verified_closures = verified_closures or {}
     companies = {c.id: c for c in cfg.companies}
     scopes = locations.scopes(cfg)
     result = RunResult(digest=Digest(health_names=cfg.health_names()))
@@ -228,6 +230,9 @@ def run(
             log.warning("%s failed: %s", company.id, error)
             event = tracker.record_failure(state, company.id, error, now)
         else:
+            postings = closures.verify_reappearances(
+                postings, company, http, state, verified_closures, now
+            )
             result.fetched[company.id] = len(postings)
             changes = tracker.apply_results(state, company.id, postings, now)
             activity.emit(

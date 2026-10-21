@@ -54,9 +54,16 @@ VIEWS = {
 }
 # The /jev page groups by Jev's answers alone, so it has no company tab.
 JEV_VIEWS = {v: label for v, label in VIEWS.items() if v != "companies"}
+GROUP_LABELS = VIEWS | {"evaluate": "Evaluate"}
 
 
 def jev_views(version: str) -> dict[str, str]:
+    if version == "v5":
+        return {"exact": "Exact", "evaluate": "Evaluate"} | {
+            v: label
+            for v, label in JEV_VIEWS.items()
+            if v not in ("exact", "near", "maybe", "industrial")
+        }
     if jev_triage.has_industrial_tab(version):
         return JEV_VIEWS
     return {v: label for v, label in JEV_VIEWS.items() if v != "industrial"}
@@ -262,6 +269,11 @@ class App:
     def rows(self, evaluator: str = "sonnet", version: str = jev_triage.LATEST) -> list[Row]:
         st = self.state()
         triage = self.triage(version) if evaluator == "jev" else {}
+        description_cache = (
+            jsonfile.read(self.state_dir / "descriptions.json")
+            if evaluator == "jev" and version == "v5"
+            else {}
+        )
         marks = jsonfile.read(self.marks_path)
         decisions = jsonfile.read(self.employers_path)
         duplicates: dict[str, list[tuple[str, str]]] = {}
@@ -273,13 +285,29 @@ class App:
         out = []
         for p in st.postings.values():
             company = self.companies.get(p.company_id)
+            jev_record = triage.get(p.key)
+            if (
+                evaluator == "jev"
+                and version == "v5"
+                and jev_record
+                and (
+                    company is None
+                    or jev_record.get("signature")
+                    != jev_triage.signature(
+                        jev_triage.request_body(
+                            p, self.cfg, version, description=description_cache.get(p.key)
+                        )
+                    )
+                )
+            ):
+                jev_record = None
             personal = marks.get(p.key, {})
             scope = self.scopes.get(p.company_id)
             group = classify.posting_group(p, self.cfg.profile, scope)
             sonnet_group = group
             if evaluator == "jev":
                 # Moves made on the main page are judgments of Sonnet's tabs, so they don't apply.
-                group = jev_triage.posting_group(p, triage.get(p.key), scope, version)
+                group = jev_triage.posting_group(p, jev_record, scope, version)
             elif (
                 personal.get("group")
                 and not p.duplicate_of
@@ -298,7 +326,7 @@ class App:
                     also_on=duplicates.get(p.key, []),
                     miles=distance.miles_from(self.home, p.location),
                     evaluator=evaluator,
-                    jev=triage.get(p.key),
+                    jev=jev_record,
                     jev_version=version,
                     sonnet_group=sonnet_group,
                 )
@@ -451,7 +479,7 @@ class App:
             salary = (
                 salaries.annual_floor(p)
                 if (
-                    r.group in ("exact", "near", "maybe")
+                    r.group in ("exact", "near", "maybe", "evaluate")
                     and not r.marks.get("hidden")
                     and r.employer_status != "blocked"
                 )
@@ -737,7 +765,7 @@ def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
     c = p.classification or {}
     badges = []
     if r.group:
-        badges.append(f'<span class="badge g-{r.group}">{VIEWS[r.group]}</span>')
+        badges.append(f'<span class="badge g-{r.group}">{GROUP_LABELS[r.group]}</span>')
     fresh = new_tier(p, latest_check, now)
     if fresh:
         badges.append(f'<span class="badge new {fresh}">New</span>')
@@ -792,7 +820,7 @@ def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
   <p class="meta">{meta}</p>
   {
         salaries.card(p)
-        if r.group in ("exact", "near", "maybe")
+        if r.group in ("exact", "near", "maybe", "evaluate")
         and not r.marks.get("hidden")
         and r.employer_status != "blocked"
         else ""
@@ -834,6 +862,23 @@ def _jev_line(r: Row) -> str:
         )
         if kind["confidence"] < jev_triage.LOW_CONFIDENCE:
             jev += " · Low confidence"
+        if r.jev_version == "v5":
+            degrees = {
+                "cs_listed": "CS degree accepted",
+                "unspecified": "No degree specified",
+                "excluded": "Degree mismatch",
+                "unclear": "Degree unclear",
+            }
+            fits = {"match": "Match", "evaluate": "Evaluate", "reject": "Not a match"}
+            jev += f" · {degrees[answers['degree']['choice']]}"
+            jev += f" · {fits[answers['fit']['choice']]} {answers['fit']['confidence']:.0%}"
+            if (
+                not r.jev.get("request", {})
+                .get("state", {})
+                .get("job", {})
+                .get("description_complete")
+            ):
+                jev += " · Full description unavailable"
     return (
         f'<p class="jev-line"><span><strong>Jev:</strong> {escape(jev)}</span>'
         f"<span><strong>Sonnet:</strong> {escape(sonnet)}</span></p>"
@@ -849,10 +894,12 @@ def _jev_summary(app: App, version: str, view: str, source: str, q: str, sort: s
     )
     matrix, waiting = app.jev_comparison(version)
     rows = ("exact", "near", "maybe", "industrial", "hidden", "pending")
+    if version == "v5":
+        rows = ("exact", "evaluate", "hidden", "pending")
     if not jev_triage.has_industrial_tab(version):
         rows = tuple(j for j in rows if j != "industrial")
     cols = ("exact", "near", "maybe", "industrial", "hidden")
-    label = VIEWS | {"hidden": "Not shown", "pending": "Awaiting Jev"}
+    label = GROUP_LABELS | {"hidden": "Not shown", "pending": "Awaiting Jev"}
     head = "".join(f"<th>{label[c]}</th>" for c in cols)
     body = "".join(
         f"<tr><th>{label[j]}</th>" + "".join(f"<td>{matrix[j, c]}</td>" for c in cols) + "</tr>"
@@ -962,6 +1009,12 @@ def render_page(
         cards = (
             '<p class="review-intro">Industrial programming, automation and controls jobs Jev '
             "found, listed so you can see they exist.</p>"
+        ) + cards
+    elif view == "evaluate" and jev_page:
+        cards = (
+            '<p class="review-intro">Plausible programming jobs with an experience stretch, '
+            "unclear requirements, or missing full text. "
+            "Review the qualifications before applying.</p>"
         ) + cards
     elif view == "industrial":
         cards = (
@@ -1282,6 +1335,7 @@ main {{ max-width: 992px; margin: 0 auto; padding: 12px 16px 48px; }}
   padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; }}
 .g-exact {{ color: var(--exact); }} .g-near {{ color: var(--near); }}
 .g-maybe {{ color: var(--maybe); }}
+.g-evaluate {{ color: var(--mid); }}
 .g-industrial {{ color: #ab98c8; }}
 .new {{ border-color: transparent; }}
 .new.latest {{ background: #d1242f; color: #fff; }}

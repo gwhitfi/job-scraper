@@ -38,7 +38,7 @@ def client(handler):
 
 def test_request_sends_job_only_with_full_summary():
     p = posting("a:1", "Developer", summary="x" * 900, classification={"reason": "SECRET BASELINE"})
-    body = jev_triage.request_body(p, CFG)
+    body = jev_triage.request_body(p, CFG, "v4")
     text = json.dumps(body)
     assert "profile" not in body["state"]
     assert "SECRET BASELINE" not in text and CFG.profile.target_role not in text
@@ -141,10 +141,10 @@ def test_collect_saves_answers_and_only_reasks_changed_jobs(tmp_path):
         posting("a:3", "Developer", duplicate_of="a:1"),
     ]
     with client(handler) as c:
-        assert jev_triage.collect(jobs, CFG, path, c) == 1
-        assert jev_triage.collect(jobs, CFG, path, c) == 0
+        assert jev_triage.collect(jobs, CFG, path, c, version="v3") == 1
+        assert jev_triage.collect(jobs, CFG, path, c, version="v3") == 0
         jobs[0] = replace(jobs[0], summary="changed")
-        assert jev_triage.collect(jobs, CFG, path, c) == 1
+        assert jev_triage.collect(jobs, CFG, path, c, version="v3") == 1
     saved = json.loads(path.read_text())
     assert list(saved) == ["a:1"]
     assert saved["a:1"]["request"]["state"]["job"]["summary"] == "changed"
@@ -169,7 +169,7 @@ def test_collect_stops_at_first_failure_and_keeps_finished(tmp_path):
     answers = iter([httpx.Response(200, json=triage_response(version="v3")), httpx.Response(401)])
     jobs = [posting(f"a:{i}", "Developer") for i in range(3)]
     with client(lambda request: next(answers)) as c, pytest.raises(RuntimeError, match="401"):
-        jev_triage.collect(jobs, CFG, path, c)
+        jev_triage.collect(jobs, CFG, path, c, version="v3")
     assert len(json.loads(path.read_text())) == 1
 
 

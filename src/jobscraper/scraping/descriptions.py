@@ -13,7 +13,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 import httpx
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 from jobscraper import activity, adapters
 from jobscraper.adapters import healthcaresource, workday
@@ -90,17 +90,82 @@ def _nodes(value) -> Iterable[dict]:
             yield from _nodes(nested)
 
 
+def _hidden(element: Tag) -> bool:
+    for node in (element, *element.parents):
+        if (
+            node.name == "template"
+            or node.has_attr("hidden")
+            or str(node.get("aria-hidden", "")).casefold() == "true"
+            or "phw-d-none" in node.get("class", [])
+            or re.search(
+                r"(?:^|;)\s*(?:display\s*:\s*none|visibility\s*:\s*(?:hidden|collapse))"
+                r"\s*(?:!important)?\s*(?:;|$)",
+                node.get("style", ""),
+                re.I,
+            )
+        ):
+            return True
+    return False
+
+
+def _phenom_description(soup: BeautifulSoup, posting: Posting) -> tuple[str, str] | None:
+    """Read the job data Phenom renders when its search-engine JSON-LD is missing."""
+    for script in soup.select("script"):
+        source = script.get_text()
+        match = re.search(r"\bphApp\.ddo\s*=\s*", source)
+        if not match:
+            continue
+        try:
+            data, _ = json.JSONDecoder().raw_decode(source[match.end() :])
+        except ValueError:
+            raise Unavailable("Phenom's rendered job data could not be decoded.") from None
+        detail = data.get("jobDetail") if isinstance(data, dict) else None
+        if not isinstance(detail, dict):
+            continue
+        payload = detail.get("data")
+        job = payload.get("job") if isinstance(payload, dict) else None
+        if (
+            detail.get("status") != 200
+            or detail.get("hits") != 1
+            or detail.get("totalHits") != 1
+            or not isinstance(job, dict)
+        ):
+            raise Unavailable("Phenom did not return one active job detail record.")
+        if (
+            job.get("jobSeqNo") != posting.source_id
+            or _normalized(job.get("title")) != _normalized(posting.title)
+            or job.get("siteType") not in (None, "external")
+            or (
+                job.get("jobVisibility") is not None
+                and (
+                    not isinstance(job["jobVisibility"], (str, list))
+                    or "external" not in job["jobVisibility"]
+                )
+            )
+        ):
+            raise Unavailable("Phenom did not return the requested public job's details.")
+        description = job.get("description")
+        if not isinstance(description, str):
+            raise Unavailable("Phenom did not return its full rendered description.")
+        return _checked_text(description), "phenom/jobDetail.description"
+    return None
+
+
 def parse_html(source: str, posting: Posting) -> tuple[str, str]:
     """Use job-specific structured data or a dedicated description element."""
     if reason := discovery.challenge(source):
         raise crawl.Blocked(reason)
     soup = BeautifulSoup(source, "html.parser")
     for notice in soup.select(".job-manager-info, [role=alert], h1, h2, h3"):
+        if _hidden(notice):
+            continue
         text = notice.get_text(" ", strip=True).casefold()
         if "this listing has expired" in text or "this job posting is no longer active" in text:
             raise Unavailable(
                 "The source explicitly marks this job as expired or no longer active."
             )
+    if description := _phenom_description(soup, posting):
+        return description
     jobs = []
     for script in soup.select('script[type="application/ld+json"]'):
         try:
@@ -119,6 +184,13 @@ def parse_html(source: str, posting: Posting) -> tuple[str, str]:
         if isinstance(identifier, dict):
             identifier = identifier.get("value", "")
         same_id = str(identifier) == posting.source_id
+        # Phenom puts the canonical job link on hiringOrganization, and its schema
+        # title can omit a shift/specialty present in the actual posting title.
+        organization = job.get("hiringOrganization")
+        if isinstance(organization, dict) and isinstance(organization.get("url"), str):
+            linked = urlsplit(organization["url"])
+            if linked.netloc == urlsplit(posting.url).netloc and "/job/" in linked.path:
+                same_id |= linked.path.split("/job/", 1)[1].split("/", 1)[0] == posting.source_id
         same_title = _normalized(job.get("title") or "") == _normalized(posting.title)
         same_url = job.get("url") == posting.url
         description = job.get("description")

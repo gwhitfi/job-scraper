@@ -1091,3 +1091,37 @@ def test_jev_v3_drops_industrial_tab_and_flags_low_confidence(jev_app):
     assert "Industrial / automation 40% · Entry 90% · Low confidence" in html
     v2_html = jev_app.index({"view": "exact", "jev": "v1"}, "jev")
     assert "<strong>v3</strong>" not in v2_html
+
+
+def test_jev_v5_evaluate_tab_full_text_and_stale_answer_handling(app):
+    from test_jev_v5 import description, v5_response
+
+    st = state.load(app.state_dir)
+    exact, evaluate = st.postings["acme:1"], st.postings["acme:2"]
+    cached = {exact.key: description(exact, cfg=app.cfg)}
+    jsonfile.write(app.state_dir / "descriptions.json", cached)
+    records = {}
+    for p, response in (
+        (exact, v5_response()),
+        (evaluate, v5_response("code_adjacent", degree="unclear", fit="evaluate")),
+    ):
+        body = jev_triage.request_body(p, app.cfg, "v5", description=cached.get(p.key))
+        records[p.key] = {
+            "signature": jev_triage.signature(body),
+            "request": body,
+            "response": response,
+        }
+    jsonfile.write(jev_triage.store_path(app.jev_dir, "v5"), records)
+    assert app.jev_version({}) == "v5"
+    assert jev_keys(app, "exact", "v5") == [exact.key]
+    assert jev_keys(app, "evaluate", "v5") == [evaluate.key]
+    html = app.index({"view": "evaluate", "jev": "v5"}, "jev")
+    assert 'data-view="evaluate"' in html
+    assert 'data-view="near" ' not in html and 'data-view="maybe" ' not in html
+    assert "Degree unclear" in html and "Full description unavailable" in html
+    assert "Evaluate 90%" in html
+    assert "Evaluate</th>" in html
+    assert 'data-view="evaluate" ' not in app.index({}, "sonnet")
+    cached[exact.key]["text"] += " New qualifications."
+    jsonfile.write(app.state_dir / "descriptions.json", cached)
+    assert jev_keys(app, "exact", "v5") == []

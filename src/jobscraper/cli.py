@@ -122,7 +122,13 @@ def _run(args: argparse.Namespace, trace: activity.Trace) -> None:
     )
     with http.client() as c:
         result = runner.run(
-            cfg, st, c, _llm_client(not args.no_llm), decisions=decisions, checkpoint=checkpoint
+            cfg,
+            st,
+            c,
+            _llm_client(not args.no_llm),
+            decisions=decisions,
+            checkpoint=checkpoint,
+            verified_closures=jsonfile.read(args.state_dir / "verified-closures.json"),
         )
 
     trace.record["status"] = "partial_failure" if result.failed else "completed"
@@ -303,11 +309,15 @@ def cmd_jev_triage(args: argparse.Namespace) -> None:
     cfg = company_store.merge(config.load(path), args.data_dir / "companies.json")
     postings = state.load(args.state_dir).postings
     store = jev_triage.store_path(args.data_dir / "jev", args.version)
-    waiting = jev_triage.pending(postings.values(), cfg, jsonfile.read(store), args.version)
+    description_cache = jsonfile.read(args.state_dir / "descriptions.json")
+    waiting = jev_triage.pending(
+        postings.values(), cfg, jsonfile.read(store), args.version, description_cache
+    )
     todo = min(len(waiting), args.limit) if args.limit else len(waiting)
     print(
         f"Questions {args.version}: {len(waiting)} jobs awaiting Jev; this run asks about "
-        f"{todo}. Store: {store}"
+        f"{todo}. Store: {store}",
+        flush=True,
     )
     if args.dry_run:
         print("Dry run: no API calls or file writes")
@@ -323,7 +333,14 @@ def cmd_jev_triage(args: argparse.Namespace) -> None:
     try:
         with httpx.Client(headers={"Authorization": f"Bearer {key}"}, timeout=30) as client:
             done = jev_triage.collect(
-                postings.values(), cfg, store, client, args.limit, progress, args.version
+                postings.values(),
+                cfg,
+                store,
+                client,
+                args.limit,
+                progress,
+                args.version,
+                descriptions=description_cache,
             )
     except RuntimeError as exc:
         raise SystemExit(f"{exc}. Finished answers are saved; rerun to continue.") from None
