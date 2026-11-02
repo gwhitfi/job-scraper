@@ -78,11 +78,16 @@ def candidates(html: str, url: str, identify) -> list[tuple[str, int]]:
                 board = urlsplit(board)._replace(query="").geturl()
                 found[board] = max(found.get(board, 0), 75)
             continue
-        if re.search(r"/(?:search)/?$", p.path, re.I) and not CAREER.search(label):
+        if (
+            element.name != "iframe"
+            and re.search(r"/(?:search)/?$", p.path, re.I)
+            and not CAREER.search(label)
+        ):
             continue
         known = identify(target) is not None
         if (
             not known
+            and element.name != "iframe"
             and re.search(r"/(?:job|jobs|position)/[^/?]+", p.path, re.I)
             and not SEARCH.search(label)
         ):

@@ -284,3 +284,10 @@ def test_policy_keyword_fallback_does_not_promote_sales_interns_or_industrial():
     ]
     result = classify.classify_keywords(jobs, profile)
     assert [result[p.key]["relevance"] for p in jobs] == ["industrial", "none", "none", "core"]
+
+
+def test_board_without_employer_is_identified_for_employer_review():
+    from dataclasses import replace
+
+    companies = {"a": replace(ACME["a"], adapter="generic", is_board=True)}
+    assert classify.company_label(posting("a:1", "Dev"), companies) == "Unknown employer via Acme"

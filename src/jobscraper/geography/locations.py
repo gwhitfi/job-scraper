@@ -108,6 +108,13 @@ def places(location: str) -> list[tuple[str, str]]:
     found = []
     for part in location.split(";"):
         part = part.strip()
+        # iCIMS uses country-state-city labels; CA is Canada here, not California.
+        country_label = re.fullmatch(r"([A-Z]{2})-([A-Z]{2})-(.+)", part)
+        if country_label:
+            country, state, city = country_label.groups()
+            if country != "US":
+                continue
+            part = f"{city}, {state}"
         # Full state names occur in Workday addresses; normalize only whole words.
         for name, code in STATE_CODES.items():
             part = re.sub(r"(?<=,)\s*" + re.escape(name) + r"\b", " " + code, part, flags=re.I)

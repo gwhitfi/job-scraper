@@ -7,7 +7,6 @@ from pathlib import Path
 import httpx
 import pytest
 
-from jobscraper.classification import jev_triage
 from jobscraper.config import Config, Notifications, Profile
 from jobscraper.models import Company
 from jobscraper.presentation import web
@@ -515,7 +514,8 @@ def test_added_label(seconds, expected):
     assert web.added_label(first_seen, NOW) == expected
 
 
-def test_add_company_endpoint_persists_and_reloads(server, app, monkeypatch):
+@pytest.mark.parametrize("is_board", [False, True])
+def test_add_company_endpoint_persists_and_reloads(server, app, monkeypatch, is_board):
     from jobscraper.models import RawPosting
     from jobscraper.scraping import discovery
 
@@ -538,7 +538,7 @@ def test_add_company_endpoint_persists_and_reloads(server, app, monkeypatch):
     )
     original_config = app.config_path
     headers = {"X-Requested-With": "jobscraper"}
-    body = {"url": c.url, "name": c.name, "locations": "SC"}
+    body = {"url": c.url, "name": c.name, "locations": "SC", "is_board": is_board}
     assert httpx.post(server + "/api/companies", json=body).status_code == 403
     response = httpx.post(server + "/api/companies", json=body, headers=headers)
     assert response.status_code == 200
@@ -551,6 +551,9 @@ def test_add_company_endpoint_persists_and_reloads(server, app, monkeypatch):
     assert "already" in response.text
     reloaded = web.App(app._base_cfg, app.state_dir, app.marks_path, app.employers_path)
     assert reloaded.cfg.company(c.id).name == "New Co"
+    assert reloaded.cfg.company(c.id).is_board is is_board
+    board_ids = {c.id for c in reloaded.directory_companies("boards", "", [])}
+    assert ("new-co" in board_ids) is is_board
 
 
 def test_add_company_missing_info_does_not_enable_tracking(server, app, monkeypatch):
@@ -999,129 +1002,115 @@ def test_industrial_review_does_not_bypass_geography_or_personal_marks(app):
     )
 
 
-def jev_record(kind, level, version="v1"):
-    from test_jev_triage import triage_response
-
-    return {"response": triage_response(kind, level, version)}
-
-
-@pytest.fixture
-def jev_app(app):
-    jsonfile.write(
-        jev_triage.store_path(app.jev_dir, "v1"),
-        {
-            "acme:1": jev_record("developer", "mid"),
-            "acme:2": jev_record("developer", "entry"),
-            "acme:4": jev_record("helpdesk", "unsure"),
-            "acme:5": jev_record("computing", "unsure"),
-        },
-    )
-    return app
+def test_jev_uses_v6_for_retired_links_and_does_not_change_main_site(app):
+    main_before = app.index({})
+    for version in ("v1", "v2", "v3", "v4", "v5", "v6"):
+        html = app.index({"jev": version}, "jev")
+        assert "Jev v6 · Jobs" in html
+        assert "OTHER VERSIONS" not in html
+        assert "compare with Sonnet" not in html
+        assert 'href="/jev?jev=v5' not in html
+    assert app.index({}) == main_before
 
 
-def jev_keys(app, view, version="v1"):
-    return sorted(r.posting.key for r in app.rows("jev", version) if app.in_view(r, view))
-
-
-def test_jev_page_groups_by_jev_only(jev_app):
-    assert jev_keys(jev_app, "exact") == ["acme:2"]
-    assert jev_keys(jev_app, "near") == ["acme:5"]  # Sonnet called it senior; Jev doesn't
-    assert jev_keys(jev_app, "maybe") == ["acme:1", "acme:4"]
-    assert keys(jev_app, "exact") == ["acme:1", "mus:9"]  # main page unchanged
-
-
-def test_jev_page_ignores_main_page_moves_but_keeps_marks(jev_app):
-    jev_app.move(["acme:3"], "exact")
-    jev_app.mark("acme:2", "hidden", True)
-    assert jev_keys(jev_app, "exact") == []
-    assert jev_keys(jev_app, "hidden") == ["acme:2"]
-    assert "acme:3" in keys(jev_app, "exact")
-
-
-def test_jev_page_renders_answers_and_links(jev_app):
-    html = jev_app.index({"view": "maybe"}, "jev")
-    assert "Web Developer" in html and "Forklift Operator" in html
-    assert "<strong>Jev:</strong> Developer 90% · Mid 90%" in html
-    assert "<strong>Sonnet:</strong> Exact" in html
-    assert 'href="/jev?view=exact' in html and 'href="/?view' not in html
-    assert "jev=v1" in html  # v2 has no answers yet, so links stay on v1
-    assert 'data-view="companies" ' not in html
-    assert 'id="move-mode"' not in html
-    assert "Jev answered 4 of" in html
-
-
-def test_http_jev_page_and_mark_counts(server, jev_app):
+def test_http_jev_marks_still_save(server, app):
     assert httpx.get(server + "/jev").status_code == 200
-    body = json.dumps({"key": "acme:2", "field": "starred", "value": True, "page": "/jev"})
-    headers = {"Content-Type": "application/json", "X-Requested-With": "jobscraper"}
-    resp = httpx.post(server + "/api/mark?view=exact", content=body, headers=headers)
-    assert resp.json()["counts"]["exact"] == 0
-    assert "companies" not in resp.json()["counts"]
-
-
-def test_jev_versions_are_separate_and_selectable(jev_app):
-    jsonfile.write(
-        jev_triage.store_path(jev_app.jev_dir, "v2"),
-        {
-            "acme:3": jev_record("industrial_programming", "mid", "v2"),
-            "acme:4": jev_record("code_adjacent", "entry", "v2"),
-        },
+    resp = httpx.post(
+        server + "/api/mark?jev=v6",
+        json={"key": "acme:2", "field": "starred", "value": True, "page": "/jev"},
+        headers={"X-Requested-With": "jobscraper"},
     )
-    assert jev_app.jev_version({}) == "v2"
-    assert jev_keys(jev_app, "industrial", "v2") == ["acme:3"]
-    assert jev_keys(jev_app, "near", "v2") == ["acme:4"]
-    assert jev_keys(jev_app, "exact", "v1") == ["acme:2"]  # v1 answers untouched
-
-    html = jev_app.index({"view": "near"}, "jev")
-    assert "Code-adjacent 90% · Entry 90%" in html
-    assert 'name="jev" value="v2"' in html
-    assert "Jev questions: <a href=" in html and "<strong>v2</strong>" in html
-    v1 = jev_app.index({"view": "exact", "jev": "v1"}, "jev")
-    assert "Web Developer" not in v1 and "Data Analyst" in v1
+    assert resp.status_code == 200
+    assert resp.json()["starred"] is True
+    assert 'data-key="acme:2"' in app.index({"view": "starred"}, "jev")
 
 
-def test_jev_v3_drops_industrial_tab_and_flags_low_confidence(jev_app):
-    record = jev_record("industrial_automation", "entry", "v3")
-    record["response"]["answers"]["kind"]["confidence"] = 0.4
-    jsonfile.write(jev_triage.store_path(jev_app.jev_dir, "v3"), {"acme:3": record})
-    assert jev_app.jev_version({}) == "v3"  # newest version with answers
-    assert jev_keys(jev_app, "maybe", "v3") == ["acme:3"]
-    html = jev_app.index({"view": "maybe"}, "jev")
-    assert 'data-view="industrial" ' not in html
-    assert "Industrial / automation 40% · Entry 90% · Low confidence" in html
-    v2_html = jev_app.index({"view": "exact", "jev": "v1"}, "jev")
-    assert "<strong>v3</strong>" not in v2_html
+def test_add_company_rejects_nonboolean_board_flag_before_fetch(app, monkeypatch):
+    from jobscraper.scraping import discovery
+
+    def unexpected_fetch(*args, **kwargs):
+        pytest.fail("Invalid board flag must fail before a network request")
+
+    monkeypatch.setattr(discovery, "inspect", unexpected_fetch)
+    with pytest.raises(ValueError, match="is_board"):
+        app.add_company({"url": "https://new.example/jobs", "is_board": "false"})
 
 
-def test_jev_v5_evaluate_tab_full_text_and_stale_answer_handling(app):
-    from test_jev_v5 import description, v5_response
+def test_rename_company_guard_validation_and_persistence(server, app):
+    from dataclasses import replace
+
+    from jobscraper.storage import company_store
+
+    added = replace(app.cfg.company("acme"), id="added", name="Added")
+    company_store.add(app.companies_path, added)
+    headers = {"X-Requested-With": "jobscraper"}
+    endpoint = server + "/api/company-name"
+    body = {"company_id": "acme", "name": "Renamed"}
+    assert httpx.post(endpoint, json=body).status_code == 403
+    for invalid in ("", "  ", "x" * 201, "a\nb", None, 123):
+        response = httpx.post(endpoint, json=body | {"name": invalid}, headers=headers)
+        assert response.status_code == 400
+    assert (
+        httpx.post(endpoint, json=body | {"company_id": "missing"}, headers=headers).status_code
+        == 404
+    )
+    before = app.state_dir.joinpath("postings.json").read_bytes()
+    for company_id in ("acme", "added"):
+        response = httpx.post(
+            endpoint, json={"company_id": company_id, "name": "  New <Name>  "}, headers=headers
+        )
+        assert response.status_code == 200
+        assert response.json() == {"company_id": company_id, "name": "New <Name>"}
+    reloaded = web.App(app._base_cfg, app.state_dir, app.marks_path, app.employers_path)
+    assert reloaded.cfg.company("acme").name == "New <Name>"
+    assert reloaded.cfg.company("added").name == "New <Name>"
+    assert app.state_dir.joinpath("postings.json").read_bytes() == before
+    assert app._base_cfg.company("acme").name == "Acme"
+    assert company_store.load(app.companies_path)[0].name == "Added"
+    html = httpx.get(server + "/companies").text
+    assert "New &lt;Name&gt;" in html
+    assert 'class="name-form" hidden' in html
+    assert 'role="alert"' in html
+
+
+def test_tracked_count_opens_all_active_jobs(server, app):
+    from bs4 import BeautifulSoup
 
     st = state.load(app.state_dir)
-    exact, evaluate = st.postings["acme:1"], st.postings["acme:2"]
-    cached = {exact.key: description(exact, cfg=app.cfg)}
-    jsonfile.write(app.state_dir / "descriptions.json", cached)
-    records = {}
-    for p, response in (
-        (exact, v5_response()),
-        (evaluate, v5_response("code_adjacent", degree="unclear", fit="evaluate")),
-    ):
-        body = jev_triage.request_body(p, app.cfg, "v5", description=cached.get(p.key))
-        records[p.key] = {
-            "signature": jev_triage.signature(body),
-            "request": body,
-            "response": response,
-        }
-    jsonfile.write(jev_triage.store_path(app.jev_dir, "v5"), records)
-    assert app.jev_version({}) == "v5"
-    assert jev_keys(app, "exact", "v5") == [exact.key]
-    assert jev_keys(app, "evaluate", "v5") == [evaluate.key]
-    html = app.index({"view": "evaluate", "jev": "v5"}, "jev")
-    assert 'data-view="evaluate"' in html
-    assert 'data-view="near" ' not in html and 'data-view="maybe" ' not in html
-    assert "Degree unclear" in html and "Full description unavailable" in html
-    assert "Evaluate 90%" in html
-    assert "Evaluate</th>" in html
-    assert 'data-view="evaluate" ' not in app.index({}, "sonnet")
-    cached[exact.key]["text"] += " New qualifications."
-    jsonfile.write(app.state_dir / "descriptions.json", cached)
-    assert jev_keys(app, "exact", "v5") == []
+    st.health["acme"].last_count = 99
+    st.postings["acme:2"].duplicate_of = "mus:9"
+    st.postings["acme:3"].classification = None
+    st.postings["acme:5"].missed_runs = 1
+    state.save(st, app.state_dir)
+    jsonfile.write(app.marks_path, {"acme:1": {"hidden": True}, "acme:2": {"applied": True}})
+    listing = BeautifulSoup(httpx.get(server + "/companies").text, "html.parser")
+    link = listing.select_one('tr[data-company="acme"] .job-count')
+    assert link.text == "5 jobs →"
+    assert "Last crawl: 99" in listing.text
+    response = httpx.get(server + link["href"])
+    assert response.status_code == 200
+    detail = BeautifulSoup(response.text, "html.parser")
+    assert {r["data-job"] for r in detail.select("[data-job]")} == {
+        "acme:1",
+        "acme:2",
+        "acme:3",
+        "acme:4",
+        "acme:5",
+    }
+    assert "awaiting confirmation" in detail.text
+    assert "Not yet classified" in detail.text
+    assert detail.select_one('a[href="/companies"]')
+
+
+def test_tracked_job_search_sort_empty_and_unknown(server):
+    from bs4 import BeautifulSoup
+
+    response = httpx.get(
+        server + "/companies", params={"company": "acme", "q": "developer", "sort": "title"}
+    )
+    page = BeautifulSoup(response.text, "html.parser")
+    assert [r["data-job"] for r in page.select("[data-job]")] == ["acme:5", "acme:1"]
+    assert "Showing 2 of 5 active postings" in page.text
+    assert page.select_one('input[name="company"]')["value"] == "acme"
+    assert "No jobs match" in httpx.get(server + "/companies?company=acme&q=nomatch").text
+    assert httpx.get(server + "/companies?company=unknown").status_code == 404

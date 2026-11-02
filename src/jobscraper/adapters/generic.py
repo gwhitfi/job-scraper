@@ -58,9 +58,9 @@ def validate(options: dict) -> None:
             raise ValueError(
                 "Paged JSON feeds need both a page/offset field and total-count field."
             )
-        if not isinstance(options.get("page_step", 1), int) or options.get("page_step", 1) < 1:
+        if type(options.get("page_step", 1)) is not int or options.get("page_step", 1) < 1:
             raise ValueError("The page/offset increment must be a positive integer.")
-        if not isinstance(options.get("page_start", 0), int) or options.get("page_start", 0) < 0:
+        if type(options.get("page_start", 0)) is not int or options.get("page_start", 0) < 0:
             raise ValueError("The first page/offset must be a nonnegative integer.")
 
 
@@ -101,6 +101,17 @@ def posting(values: dict, base: str) -> RawPosting:
         posted_date = date.fromisoformat(posted[:10]) if posted else None
     except ValueError:
         posted_date = None
+    country_values = values.get("countries") or []
+    if not isinstance(country_values, list | tuple):
+        country_values = [country_values]
+    countries = tuple(
+        dict.fromkeys(
+            country.strip()
+            for value in country_values
+            for country in text(value).split(";")
+            if country.strip()
+        )
+    )
     return RawPosting(
         source_id=source_id,
         title=title,
@@ -109,6 +120,8 @@ def posting(values: dict, base: str) -> RawPosting:
         posted_date=posted_date,
         category=text(values.get("category")),
         summary=text(values.get("summary"))[:1000],
+        employer=text(values.get("employer")),
+        countries=countries,
     )
 
 
@@ -139,11 +152,13 @@ def jsonld(html: str, url: str) -> list[RawPosting]:
             if isinstance(locations, dict):
                 locations = [locations]
             places = []
+            countries = []
             for place in locations:
                 address = place.get("address", {}) if isinstance(place, dict) else {}
                 if isinstance(address, str):
                     places.append(address)
                 elif isinstance(address, dict):
+                    countries.append(address.get("addressCountry"))
                     places.append(
                         ", ".join(
                             filter(
@@ -174,6 +189,8 @@ def jsonld(html: str, url: str) -> list[RawPosting]:
                             else job.get("identifier")
                         ),
                         "location": places,
+                        "countries": countries,
+                        "employer": job.get("hiringOrganization"),
                         "posted_date": job.get("datePosted"),
                         "summary": job.get("description"),
                         "category": job.get("occupationalCategory"),
@@ -250,8 +267,16 @@ def parse_html(html: str, url: str, options: dict) -> tuple[list[RawPosting], st
                 "No recognizable jobs or confirmed no-openings message. The page may have changed."
             )
     next_url = next_page(soup, url, options.get("next"))
-    if not next_url and soup.select(
-        'button[aria-label*="Load more"], button.load-more, [data-load-more]'
+    button_next = any(
+        (button.get("aria-label") or button.get_text(" ", strip=True)).strip().casefold()
+        in ("next", "next page", "load more", "load more jobs")
+        and not button.has_attr("disabled")
+        and button.get("aria-disabled") != "true"
+        for button in soup.select("button")
+    )
+    if not next_url and (
+        button_next
+        or soup.select('button[aria-label*="Load more"], button.load-more, [data-load-more]')
     ):
         raise ValueError(
             "Jobs load through a button. Supply the public jobs-data URL from the Network tab."
@@ -265,6 +290,7 @@ def fetch(company: Company, client: httpx.Client) -> list[RawPosting]:
     url = company.url
     seen_pages = set()
     by_id: dict[str, RawPosting] = {}
+    expected_total: int | None = None
     for page in range(MAX_PAGES):
         page_field = options.get("page_field")
         body = deepcopy(options.get("body", {}))
@@ -275,7 +301,11 @@ def fetch(company: Company, client: httpx.Client) -> list[RawPosting]:
                 body[page_field] = value
             else:
                 parts = urlsplit(company.url)
-                query = [(k, v) for k, v in parse_qsl(parts.query) if k != page_field]
+                query = [
+                    (k, v)
+                    for k, v in parse_qsl(parts.query, keep_blank_values=True)
+                    if k != page_field
+                ]
                 url = parts._replace(query=urlencode(query + [(page_field, value)])).geturl()
         page_key = (url, json.dumps(body, sort_keys=True))
         if page_key in seen_pages:
@@ -298,16 +328,22 @@ def fetch(company: Company, client: httpx.Client) -> list[RawPosting]:
             items = path_value(data, options.get("items", ""))
             if not isinstance(items, list):
                 raise ValueError("The configured jobs field is no longer a JSON list.")
+            base_url = str(response.url)
             postings = [
-                posting({k: path_value(item, v) for k, v in options["fields"].items()}, url)
+                posting({k: path_value(item, v) for k, v in options["fields"].items()}, base_url)
                 for item in items
             ]
             next_value = path_value(data, options["next"]) if options.get("next") else None
-            next_url = urljoin(url, str(next_value)) if next_value else None
+            next_url = urljoin(base_url, str(next_value)) if next_value else None
             if options.get("total"):
                 total = path_value(data, options["total"])
-                if not isinstance(total, int):
+                if type(total) is not int or total < 0:
                     raise ValueError("The jobs feed no longer reports its expected total.")
+                if expected_total is not None and total != expected_total:
+                    raise ValueError(
+                        "The jobs feed total changed during pagination. Retry the crawl."
+                    )
+                expected_total = total
             else:
                 total = None
         else:
@@ -325,9 +361,17 @@ def fetch(company: Company, client: httpx.Client) -> list[RawPosting]:
         )
         previous = len(by_id)
         for p in postings:
-            if p.source_id in by_id and by_id[p.source_id].url != p.url:
+            if p.source_id in by_id and (
+                by_id[p.source_id].url != p.url
+                or by_id[p.source_id].title != p.title
+                or by_id[p.source_id].employer != p.employer
+                or by_id[p.source_id].location != p.location
+                or by_id[p.source_id].countries != p.countries
+            ):
                 raise ValueError("Different jobs share an identifier. Check the job ID field.")
             by_id.setdefault(p.source_id, p)
+        if total is not None and len(by_id) > total:
+            raise ValueError("The feed returned more jobs than its reported total.")
         if page and postings and len(by_id) == previous:
             raise ValueError("Pagination returned no new jobs; refusing an incomplete job list.")
         if page_field and total is not None and len(by_id) < total:

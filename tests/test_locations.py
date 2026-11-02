@@ -157,3 +157,11 @@ def test_foreign_state_abbreviation_cannot_match_us_scope():
     f = locations.build_filter(("SC",), {})
     assert not locations.matches(raw("Florianopolis, SC, Brazil"), f)
     assert locations.matches(raw("Florianopolis, SC, Brazil; Greenville, SC, US"), f)
+
+
+def test_icims_country_state_city_labels():
+    from jobscraper.geography.locations import places
+
+    assert places("US-SC-Spartanburg") == [("spartanburg", "SC")]
+    assert places("US-NC-Winston-Salem") == [("winston-salem", "NC")]
+    assert places("CA-ON-Toronto") == []

@@ -2,7 +2,6 @@ import json
 import logging
 import shlex
 import threading
-from collections import Counter
 from dataclasses import dataclass, field, replace
 from datetime import UTC, datetime, timedelta
 from html import escape
@@ -52,24 +51,6 @@ VIEWS = {
     "blocked": "Blocked",
     "companies": "Companies",
 }
-# The /jev page groups by Jev's answers alone, so it has no company tab.
-JEV_VIEWS = {v: label for v, label in VIEWS.items() if v != "companies"}
-GROUP_LABELS = VIEWS | {"evaluate": "Evaluate"}
-
-
-def jev_views(version: str) -> dict[str, str]:
-    if version == "v5":
-        return {"exact": "Exact", "evaluate": "Evaluate"} | {
-            v: label
-            for v, label in JEV_VIEWS.items()
-            if v not in ("exact", "near", "maybe", "industrial")
-        }
-    if jev_triage.has_industrial_tab(version):
-        return JEV_VIEWS
-    return {v: label for v, label in JEV_VIEWS.items() if v != "industrial"}
-
-
-PAGES = {"sonnet": "/", "jev": "/jev"}
 SOURCES = {"all": "All sources", "companies": "Company sites", "boards": "Job boards"}
 SORTS = {
     "newest": "Newest",
@@ -115,10 +96,7 @@ class Row:
     # Where else this job is listed, as (board name, url).
     also_on: list[tuple[str, str]] = field(default_factory=list)
     miles: float | None = None  # from [web] home; None for remote or unknown places
-    evaluator: str = "sonnet"  # which page grouped this row
     jev: dict | None = None  # Jev triage record, on the /jev page
-    jev_version: str = jev_triage.LATEST
-    sonnet_group: str | None = None  # Sonnet's group, shown on /jev for comparison
 
 
 class App:
@@ -165,6 +143,18 @@ class App:
                 self._config_mtime = mtime
         self._use_config(self._base_cfg)
 
+    def rename_company(self, body: dict) -> dict:
+        company_id = body.get("company_id")
+        if not isinstance(company_id, str):
+            raise ValueError("Company id must be text.")
+        with self.lock:
+            self.reload_config()
+            if company_id not in self.companies:
+                raise KeyError(company_id)
+            company_store.rename(self.companies_path, company_id, body.get("name"))
+            self.reload_config()
+            return {"company_id": company_id, "name": self.companies[company_id].name}
+
     def add_company(self, body: dict) -> dict:
         # Keep discovery serial so repeated clicks don't launch overlapping crawls.
         if not self.discovery_lock.acquire(blocking=False):
@@ -193,6 +183,9 @@ class App:
 
     def _add_company(self, body: dict) -> dict:
         self.reload_config()
+        is_board = body.get("is_board", False)
+        if not isinstance(is_board, bool):
+            raise ValueError("is_board must be true or false.")
         url = crawl.normalize_url(body.get("url", ""))
         if any(c.url.rstrip("/") == url.rstrip("/") for c in self.cfg.companies):
             raise ValueError("This careers page is already being tracked.")
@@ -214,7 +207,7 @@ class App:
             )
         if result.company is None:
             return {"status": result.status, "message": result.message, "help": result.help}
-        company = replace(result.company, locations=entries)
+        company = replace(result.company, locations=entries, is_board=is_board)
         with self.lock:
             self.reload_config()
             if any(
@@ -250,29 +243,11 @@ class App:
             self._triage[version] = (mtime, jsonfile.read(path))
         return self._triage[version][1]
 
-    def jev_versions(self) -> list[str]:
-        """Question versions with saved answers; the latest one is shown even before then."""
-        return [
-            v
-            for v in jev_triage.VERSIONS
-            if v == jev_triage.LATEST or jev_triage.store_path(self.jev_dir, v).exists()
-        ]
-
-    def jev_version(self, query: dict[str, str]) -> str:
-        if query.get("jev") in self.jev_versions():
-            return query["jev"]
-        started = [
-            v for v in jev_triage.VERSIONS if jev_triage.store_path(self.jev_dir, v).exists()
-        ]
-        return started[-1] if started else jev_triage.LATEST
-
     def rows(self, evaluator: str = "sonnet", version: str = jev_triage.LATEST) -> list[Row]:
         st = self.state()
         triage = self.triage(version) if evaluator == "jev" else {}
         description_cache = (
-            jsonfile.read(self.state_dir / "descriptions.json")
-            if evaluator == "jev" and version == "v5"
-            else {}
+            jsonfile.read(self.state_dir / "descriptions.json") if evaluator == "jev" else {}
         )
         marks = jsonfile.read(self.marks_path)
         decisions = jsonfile.read(self.employers_path)
@@ -288,7 +263,6 @@ class App:
             jev_record = triage.get(p.key)
             if (
                 evaluator == "jev"
-                and version == "v5"
                 and jev_record
                 and (
                     company is None
@@ -304,7 +278,6 @@ class App:
             personal = marks.get(p.key, {})
             scope = self.scopes.get(p.company_id)
             group = classify.posting_group(p, self.cfg.profile, scope)
-            sonnet_group = group
             if evaluator == "jev":
                 # Moves made on the main page are judgments of Sonnet's tabs, so they don't apply.
                 group = jev_triage.posting_group(p, jev_record, scope, version)
@@ -325,10 +298,7 @@ class App:
                     employer_key=employers.employer_key(p),
                     also_on=duplicates.get(p.key, []),
                     miles=distance.miles_from(self.home, p.location),
-                    evaluator=evaluator,
                     jev=jev_record,
-                    jev_version=version,
-                    sonnet_group=sonnet_group,
                 )
             )
         return out
@@ -451,15 +421,6 @@ class App:
         added = -p.first_seen.timestamp()
         posted = -(p.posted_date.toordinal() if p.posted_date else 0)
         title = p.title.casefold()
-        if sort in ("relevant", "least_relevant") and r.evaluator == "jev":
-            probs = r.jev["response"]["answers"]["kind"]["probabilities"] if r.jev else {}
-            sign = 1 if sort == "least_relevant" else -1
-            return (
-                not probs,
-                *(sign * probs.get(k, 0) for k in jev_triage.VERSIONS[r.jev_version].sort_kinds),
-                added,
-                title,
-            )
         if sort in ("relevant", "least_relevant"):
             score = (p.classification or {}).get("score")
             return (
@@ -510,10 +471,7 @@ class App:
         return [
             c
             for c in self.cfg.companies
-            if (
-                source == "all"
-                or (source == "boards") == (adapters.platform(c) in adapters.BOARD_ADAPTERS)
-            )
+            if (source == "all" or (source == "boards") == adapters.is_board(c))
             and (
                 not q
                 or matches_text(names[c.id], q)
@@ -528,24 +486,15 @@ class App:
 
     # --- pages ---
 
-    def select(
-        self, query: dict[str, str], evaluator: str = "sonnet"
-    ) -> tuple[list[Row], dict[str, int]]:
+    def select(self, query: dict[str, str]) -> tuple[list[Row], dict[str, int]]:
         """Rows in the selected tab and counts for every tab, using the same filters."""
         self.reload_config()
-        views = jev_views(self.jev_version(query)) if evaluator == "jev" else VIEWS
+        views = VIEWS
         view = query.get("view") if query.get("view") in views else "exact"
         source = query.get("source") if query.get("source") in SOURCES else "all"
         q = query.get("q", "").strip()
-        version = self.jev_version(query)
-        scoped = [
-            r
-            for r in self.rows(evaluator, version)
-            if self.in_source(r, source) and self.matches_query(r, q)
-        ]
+        scoped = [r for r in self.rows() if self.in_source(r, source) and self.matches_query(r, q)]
         counts = {v: sum(self.in_view(r, v) for r in scoped) for v in views}
-        if evaluator == "jev":
-            return [r for r in scoped if self.in_view(r, view)], counts
         counts["companies"] = len(self.directory_companies(source, q, scoped))
         if view == "companies":
             return [
@@ -556,12 +505,17 @@ class App:
         return [r for r in scoped if self.in_view(r, view)], counts
 
     def index(self, query: dict[str, str], evaluator: str = "sonnet") -> str:
-        views = jev_views(self.jev_version(query)) if evaluator == "jev" else VIEWS
+        if evaluator == "jev":
+            from jobscraper.presentation import jev_v6
+
+            self.reload_config()
+            return jev_v6.page(self, query)
+        views = VIEWS
         view = query.get("view") if query.get("view") in views else "exact"
         source = query.get("source") if query.get("source") in SOURCES else "all"
         sort = query.get("sort") if query.get("sort") in SORTS else "newest"
         q = query.get("q", "").strip()
-        shown, counts = self.select(query, evaluator)
+        shown, counts = self.select(query)
         shown.sort(key=lambda r: self.sort_key(r, sort))
         return render_page(
             self,
@@ -572,19 +526,7 @@ class App:
             counts,
             shown,
             query.get("company", ""),
-            evaluator,
-            self.jev_version(query),
         )
-
-    def jev_comparison(self, version: str) -> tuple[Counter, int]:
-        """Jev's group against Sonnet's for in-scope active jobs, ignoring personal marks."""
-        scopes = self.scopes
-        matrix: Counter = Counter()
-        for r in self.rows("jev", version):
-            if jev_triage.in_scope(r.posting, scopes):
-                jev_group = (r.group or "hidden") if r.jev else "pending"
-                matrix[jev_group, r.sonnet_group or "hidden"] += 1
-        return matrix, sum(n for (j, _), n in matrix.items() if j == "pending")
 
 
 def matches_text(hay: str, query: str) -> bool:
@@ -660,17 +602,13 @@ def _link(
     q: str,
     sort: str,
     company: str = "",
-    base: str = "/",
-    version: str = "",
 ) -> str:
     params = {"view": view, "source": source, "sort": sort}
-    if version:
-        params["jev"] = version
     if company:
         params["company"] = company
     if q:
         params["q"] = q
-    return base + "?" + urlencode(params)
+    return "/?" + urlencode(params)
 
 
 def _last_update(app: App) -> datetime | None:
@@ -765,7 +703,7 @@ def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
     c = p.classification or {}
     badges = []
     if r.group:
-        badges.append(f'<span class="badge g-{r.group}">{GROUP_LABELS[r.group]}</span>')
+        badges.append(f'<span class="badge g-{r.group}">{VIEWS[r.group]}</span>')
     fresh = new_tier(p, latest_check, now)
     if fresh:
         badges.append(f'<span class="badge new {fresh}">New</span>')
@@ -773,22 +711,18 @@ def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
         badges.append('<span class="badge closed">Closed</span>')
     if p.area == "extended":
         badges.append('<span class="badge outside">Outside Upstate</span>')
-    jev_page = r.evaluator == "jev"
-    # On /jev the score, level and reason are Sonnet's, so they're shown labeled instead.
-    score = None if jev_page else c.get("score")
+    score = c.get("score")
     tier = score_tier(score)
     score_html = (
         f'<span class="score" title="Similarity to target role">{score}/10</span>' if score else ""
     )
     when = f"posted {p.posted_date:%b %-d}" if p.posted_date else "posting date unknown"
-    level = "unknown" if jev_page else c.get("level", "unknown")
+    level = c.get("level", "unknown")
     far = f"{r.miles:.0f} mi" if r.miles is not None else ""
     meta_parts = [escape(x) for x in (p.location, far, level if level != "unknown" else "") if x]
     meta_parts.append(f'<span class="posted">{escape(when)}</span>')
     meta = " · ".join(meta_parts)
     reason = escape(c.get("reason", ""))
-    if jev_page and reason:
-        reason = f"<strong>Sonnet:</strong> {reason}"
     note = escape(r.marks.get("note", ""))
     key = escape(p.key)
     href = escape(notify.safe_url(p.url))
@@ -827,7 +761,6 @@ def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
     }
   {f'<div class="badges">{"".join(badges)}</div>' if badges else ""}
   {_also_on(r)}
-  {_jev_line(r) if jev_page else ""}
   {f'<p class="reason">{reason}</p>' if reason else ""}
   {_employer_panel(r)}
   <div class="actions">
@@ -841,81 +774,6 @@ def _card(r: Row, now: datetime, latest_check: datetime | None) -> str:
     <span class="saved" aria-live="polite"></span>
   </details>
 </article>"""
-
-
-def _jev_line(r: Row) -> str:
-    """Jev's two answers with confidence, next to Sonnet's call on the same job."""
-    c = r.posting.classification or {}
-    sonnet = VIEWS[r.sonnet_group] if r.sonnet_group else "Not shown"
-    if c.get("score"):
-        sonnet += f" ({c['score']}/10"
-        sonnet += f", {c['level']})" if c.get("level", "unknown") != "unknown" else ")"
-    if not r.jev:
-        jev = "pending"
-    else:
-        answers = r.jev["response"]["answers"]
-        kind, level = answers["kind"], answers["level"]
-        jev = (
-            f"{jev_triage.VERSIONS[r.jev_version].kind_labels[kind['choice']]} "
-            f"{kind['confidence']:.0%} · "
-            f"{jev_triage.LEVEL_LABELS[level['choice']]} {level['confidence']:.0%}"
-        )
-        if kind["confidence"] < jev_triage.LOW_CONFIDENCE:
-            jev += " · Low confidence"
-        if r.jev_version == "v5":
-            degrees = {
-                "cs_listed": "CS degree accepted",
-                "unspecified": "No degree specified",
-                "excluded": "Degree mismatch",
-                "unclear": "Degree unclear",
-            }
-            fits = {"match": "Match", "evaluate": "Evaluate", "reject": "Not a match"}
-            jev += f" · {degrees[answers['degree']['choice']]}"
-            jev += f" · {fits[answers['fit']['choice']]} {answers['fit']['confidence']:.0%}"
-            if (
-                not r.jev.get("request", {})
-                .get("state", {})
-                .get("job", {})
-                .get("description_complete")
-            ):
-                jev += " · Full description unavailable"
-    return (
-        f'<p class="jev-line"><span><strong>Jev:</strong> {escape(jev)}</span>'
-        f"<span><strong>Sonnet:</strong> {escape(sonnet)}</span></p>"
-    )
-
-
-def _jev_summary(app: App, version: str, view: str, source: str, q: str, sort: str) -> str:
-    picker = " · ".join(
-        f"<strong>{v}</strong>"
-        if v == version
-        else f'<a href="{escape(_link(view, source, q, sort, base="/jev", version=v))}">{v}</a>'
-        for v in app.jev_versions()
-    )
-    matrix, waiting = app.jev_comparison(version)
-    rows = ("exact", "near", "maybe", "industrial", "hidden", "pending")
-    if version == "v5":
-        rows = ("exact", "evaluate", "hidden", "pending")
-    if not jev_triage.has_industrial_tab(version):
-        rows = tuple(j for j in rows if j != "industrial")
-    cols = ("exact", "near", "maybe", "industrial", "hidden")
-    label = GROUP_LABELS | {"hidden": "Not shown", "pending": "Awaiting Jev"}
-    head = "".join(f"<th>{label[c]}</th>" for c in cols)
-    body = "".join(
-        f"<tr><th>{label[j]}</th>" + "".join(f"<td>{matrix[j, c]}</td>" for c in cols) + "</tr>"
-        for j in rows
-    )
-    total = sum(matrix.values())
-    return (
-        '<details class="jev-summary"><summary>Jev answered '
-        f"{total - waiting} of {total} current jobs"
-        + (f" · {waiting} awaiting Jev" if waiting else "")
-        + " · compare with Sonnet</summary>"
-        "<table><thead><tr><th>Jev ↓ / Sonnet →</th>"
-        f"{head}</tr></thead><tbody>{body}</tbody></table>"
-        "<p>Counts ignore stars, hides and moves. Neither answer is ground truth.</p></details>"
-        f'<p class="jev-versions">Jev questions: {picker}</p>'
-    )
 
 
 def _also_on(r: Row) -> str:
@@ -979,20 +837,15 @@ def render_page(
     counts: dict[str, int],
     shown: list[Row],
     company: str = "",
-    evaluator: str = "sonnet",
-    version: str = jev_triage.LATEST,
 ) -> str:
     now = datetime.now(UTC)
     latest_check = _last_update(app)
-    jev_page = evaluator == "jev"
-    base = PAGES[evaluator]
-    link_version = version if jev_page else ""
-    views = jev_views(version) if jev_page else VIEWS
+    views = VIEWS
     tabs = "".join(
         f'<a class="tab{" active" if v == view else ""}" data-view="{v}" '
         f"{'aria-current=page ' if v == view else ''}"
-        f'data-move-target="{v if v in MOVE_DESTINATIONS and not jev_page else ""}" '
-        f'href="{escape(_link(v, source, q, sort, base=base, version=link_version))}">'
+        f'data-move-target="{v if v in MOVE_DESTINATIONS else ""}" '
+        f'href="{escape(_link(v, source, q, sort))}">'
         f"{label} <span>{counts[v]}</span></a>"
         for v, label in views.items()
     )
@@ -1005,18 +858,7 @@ def render_page(
         for k, label in SORTS.items()
     )
     cards = "".join(_card(r, now, latest_check) for r in shown)
-    if view == "industrial" and jev_page:
-        cards = (
-            '<p class="review-intro">Industrial programming, automation and controls jobs Jev '
-            "found, listed so you can see they exist.</p>"
-        ) + cards
-    elif view == "evaluate" and jev_page:
-        cards = (
-            '<p class="review-intro">Plausible programming jobs with an experience stretch, '
-            "unclear requirements, or missing full text. "
-            "Review the qualifications before applying.</p>"
-        ) + cards
-    elif view == "industrial":
+    if view == "industrial":
         cards = (
             '<p class="review-intro">Industrial programming, automation and controls roles '
             "for your review. Use Move to mark a job Exact or Close, or Hide it.</p>"
@@ -1033,8 +875,6 @@ def render_page(
         else:
             cards = company_directory(app, source, q, sort)
     cards = cards or '<p class="empty">Nothing here.</p>'
-    if jev_page:
-        cards = _jev_summary(app, version, view, source, q, sort) + cards
     return PAGE.format(
         head_script=HEAD_SCRIPT,
         onboarding_form=onboarding.FORM.format(
@@ -1050,12 +890,8 @@ def render_page(
         font_head=_font_select("head", "Company &amp; position"),
         font_body=_font_select("body", "Rest of page"),
         updated=escape(_updated(app)),
-        title="Job Scraper · Jev" if jev_page else "Job Scraper",
-        page_link=(
-            '<a class="btn" href="/">Main page</a>'
-            if jev_page
-            else '<a class="btn" href="/jev">Jev page</a>'
-        ),
+        title="Job Scraper",
+        page_link='<a class="btn" href="/jev">Jev page</a>',
         banner=_banners(app, now),
         tabs=tabs,
         view=escape(view),
@@ -1070,14 +906,12 @@ def render_page(
             '<span id="move-count" aria-live="polite">0 selected</span>'
             '<button type="button" class="btn" id="select-all">Select all</button></div>'
             '<p id="move-status" role="status" hidden></p></div>'
-            if shown and not jev_page
+            if shown
             else ""
         ),
         company_input=(
             f'<input type="hidden" name="company" value="{escape(company, quote=True)}">'
             if view == "companies" and company in app.companies
-            else f'<input type="hidden" name="jev" value="{escape(version)}">'
-            if jev_page
             else ""
         ),
         reverse_link=escape(
@@ -1087,8 +921,6 @@ def render_page(
                 q,
                 REVERSE_SORT[sort],
                 company if view == "companies" else "",
-                base,
-                link_version,
             )
         ),
         reverse_label=escape(SORTS[REVERSE_SORT[sort]]),
@@ -1344,17 +1176,6 @@ main {{ max-width: 992px; margin: 0 auto; padding: 12px 16px 48px; }}
 .closed {{ color: var(--warn); }} .outside {{ color: var(--muted); }}
 .reason {{ font-size: .9rem; line-height: 1.5; margin: 10px 0 0; padding-top: 10px;
   border-top: 1px solid var(--line); }}
-.jev-line {{ display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .88rem;
-  margin: 10px 0 0; }}
-.jev-summary {{ background: var(--card); border: 1px solid var(--line); border-radius: 10px;
-  padding: 10px 14px; margin-bottom: 12px; font-size: .88rem; }}
-.jev-summary summary {{ cursor: pointer; }}
-.jev-summary table {{ border-collapse: collapse; margin-top: 10px; width: 100%; }}
-.jev-summary th, .jev-summary td {{ border-bottom: 1px solid var(--line); padding: 4px 8px;
-  text-align: right; }}
-.jev-summary th:first-child {{ text-align: left; }}
-.jev-summary p {{ color: var(--muted); margin: 8px 0 0; }}
-.jev-versions {{ font-size: .88rem; margin: -4px 0 12px; }}
 .also-on {{ font-size: .82rem; color: var(--muted); margin: 4px 0 0; }}
 
 /* Controls */
@@ -1780,11 +1601,15 @@ def make_server(app: App, host: str, port: int) -> ThreadingHTTPServer:
                 self._send(HTTPStatus.OK, app.index(query, "jev"), "text/html")
             elif url.path == "/companies":
                 app.reload_config()
-                self._send(
-                    HTTPStatus.OK,
-                    tracked.page(app.cfg, app.state(), stale_hours=STALE_HOURS),
-                    "text/html",
+                if query.get("company") and query["company"] not in app.companies:
+                    self._send(HTTPStatus.NOT_FOUND, "Company not found", "text/plain")
+                    return
+                page = (
+                    tracked.jobs_page(app.cfg, app.state(), query, stale_hours=STALE_HOURS)
+                    if query.get("company")
+                    else tracked.page(app.cfg, app.state(), stale_hours=STALE_HOURS)
                 )
+                self._send(HTTPStatus.OK, page, "text/html")
             elif url.path == "/logs":
                 self._send(
                     HTTPStatus.OK,
@@ -1804,7 +1629,13 @@ def make_server(app: App, host: str, port: int) -> ThreadingHTTPServer:
         def do_POST(self) -> None:
             url = urlparse(self.path)
             path = url.path
-            if path not in ("/api/mark", "/api/move", "/api/employer", "/api/companies"):
+            if path not in (
+                "/api/mark",
+                "/api/move",
+                "/api/employer",
+                "/api/companies",
+                "/api/company-name",
+            ):
                 self._send(HTTPStatus.NOT_FOUND, "Not found", "text/plain")
                 return
             # A custom header can't be sent cross-site without a CORS preflight, which this
@@ -1819,7 +1650,9 @@ def make_server(app: App, host: str, port: int) -> ThreadingHTTPServer:
                 body = json.loads(self.rfile.read(length))
                 if not isinstance(body, dict):
                     raise ValueError("Expected a JSON object")
-                if path == "/api/companies":
+                if path == "/api/company-name":
+                    entry = app.rename_company(body)
+                elif path == "/api/companies":
                     entry = app.add_company(body)
                 elif path == "/api/move":
                     entry = {"moved": app.move(body["keys"], body["destination"])}
@@ -1829,12 +1662,14 @@ def make_server(app: App, host: str, port: int) -> ThreadingHTTPServer:
                 else:
                     entry = app.mark(body["key"], body["field"], body["value"])
                     query = {k: v[0] for k, v in parse_qs(url.query).items()}
-                    evaluator = "jev" if body.get("page") == PAGES["jev"] else "sonnet"
-                    shown, counts = app.select(query, evaluator)
-                    entry = entry | {
-                        "counts": counts,
-                        "visible": any(r.posting.key == body["key"] for r in shown),
-                    }
+                    # V6 reloads its own results after marking; only the main page
+                    # needs an inline count/visibility update.
+                    if body.get("page") != "/jev":
+                        shown, counts = app.select(query)
+                        entry = entry | {
+                            "counts": counts,
+                            "visible": any(r.posting.key == body["key"] for r in shown),
+                        }
             except KeyError:
                 self._send(HTTPStatus.NOT_FOUND, "Unknown posting or employer", "text/plain")
                 return

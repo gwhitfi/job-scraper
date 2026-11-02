@@ -4,6 +4,9 @@ learn/
 companies-to-add.md
 /updates.md
 /deploy/README.md
+README.md
+/reports
+reports/
 # Python environments, bytecode, and build output
 __pycache__/
 *.py[cod]

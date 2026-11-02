@@ -59,3 +59,7 @@ def get(name: str) -> Adapter:
 
 def platform(company: Company) -> str:
     return company.options.get("strategy", "") if company.adapter == "auto" else company.adapter
+
+
+def is_board(company: Company, boards: set[str] | None = None) -> bool:
+    return company.is_board or platform(company) in (BOARD_ADAPTERS if boards is None else boards)

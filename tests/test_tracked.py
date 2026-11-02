@@ -64,3 +64,35 @@ def test_tracked_timestamps_are_eastern():
     )
     assert "Oct 14, 2026 7:00 PM EDT" in html
     assert "23:00 UTC" not in html
+
+
+def test_empty_company_jobs():
+    cfg = Config(Profile("dev"), Notifications("test@example.com"), [COMPANY])
+    html = tracked.jobs_page(cfg, State(), {"company": "acme"}, stale_hours=6)
+    assert "0 active postings" in html
+    assert "No active postings saved" in html
+    assert "Waiting for first crawl" in html
+
+
+def test_company_jobs_escape_postings_and_search():
+    from jobscraper.storage.state import Posting
+
+    cfg = Config(Profile("dev"), Notifications("test@example.com"), [COMPANY])
+    p = Posting(
+        "acme:1",
+        "acme",
+        "1",
+        "<img src=x>",
+        "<script>location</script>",
+        "javascript:alert(1)",
+        None,
+        NOW,
+        NOW,
+    )
+    html = tracked.jobs_page(cfg, State(postings={p.key: p}), {"company": "acme"}, stale_hours=6)
+    assert "<img src=x>" not in html and "<script>location" not in html
+    assert 'href="javascript:' not in html
+    html = tracked.jobs_page(
+        cfg, State(), {"company": "acme", "q": '"><script>bad</script>'}, stale_hours=6
+    )
+    assert "<script>bad" not in html

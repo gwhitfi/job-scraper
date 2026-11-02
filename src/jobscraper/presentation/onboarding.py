@@ -7,6 +7,7 @@ FORM = """
     <label>Careers or jobs URL<input name="url" required placeholder="careers.example.com"></label>
     <label>Company name (optional)
         <input name="name" maxlength="120"></label>
+    <label><input name="is_board" type="checkbox"> This site lists multiple employers</label>
     <label>Locations<select name="locations">{locations}</select></label>
     <p class="meta">Remote jobs are included. Tracking starts with the next scheduled check.</p>
     <details id="company-advanced">
@@ -30,6 +31,10 @@ FORM = """
       when each job card contains only its title.</p>
       <label>Location selector / field (optional)
         <input name="location" placeholder=".location or location.name"></label>
+      <label>Employer selector / field (for job boards)
+        <input name="employer" placeholder=".employer or company.name"></label>
+      <label>Country selector / field (optional)
+        <input name="countries" placeholder=".country or location.country"></label>
       <label>Next-page link selector / JSON field (optional)
         <input name="next" placeholder="a.next or links.next"></label>
       <label>JSON request method<select name="method">
@@ -71,7 +76,8 @@ companyForm.addEventListener("submit", async (event) => {
   button.disabled = true;
   companyResult.textContent = "Checking the job list… This may take a minute.";
   const fields = Object.fromEntries(new FormData(companyForm));
-  const body = {url: fields.url, name: fields.name, locations: fields.locations};
+  const body = {url: fields.url, name: fields.name, locations: fields.locations,
+                is_board: fields.is_board === "on"};
   try {
   if (fields.format) {
     body.settings = {format: fields.format};
@@ -79,7 +85,9 @@ companyForm.addEventListener("submit", async (event) => {
       body.settings[fields.format === "html" ? "item" : "items"] = fields.items;
       body.settings.fields = {title: fields.title, url: fields.link};
       if (fields.source_id) body.settings.fields.source_id = fields.source_id;
-      if (fields.location) body.settings.fields.location = fields.location;
+      for (const key of ["location", "employer", "countries"]) {
+        if (fields[key]) body.settings.fields[key] = fields[key];
+      }
     }
     if (fields.format === "json") {
       body.settings.method = fields.method;

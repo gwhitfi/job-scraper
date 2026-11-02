@@ -5,7 +5,7 @@ import json
 import re
 from dataclasses import dataclass, field, replace
 from datetime import date
-from urllib.parse import parse_qs, urljoin, urlsplit
+from urllib.parse import parse_qs, parse_qsl, urlencode, urljoin, urlsplit
 
 import httpx
 from bs4 import BeautifulSoup
@@ -40,6 +40,26 @@ def identify(url: str, html: str = "") -> tuple[str, str, dict] | None:
         return "applitrack", url, {}
     if soup.select_one("div.job_listings") and "job_manager_ajax_filters" in html:
         return "wp_job_manager", url, {}
+    if host.endswith(".icims.com") and path.rstrip("/") == "/jobs/search":
+        query = [
+            (k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True) if k != "in_iframe"
+        ]
+        frame_url = parts._replace(query=urlencode(query + [("in_iframe", "1")])).geturl()
+        return (
+            "generic",
+            frame_url,
+            {
+                "format": "html",
+                "item": ".iCIMS_JobCardItem",
+                "next": '.iCIMS_Paging a:not(.invisible):has([title="Next page of results"])',
+                "fields": {
+                    "title": ".title h3",
+                    "url": ".title a@href",
+                    "location": ".header.left > span:not(.field-label)",
+                    "summary": ".description",
+                },
+            },
+        )
     if workday.site_url(url):
         return "workday", workday.site_url(url), {}
     if host in ("boards.greenhouse.io", "job-boards.greenhouse.io") and token:
@@ -58,6 +78,18 @@ def identify(url: str, html: str = "") -> tuple[str, str, dict] | None:
                 },
             },
         )
+    # Custom Greenhouse sites expose their board token in the job-alert link.
+    # Require actual Greenhouse job links; a generic sign-in link is not evidence.
+    if not parts.query and soup.select_one('a[href*="gh_jid="]'):
+        for link in soup.select("a[href]"):
+            target = urlsplit(urljoin(url, link["href"]))
+            board = parse_qs(target.query).get("job_board", [""])[0]
+            if (
+                target.hostname == "my.greenhouse.io"
+                and target.path == "/users/sign_in"
+                and re.fullmatch(r"[a-zA-Z0-9_-]+", board)
+            ):
+                return identify(f"https://boards.greenhouse.io/{board}")
     if host in ("jobs.lever.co", "jobs.eu.lever.co") and token:
         api = "api.eu.lever.co" if host == "jobs.eu.lever.co" else "api.lever.co"
         return (
@@ -191,7 +223,10 @@ def infer_html(html: str, url: str) -> dict | None:
             for card in list(link.parents)[:3]:
                 heading = card.select_one("h2, h3, h4, h5, h6")
                 classes = [
-                    c for c in card.get("class", []) if re.fullmatch(r"[a-zA-Z_][a-zA-Z0-9_-]*", c)
+                    c
+                    for c in card.get("class", [])
+                    if re.fullmatch(r"[a-zA-Z_][a-zA-Z0-9_-]*", c)
+                    and not re.fullmatch(r"(?:job|position|opening)[_-]\d+", c, re.I)
                 ]
                 if heading is None or not classes or card.name in ("body", "html", "main"):
                     continue
@@ -262,6 +297,13 @@ def infer_json(data) -> dict | None:
                 "location": ("location", "categories.location"),
                 "summary": ("description", "descriptionPlain", "content"),
                 "posted_date": ("datePosted", "publishedAt"),
+                "employer": (
+                    "hiringOrganization.name",
+                    "company.name",
+                    "employer.name",
+                    "employer",
+                ),
+                "countries": ("location.addressCountry", "location.country", "country"),
             }.items():
                 found = next(
                     (name for name in names if generic.path_value(sample, name) is not None), None

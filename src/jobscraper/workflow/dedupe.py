@@ -1,6 +1,6 @@
 import re
 
-from jobscraper.adapters import platform
+from jobscraper.adapters import is_board
 from jobscraper.models import Company
 from jobscraper.storage.employers import normalize_name
 from jobscraper.storage.state import Posting, State
@@ -37,7 +37,7 @@ def mark_duplicates(state: State, companies: list[Company], boards: set[str]) ->
     brands_by_company = {
         c.id: {normalize_name(n) for n in (c.name, *c.aliases)} - {""}
         for c in companies
-        if platform(c) not in boards
+        if not is_board(c, boards)
     }
     companies_for_brand: dict[str, list[str]] = {}
     for cid, brands in brands_by_company.items():
@@ -48,7 +48,7 @@ def mark_duplicates(state: State, companies: list[Company], boards: set[str]) ->
     for p in active:
         by_company.setdefault(p.company_id, []).append(p)
 
-    board_ids = {c.id for c in companies if platform(c) in boards}
+    board_ids = {c.id for c in companies if is_board(c, boards)}
     for p in active:
         if p.company_id not in board_ids:
             continue

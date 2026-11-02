@@ -449,3 +449,119 @@ def test_inline_cards_refuse_ambiguous_ids():
     html = fixture_text("anderson_jobs.html").replace("Deputy", "Truck Driver Class A")
     with pytest.raises(ValueError, match="share an identifier"):
         discovery.inspect(url, client_for({url: html}))
+
+
+def test_inferred_json_recipe_retains_employer_and_country():
+    url = "https://unknown.example/jobs.json"
+    result = discovery.inspect(
+        url,
+        client_for(
+            {
+                url: {
+                    "jobs": [
+                        {
+                            "id": "1",
+                            "title": "Developer",
+                            "url": "/jobs/1",
+                            "company": {"name": "Acme"},
+                            "location": {"name": "Remote", "country": "US"},
+                        }
+                    ],
+                    "total": 1,
+                }
+            }
+        ),
+    )
+    assert result.company.options["settings"]["fields"]["employer"] == "company.name"
+    assert result.company.options["settings"]["fields"]["countries"] == "location.country"
+    (posting,) = result.postings
+    assert posting.employer == "Acme"
+    assert posting.countries == ("US",)
+
+
+def test_custom_greenhouse_page_uses_complete_public_feed():
+    url = "https://www.kaseya.com/careers/jobs/"
+    feed = "https://boards-api.greenhouse.io/v1/boards/kaseya/jobs"
+    result = discovery.inspect(
+        url,
+        client_for(
+            {
+                url: fixture_text("kaseya_jobs.html"),
+                feed: json.loads(fixture_text("kaseya_greenhouse.json")),
+            }
+        ),
+    )
+    assert result.company.url == feed
+    assert result.company.options["settings"]["total"] == "meta.total"
+    assert len(result.postings) == 3
+    assert result.postings[0].source_id == "6231559004"
+    assert result.postings[0].location == "Vancouver, British Columbia"
+
+
+def test_greenhouse_alert_link_alone_is_not_platform_evidence():
+    html = '<a href="https://my.greenhouse.io/users/sign_in?job_board=acme">Create alert</a>'
+    assert discovery.identify("https://example.com/jobs", html) is None
+
+
+def test_custom_greenhouse_detection_does_not_drop_search_filters():
+    assert (
+        discovery.identify("https://example.com/jobs?location=SC", fixture_text("kaseya_jobs.html"))
+        is None
+    )
+
+
+def test_inferred_card_selector_does_not_depend_on_one_job_id():
+    from bs4 import BeautifulSoup
+
+    url = "https://www.kaseya.com/careers/jobs/"
+    soup = BeautifulSoup(fixture_text("kaseya_jobs.html"), "html.parser")
+    for button in soup.select("button"):
+        button.decompose()
+    recipe = discovery.infer_html(str(soup), url)
+    assert "job-6231559004" not in recipe["item"]
+    first, _ = generic.parse_html(str(soup), url, recipe)
+    assert len(first) == 3
+    soup.select_one('div[class*="job-"]').decompose()
+    remaining, _ = generic.parse_html(str(soup), url, recipe)
+    assert len(remaining) == 2
+    assert {p.source_id for p in remaining} < {p.source_id for p in first}
+
+
+def test_icims_preserves_search_and_follows_results_frame_pagination():
+    from urllib.parse import parse_qs, urlsplit
+
+    url = (
+        "https://careers-healthpro-rehab.icims.com/jobs/search?ss=1&searchLocation=zipRadius"
+        "&latitude=&longitude=&searchZip=29621&searchRadius=75"
+    )
+    _, frame, settings = discovery.identify(url)
+    assert parse_qs(urlsplit(frame).query)["searchZip"] == ["29621"]
+    assert parse_qs(urlsplit(frame).query)["searchRadius"] == ["75"]
+    assert parse_qs(urlsplit(frame).query)["in_iframe"] == ["1"]
+    assert "latitude=" in frame
+    from bs4 import BeautifulSoup
+
+    first = fixture_text("healthpro-frame.html")
+    second = fixture_text("healthpro-frame2.html")
+    next_url = BeautifulSoup(first, "html.parser").select_one(settings["next"])["href"]
+    result = discovery.inspect(
+        url, client_for({frame: first, next_url: second}), name="HealthPRO Heritage"
+    )
+    expected = sum(
+        len(BeautifulSoup(page, "html.parser").select(".iCIMS_JobCardItem"))
+        for page in (first, second)
+    )
+    assert len(result.postings) == expected > 20
+    assert len({p.source_id for p in result.postings}) == expected
+    assert "US-SC-Spartanburg" in {p.location for p in result.postings}
+    assert all("Requisition Title" not in p.title for p in result.postings)
+    assert result.company.url == frame
+
+
+def test_job_search_iframe_is_not_discarded_as_generic_site_search():
+    from jobscraper.scraping import navigation
+
+    url = "https://unknown.example/jobs/search?zip=29621"
+    frame = url + "&in_iframe=1"
+    html = '<iframe src="' + frame.replace("&", "&amp;") + '"></iframe>'
+    assert navigation.candidates(html, url, lambda url: None) == [(frame, 120)]

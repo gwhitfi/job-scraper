@@ -70,3 +70,23 @@ def test_round_trip_and_bad_decision(tmp_path):
     assert jsonfile.read(path)["employer:afl"]["status"] == "approved"
     with pytest.raises(ValueError):
         employers.decide(d, "employer:afl", "AFL", "maybe")
+
+
+@pytest.mark.parametrize("adapter,options", [("generic", {}), ("auto", {"strategy": "generic"})])
+def test_generic_board_obeys_employer_decisions(adapter, options):
+    from dataclasses import replace
+
+    companies = {
+        "acme": replace(COMPANIES["acme"], adapter=adapter, options=options, is_board=True)
+    }
+    p = posting("acme:1", "Example Employer", check="verify")
+    assert employers.status(p, companies, {}) == "unverified"
+    decisions = {employers.employer_key(p): {"status": "blocked"}}
+    assert employers.status(p, companies, decisions) == "blocked"
+
+
+def test_board_flag_requires_boolean():
+    from dataclasses import replace
+
+    with pytest.raises(ValueError, match="is_board"):
+        replace(COMPANIES["acme"], is_board="false")

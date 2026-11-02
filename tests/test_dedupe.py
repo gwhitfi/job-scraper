@@ -130,3 +130,28 @@ def test_matches_any_entry_sharing_the_company_name():
     dedupe.mark_duplicates(s, per_city, {"board"})
     assert s.postings["mus:a"].duplicate_of == "michelin_greenville:2"
     assert s.postings["mus:b"].duplicate_of == "michelin:1"
+
+
+def test_generic_board_dedupes_against_direct_employer():
+    from dataclasses import replace
+
+    companies = [*COMPANIES[:2], replace(COMPANIES[2], adapter="generic", is_board=True)]
+    direct = posting("scansource:1", "UI Developer III")
+    board = posting("mus:a", "UI Developer III", employer="ScanSource")
+    s = State(postings={p.key: p for p in (direct, board)})
+    dedupe.mark_duplicates(s, companies, {"moveupstatesc"})
+    assert board.duplicate_of == direct.key
+
+
+def test_display_name_override_keeps_original_employer_alias(tmp_path):
+    from jobscraper.config import Config, Notifications, Profile
+    from jobscraper.storage import company_store
+
+    c = COMPANIES[0]
+    path = tmp_path / "companies.json"
+    company_store.rename(path, c.id, "My favorite software company")
+    cfg = company_store.merge(Config(Profile("developer"), Notifications("a@b.c"), [c]), path)
+    renamed = cfg.company(c.id)
+    assert renamed.name == "My favorite software company"
+    assert c.name in renamed.aliases
+    assert set(c.aliases) <= set(renamed.aliases)

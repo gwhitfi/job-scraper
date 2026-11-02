@@ -529,3 +529,35 @@ def test_new_industrial_job_goes_to_review_digest_not_exact_alert(fake_sites):
     assert result.digest.new_exact == [] and result.digest.new_near == []
     assert not notify.needs_alert(result.digest)
     assert result.assessed[0].classification["relevance"] == "industrial"
+
+
+def test_changed_html_list_preserves_real_jobs_across_repeated_runs():
+    company = Company(
+        "acme",
+        "Acme",
+        "html_list",
+        "https://example.com/jobs",
+        date(2026, 1, 1),
+        options={"item": "a.job", "none_text": "No open positions"},
+    )
+    config = Config(PROFILE, Notifications("a@b.c"), [company])
+    state = State()
+    tracker.apply_results(state, "acme", [raw("1", "Software Developer")], T0)
+    with httpx.Client(
+        transport=httpx.MockTransport(
+            lambda r: httpx.Response(200, text="<p>Our redesigned careers page</p>")
+        )
+    ) as client:
+        for hour in range(3):
+            result = runner.run(
+                config,
+                state,
+                client,
+                llm=None,
+                now=T0 + timedelta(hours=hour),
+                sleep=lambda _: None,
+            )
+            assert "careers page changed" in result.failed["acme"]
+            assert state.postings["acme:1"].status == "active"
+            assert result.digest.removed == []
+            assert set(state.postings) == {"acme:1"}

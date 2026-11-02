@@ -32,3 +32,9 @@ class Company:
     about: str = ""  # one line of context for the classifier, e.g. "Medical device maker"
     aliases: tuple[str, ...] = ()  # other names it posts under on job boards, e.g. brands
     options: dict = field(default_factory=dict, hash=False)  # adapter-specific settings
+
+    is_board: bool = False  # lists jobs from multiple employers
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.is_board, bool):
+            raise ValueError("is_board must be true or false.")

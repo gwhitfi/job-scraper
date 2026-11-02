@@ -144,7 +144,7 @@ model = "claude-sonnet-5-5"
 [web]
 url = "https://justinpc.taila1f69b.ts.net"  # Tailscale URL for the page; linked from alert emails
 host = "127.0.0.1"                     # tailscale serve proxies to this
-port = 8787
+port = 9003
 home = "Anderson, SC"                  # "Nearest" sort and distances are measured from here
 
 [notifications]

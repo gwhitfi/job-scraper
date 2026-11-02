@@ -1,7 +1,7 @@
 import re
 from datetime import UTC, datetime
 
-from jobscraper.adapters import BOARD_ADAPTERS, platform
+from jobscraper import adapters
 from jobscraper.models import Company
 from jobscraper.storage.state import Posting
 
@@ -24,7 +24,7 @@ def employer_key(p: Posting) -> str:
 
 def is_board(p: Posting, companies: dict[str, Company]) -> bool:
     c = companies.get(p.company_id)
-    return bool(c and platform(c) in BOARD_ADAPTERS)
+    return bool(c and adapters.is_board(c))
 
 
 def status(p: Posting, companies: dict[str, Company], decisions: dict[str, dict]) -> str:

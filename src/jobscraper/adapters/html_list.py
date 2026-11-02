@@ -53,16 +53,7 @@ def parse(html: str, company: Company) -> list[RawPosting]:
 
     none_text = opts.get("none_text", "").lower()
     if not postings and none_text and none_text not in soup.get_text(" ").lower():
-        # The "no openings" message is gone but no job matched the selectors: the page
-        # probably changed. Surface it rather than silently finding nothing.
-        postings.append(
-            RawPosting(
-                source_id="careers-page-changed",
-                title=f"{company.name} careers page changed; check for openings",
-                location="",
-                url=company.url,
-            )
-        )
+        raise ValueError(f"{company.name} careers page changed; check the extraction settings.")
     return postings
 
 

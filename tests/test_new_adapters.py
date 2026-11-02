@@ -68,8 +68,8 @@ def test_html_list_flags_a_changed_page():
         none_text="no open opportunities",
     )
     html = fixture_text("simpledu.html").replace("no open opportunities", "a new role")
-    (p,) = html_list.parse(html, c)
-    assert p.source_id == "careers-page-changed" and "check for openings" in p.title
+    with pytest.raises(ValueError, match="careers page changed"):
+        html_list.parse(html, c)
 
 
 # --- Paylocity / BambooHR ---

@@ -10,7 +10,7 @@ from typing import Literal
 import anthropic
 from pydantic import BaseModel
 
-from jobscraper import activity
+from jobscraper import activity, adapters
 from jobscraper.classification import policy, salaries
 from jobscraper.classification.classification_cache import Checkpoint
 from jobscraper.classification.usage import Usage
@@ -87,6 +87,8 @@ def company_label(p: Posting, companies: dict[str, Company]) -> str:
     c = companies.get(p.company_id)
     if c is None:
         return p.employer or p.company_id
+    if adapters.is_board(c) and not p.employer:
+        return f"Unknown employer via {c.name}"
     if p.employer or not c.about:
         return p.source_label(c.name)
     return f"{c.name} ({c.about})"

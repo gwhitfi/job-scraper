@@ -1,0 +1,86 @@
+{
+  "jobs": [
+    {
+      "absolute_url": "https://www.kaseya.com/careers/jobs/id/6231559004/?gh_jid=6231559004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5178845004,
+      "location": {
+        "name": "Vancouver, British Columbia"
+      },
+      "metadata": null,
+      "id": 6231559004,
+      "updated_at": "2026-10-21T17:37:05-04:00",
+      "requisition_id": "260625-5",
+      "title": "Account Manager",
+      "company_name": "Kaseya Careers",
+      "first_published": "2026-10-21T17:37:05-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://www.kaseya.com/careers/jobs/id/6240044004/?gh_jid=6240044004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5178845004,
+      "location": {
+        "name": "Toronto, Ontario"
+      },
+      "metadata": null,
+      "id": 6240044004,
+      "updated_at": "2026-10-30T18:29:15-04:00",
+      "requisition_id": "260625-5",
+      "title": "Account Manager",
+      "company_name": "Kaseya Careers",
+      "first_published": "2026-10-30T18:29:15-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://www.kaseya.com/careers/jobs/id/6225410004/?gh_jid=6225410004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "education": "education_optional",
+      "internal_job_id": 5058394004,
+      "location": {
+        "name": "Norwalk, CT"
+      },
+      "metadata": null,
+      "id": 6225410004,
+      "updated_at": "2026-10-15T11:29:54-04:00",
+      "requisition_id": "260302-1",
+      "title": "Account Manager",
+      "company_name": "Kaseya Careers",
+      "first_published": "2026-10-15T11:29:54-04:00",
+      "language": "en",
+      "application_deadline": null
+    }
+  ],
+  "meta": {
+    "total": 3
+  }
+}

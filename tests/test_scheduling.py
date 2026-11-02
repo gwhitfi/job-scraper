@@ -100,3 +100,11 @@ def test_preflight_checks_credentials_without_exposing_them(local_data, monkeypa
     output = capsys.readouterr().out
     assert "ready" in output and "fixture-secret" not in output
     assert not (data / "backups").exists()
+
+
+def test_company_name_overrides_are_backed_up(local_data):
+    _, data = local_data
+    (data / "company-names.json").write_text('{"acme": "New name"}')
+    snapshot = scheduling.snapshot(data, "test")
+    with tarfile.open(snapshot) as backup:
+        assert json.load(backup.extractfile("company-names.json")) == {"acme": "New name"}
